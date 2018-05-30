@@ -11,7 +11,7 @@ As used in this Agreement, the following terms shall have the meaning below:
 
  1.3.“End User” means a third party who uses the Licensed Software for its own internal production use and not for resale or further distribution.
 
- 1.4. “Licensed Software” means the source and object code of the imperva-api-tool downloaded or installed by or for You, and is subject to this Agreement, along with its associated files, documentation, including, if any, error corrections, modifications and updates.
+ 1.4. “Licensed Software” means the source and object code of the imperva-web-api-composer downloaded or installed by or for You, and is subject to this Agreement, along with its associated files, documentation, including, if any, error corrections, modifications and updates.
 
  1.5. “Sample Code” means templates and source code snippets for demonstration and instructional purposes to be used with Imperva’s hardware and software product.
 
