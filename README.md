@@ -8,7 +8,7 @@ docker build .
 
 docker tag <your_docker_image_id_here> apitool
 
-docker create --name apitool -p 8080:80 -v $(pwd)/src:/var/www/apps/apitool apitool
+docker create --name apitool -p 8080:80
 
 docker start apitool
 
