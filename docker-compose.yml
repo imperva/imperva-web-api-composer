@@ -8,5 +8,5 @@ services:
       - 8443:443
     environment:
       TZ: ${TZ:-UTC}
-      CONTAINER_NAME: alpine
+      CONTAINER_NAME: imperva-web-api-composer
 
