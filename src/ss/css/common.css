@@ -1,0 +1,96 @@
+
+body { font: 62.5% "Trebuchet MS", sans-serif; font-size: 10px;  
+	background: url('../images/bg_grad.jpg') top repeat-x #5d5d5d; margin: 0; min-height: 100%; }
+#wrapper { margin: 0 auto; position: relative; width: 956px; }
+#header { background: url('../images/bg_head.png') top right no-repeat; padding: 25px 0px 0px 25px; height: 105px; }
+#logo { background: url('../images/imperva-logo.jpg') center center no-repeat #fff; width:300px; height:75px;  }
+
+
+#dialog_link {padding: .4em 1em .4em 20px;text-decoration: none;position: relative;}
+#dialog_link span.ui-icon {margin: 0 5px 0 0;position: absolute;left: .2em;top: 50%;margin-top: -8px;}
+ul#icons {margin: 0; padding: 0;}
+ul#icons li {margin: 2px; position: relative; padding: 4px 0; cursor: pointer; float: left;  list-style: none;}
+ul#icons span.ui-icon {float: left; margin: 0 4px;}
+.overlay { opacity: 0.3; }
+button { float:right; }
+
+.wrap1, .wrap2, .wrap3 { display:inline-table; /* \*/display:block;/**/ }
+.wrap1 { float:left; background:url('../images/shadow/shadow.gif') right bottom no-repeat; }
+.wrap2 { background:url('../images/shadow/corner_bl.gif') left bottom no-repeat; }
+.wrap3 { padding:0 4px 4px 0; background:url('../images/shadow/corner_tr.gif') right top no-repeat;  }
+.wrap3 div { display:block; }
+
+#contentWrapper h1 { padding:7px 15px 10px 15px; margin:0px; }
+#contentWrapper .content { padding: 15px 15px 5px; overflow: auto; }
+#contentWrapper .footer { padding: 0 15px; }
+#contentWrapper .content #siteWrapper { width: 926px; padding:0px 0px 15px 0px; }
+#contentWrapper .content #siteWrapper p.center { text-align:center; float:none; }
+#contentWrapper .content #siteWrapper p { float:left; padding:0px 15px 0px 15px }
+
+#thumbWrapper { text-align:right; padding: 10px 0 0; }
+#thumbWrapper img { border: 1px solid #ccc; }
+
+.section { display:block; float:left; padding: 0 0 5px; }
+.formbox, .formbox2, .formbox3, .formbox4 { display:block; float:left; padding: 0 0 15px; }
+.formbox label, .formbox2 label, .formbox3 label, .formbox4 label, .section { text-align: right; display: block; float: left; padding: 4px 5px 5px 0; }
+.content p { padding: 0px 0px 10px 0px; }
+
+.formbox { }
+.formbox2 { width: 453px; }
+.formbox2 label { width: 100px; }
+.formbox2 input { width: 350px; }
+.formbox3 { width: 302px; }
+.formbox3 label { width: 85px; }
+.formbox3 input { width: 190px; }
+.formbox4 { width: 231px; }
+.formbox4 label { width: 55px; }
+.formbox4 input { width: 140px; }
+
+#dnsWrapper span.label { display: block; float: left; text-align: right; padding: 4px 5px 5px 0; width: 85px; font-weight:bold; }
+#dnsWrapper span { display: block; float: left; padding: 4px 5px 5px 0; width: 190px; }
+
+.disabled { color:#444; }
+.content input.disabled { padding: 3px; border: #ccc 1px solid; } 
+.content input.disabled:focus { color: #000; border-color: #999999; } 
+
+fieldset { padding: 0; }
+
+fieldset legend {
+	padding:5px 10px 5px;
+	font-weight:bold;
+}
+
+.loading {
+	background:url('../images/loading.gif') right center no-repeat;
+}
+
+/*  Growl Styles  */
+.growl_error {
+	font: 16px Arial,Helvetica,sans-serif;
+	width:60%;
+}
+.growl_error p {
+	color:#ccc;
+	padding-left:225px;
+}
+.growl_error span { color:red; font-weight:bold; }
+
+/* Site Templates */
+.template { display:none; }
+
+.errors { color: red; background:url('../images/error.jpg') left center no-repeat; padding: 2px 0 3px 12px; border: 2px solid red; }
+#requestUrl.errors { width:498px !important; background:url('../images/error.jpg') left top no-repeat; }
+textarea#requestUrl, textarea#curlUrl { height:45px; resize:none; }
+.invalid { background-color: red; color: white; padding: 0.15em; border-radius: 0.4em; }
+input.text { width:200px; }
+select { width: 200px; }
+select.min { width: 175px; }
+textarea { width:510px; height:200px; }
+#JSONparams textarea { height: auto; resize:none; overflow: auto; }
+
+#requestUrl { width:510px; }
+.tableColL { width: 350px; }
+label { font-weight: bold; }
+fieldset { margin: 0px 0px 10px 0px; padding: 10px; border-color:#0000A0; }
+legend { margin: 0px 0px 0px 10px; font-size: 1.5em; color: #0000A0; }
+.ui-icon { display: inline-block; }

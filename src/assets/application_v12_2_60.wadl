@@ -1,0 +1,1442 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<application xmlns="http://wadl.dev.java.net/2009/02">
+<doc xmlns:jersey="http://jersey.java.net/" jersey:generatedBy="Jersey: 1.17.1 02/28/2013 12:47 PM"/>
+<grammars/>
+<resources base="https://192.168.12.70:8083/SecureSphere/api/">
+<resource path="/">
+<resource path="/v1/conf">
+<resource path="sites">
+<method id="getAllSites" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+<resource path="{siteName}">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="siteName" style="template" type="xs:string"/>
+<method id="updateSite" name="PUT">
+<request>
+<representation mediaType="application/json"/>
+<representation mediaType="application/xml"/>
+</request>
+</method>
+<method id="deleteSite" name="DELETE"/>
+<method id="createSite" name="POST"/>
+</resource>
+</resource>
+<resource path="serverGroups">
+<resource path="{siteName}/{serverGroupName}">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="serverGroupName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="siteName" style="template" type="xs:string"/>
+<method id="getServerGroup" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+<method id="deleteServerGroup" name="DELETE"/>
+<method id="updateServerGroup" name="PUT">
+<request>
+<representation mediaType="application/json"/>
+</request>
+</method>
+<method id="createServerGroup" name="POST"/>
+</resource>
+<resource path="{siteName}">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="siteName" style="template" type="xs:string"/>
+<method id="getServerGroups" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+</resource>
+<resource path="{siteName}/{serverGroupName}/servers/{ip}">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="serverGroupName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="ip" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="siteName" style="template" type="xs:string"/>
+<method id="createOSConnection" name="POST">
+<request>
+<representation mediaType="application/json"/>
+</request>
+</method>
+<method id="getOSConnection" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+<method id="updateOSConnection" name="PUT">
+<request>
+<representation mediaType="application/json"/>
+</request>
+</method>
+<method id="deleteOSConnection" name="DELETE"/>
+</resource>
+<resource path="{siteName}/{serverGroupName}/servers">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="serverGroupName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="siteName" style="template" type="xs:string"/>
+<method id="getOSConnectionsByServerGroup" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+</resource>
+<resource path="{siteName}/{serverGroupName}/servers/{ip}/connectivityStatus">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="serverGroupName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="ip" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="siteName" style="template" type="xs:string"/>
+<method id="testOSConnection" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+</resource>
+<resource path="{siteName}/{serverGroupName}/protectedIPs">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="serverGroupName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="siteName" style="template" type="xs:string"/>
+<method id="getProtectedIPs" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+<resource path="{IPAddress}">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="serverGroupName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="siteName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="IPAddress" style="template" type="xs:string"/>
+<method id="createProtectedIP" name="POST">
+<request>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="gatewayGroup" style="query" type="xs:string"/>
+<representation mediaType="application/json"/>
+</request>
+</method>
+<method id="updateProtectedIP" name="PUT">
+<request>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="gatewayGroup" style="query" type="xs:string"/>
+<representation mediaType="application/json"/>
+</request>
+</method>
+<method id="deleteProtectedIP" name="DELETE">
+<request>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="gatewayGroup" style="query" type="xs:string"/>
+</request>
+</method>
+</resource>
+</resource>
+</resource>
+<resource path="dbServices">
+<resource path="{siteName}/{serverGroupName}/{dbServiceName}">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="serverGroupName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="dbServiceName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="siteName" style="template" type="xs:string"/>
+<method id="updateDbService" name="PUT">
+<request>
+<representation mediaType="application/json"/>
+</request>
+</method>
+<method id="createDbService" name="POST">
+<request>
+<representation mediaType="application/json"/>
+</request>
+</method>
+<method id="deleteService" name="DELETE"/>
+<method id="getService" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+</resource>
+<resource path="{siteName}/{serverGroupName}">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="serverGroupName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="siteName" style="template" type="xs:string"/>
+<method id="getAllServices" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+</resource>
+<resource path="{siteName}/{serverGroupName}/{dbServiceName}/auditPolicies/{policyName}">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="serverGroupName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="policyName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="dbServiceName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="siteName" style="template" type="xs:string"/>
+<method id="applyAuditPolicyToService" name="POST"/>
+<method id="removeAuditPolicyFromService" name="DELETE"/>
+</resource>
+<resource path="{siteName}/{serverGroupName}/{dbServiceName}/auditPolicies">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="serverGroupName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="dbServiceName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="siteName" style="template" type="xs:string"/>
+<method id="getAuditPoliciesAppliedToService" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+</resource>
+<resource path="{siteName}/{serverGroupName}/{dbServiceName}/dbSecurityPolicies/{policyName}">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="serverGroupName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="policyName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="dbServiceName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="siteName" style="template" type="xs:string"/>
+<method id="applyDBSecurityPolicyToService" name="POST"/>
+<method id="removeDBSecurityPolicyFromService" name="DELETE"/>
+</resource>
+<resource path="{siteName}/{serverGroupName}/{serviceName}/dbSecurityPolicies">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="serverGroupName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="siteName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="serviceName" style="template" type="xs:string"/>
+<method id="getDBSecurityPoliciesAppliedToService" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+</resource>
+<resource path="{siteName}/{serverGroupName}/{dbServiceName}/agents/{agentName}/dataInterfaces/{dataInterfaceID}">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="serverGroupName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="dbServiceName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="siteName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="agentName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="dataInterfaceID" style="template" type="xs:string"/>
+<method id="applyDataInterfaceToService" name="POST"/>
+<method id="unapplyDataInterfaceToService" name="DELETE"/>
+</resource>
+<resource path="{siteName}/{serverGroupName}/{serviceName}/dbConnections/{connectionName}">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="serverGroupName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="siteName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="connectionName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="serviceName" style="template" type="xs:string"/>
+<method id="getDBConnection" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+<method id="updateDBConnection" name="PUT">
+<request>
+<representation mediaType="application/json"/>
+</request>
+</method>
+<method id="deleteDBConnection" name="DELETE"/>
+<method id="createDBConnection" name="POST">
+<request>
+<representation mediaType="application/json"/>
+</request>
+</method>
+</resource>
+<resource path="{siteName}/{serverGroupName}/{serviceName}/dbConnections">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="serverGroupName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="siteName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="serviceName" style="template" type="xs:string"/>
+<method id="getDBConnectionsByService" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+</resource>
+<resource path="{siteName}/{serverGroupName}/{serviceName}/dbConnections/{connectionName}/connectivityStatus">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="serverGroupName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="siteName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="connectionName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="serviceName" style="template" type="xs:string"/>
+<method id="testDBConnection" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+</resource>
+</resource>
+<resource path="dbApplications">
+<resource path="{siteName}/{serverGroupName}/{dbServiceName}/{dbApplicationName}">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="serverGroupName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="dbServiceName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="dbApplicationName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="siteName" style="template" type="xs:string"/>
+<method id="updateApplication" name="PUT">
+<request>
+<representation mediaType="application/json"/>
+</request>
+</method>
+<method id="createApplication" name="POST"/>
+<method id="deleteApplication" name="DELETE"/>
+</resource>
+<resource path="{siteName}/{serverGroupName}/{dbServiceName}">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="serverGroupName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="dbServiceName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="siteName" style="template" type="xs:string"/>
+<method id="getAllApplications" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+</resource>
+<resource path="{siteName}/{serverGroupName}/{dbServiceName}/{dbApplicationName}/auditPolicies/{policyName}">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="serverGroupName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="policyName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="dbServiceName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="dbApplicationName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="siteName" style="template" type="xs:string"/>
+<method id="applyAuditPolicyToApplication" name="POST"/>
+<method id="removeAuditPolicyFromApplication" name="DELETE"/>
+</resource>
+<resource path="{siteName}/{serverGroupName}/{dbServiceName}/{dbApplicationName}/auditPolicies">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="serverGroupName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="dbServiceName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="dbApplicationName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="siteName" style="template" type="xs:string"/>
+<method id="getAuditPoliciesAppliedToApplication" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+</resource>
+<resource path="{siteName}/{serverGroupName}/{dbServiceName}/{dbApplicationName}/dbSecurityPolicies/{policyName}">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="serverGroupName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="policyName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="dbServiceName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="dbApplicationName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="siteName" style="template" type="xs:string"/>
+<method id="applyDBSecurityPolicyToApplication" name="POST"/>
+<method id="removeDBSecurityPolicyFromApplication" name="DELETE"/>
+</resource>
+<resource path="{siteName}/{serverGroupName}/{dbServiceName}/{dbApplicationName}/dbSecurityPolicies">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="serverGroupName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="dbServiceName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="dbApplicationName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="siteName" style="template" type="xs:string"/>
+<method id="getDBSecurityPoliciesAppliedToApplication" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+</resource>
+</resource>
+<resource path="webApplications">
+<resource path="{siteName}/{serverGroupName}/{webServiceName}/{webApplicationName}">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="serverGroupName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="webApplicationName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="siteName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="webServiceName" style="template" type="xs:string"/>
+<method id="createWebApplication" name="POST">
+<request>
+<representation mediaType="application/json"/>
+</request>
+</method>
+<method id="getWebApplication" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+<method id="deleteWebApplication" name="DELETE"/>
+<method id="updateWebApplication" name="PUT">
+<request>
+<representation mediaType="application/json"/>
+</request>
+</method>
+</resource>
+<resource path="{siteName}/{serverGroupName}/{webServiceName}">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="serverGroupName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="siteName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="webServiceName" style="template" type="xs:string"/>
+<method id="getAllWebApplications" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+</resource>
+<resource path="{siteName}/{serverGroupName}/{webServiceName}/{webApplicationName}/webApplicationCustomPolicies/{policyName}">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="serverGroupName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="webApplicationName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="policyName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="siteName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="webServiceName" style="template" type="xs:string"/>
+<method id="apply" name="POST"/>
+</resource>
+</resource>
+<resource path="webServiceCustomPolicies">
+<method id="getAllPolicies" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+<resource path="{policyName}">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="policyName" style="template" type="xs:string"/>
+<method id="createWebServiceCustomPolicy" name="POST">
+<request>
+<representation mediaType="application/json"/>
+</request>
+</method>
+<method id="updateWebServiceCustomPolicy" name="PUT">
+<request>
+<representation mediaType="application/json"/>
+</request>
+</method>
+<method id="getWebServiceCustomPolicy" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+<method id="deleteWebServiceCustomPolicy" name="DELETE"/>
+</resource>
+</resource>
+<resource path="gatewayGroups">
+<method id="getAllGatewayGroups" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+<resource path="/{gatewayGroupName}/gateways">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="gatewayGroupName" style="template" type="xs:string"/>
+<method id="getAllGateways" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+</resource>
+<resource path="/{gatewayGroupName}">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="gatewayGroupName" style="template" type="xs:string"/>
+<method id="deleteGatewayGroup" name="DELETE"/>
+<method id="createGatewayGroup" name="POST">
+<request>
+<representation mediaType="application/json"/>
+</request>
+</method>
+</resource>
+</resource>
+<resource path="systemDefinitions">
+<resource path="{paramName}">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="paramName" style="template" type="xs:string"/>
+<method id="updateSystemDefinition" name="PUT">
+<request>
+<representation mediaType="application/json"/>
+</request>
+</method>
+<method id="getSystemDefinition" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+</resource>
+</resource>
+<resource path="applicationGroups">
+<method id="getAllApplicationGroups" name="GET">
+<request>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="fullDepth" style="query" type="xs:boolean"/>
+</request>
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+<resource path="{applicationGroupName}">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="applicationGroupName" style="template" type="xs:string"/>
+<method id="getApplicationGroup" name="GET">
+<request>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="fullDepth" style="query" type="xs:boolean"/>
+</request>
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+<method id="createApplicationGroupAsRoot" name="POST"/>
+<method id="updateApplicationGroup" name="PUT">
+<request>
+<representation mediaType="application/json"/>
+</request>
+</method>
+<method id="deleteApplicationGroup" name="DELETE"/>
+</resource>
+<resource path="{parentApplicationGroupName}/applicationGroups/{childApplicationGroupName}">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="childApplicationGroupName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="parentApplicationGroupName" style="template" type="xs:string"/>
+<method id="createApplicationGroup" name="POST"/>
+</resource>
+<resource path="{applicationGroupName}/applications/{siteName}/{serverGroupName}/{serviceName}/{applicationName}">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="serverGroupName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="applicationGroupName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="siteName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="serviceName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="applicationName" style="template" type="xs:string"/>
+<method id="addAppToAppGroup" name="POST"/>
+<method id="removeAppFromAppGroup" name="DELETE"/>
+</resource>
+<resource path="{applicationGroupName}/auditPolicies/{policyName}">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="applicationGroupName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="policyName" style="template" type="xs:string"/>
+<method id="applyAndLockAuditPolicyToApplicationGroup" name="POST"/>
+<method id="removeAndUnlockAuditPolicyFromApplicationGroup" name="DELETE"/>
+</resource>
+<resource path="{applicationGroupName}/auditPolicies">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="applicationGroupName" style="template" type="xs:string"/>
+<method id="getAuditPoliciesAppliedToApplicationGroup" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+</resource>
+<resource path="{applicationGroupName}/dbSecurityPolicies/{policyName}">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="applicationGroupName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="policyName" style="template" type="xs:string"/>
+<method id="applyAndLockDBSecurityPolicyToApplicationGroup" name="POST"/>
+<method id="removeAndUnlockDBSecurityPolicyFromApplicationGroup" name="DELETE"/>
+</resource>
+<resource path="{applicationGroupName}/dbSecurityPolicies">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="applicationGroupName" style="template" type="xs:string"/>
+<method id="getDBSecurityPoliciesAppliedToApplicationGroup" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+</resource>
+</resource>
+<resource path="auditPolicies">
+<method id="getAllAuditPolicies" name="GET">
+<request>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="apply-level" style="query" type="xs:string"/>
+</request>
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+<resource path="{policyName}">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="policyName" style="template" type="xs:string"/>
+<method id="createAuditPolicy" name="POST">
+<request>
+<representation mediaType="application/json"/>
+</request>
+</method>
+<method id="deleteAuditPolicy" name="DELETE"/>
+</resource>
+</resource>
+<resource path="dbSecurityPolicies">
+<method id="getAllDBSecurityPolicies" name="GET">
+<request>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="apply-level" style="query" type="xs:string"/>
+</request>
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+<resource path="{policyName}">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="policyName" style="template" type="xs:string"/>
+<method id="createDBSecurityPolicy" name="POST">
+<request>
+<representation mediaType="application/json"/>
+</request>
+</method>
+<method id="deleteDBSecurityPolicy" name="DELETE"/>
+</resource>
+</resource>
+<resource path="agents">
+<method id="getAllAgents" name="GET">
+<request>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="taglist" style="query" type="xs:string"/>
+</request>
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+<resource path="{agentName}/restart">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="agentName" style="template" type="xs:string"/>
+<method id="restartAgent" name="POST">
+<response>
+<representation mediaType="text/plain"/>
+</response>
+</method>
+</resource>
+<resource path="{agentName}/tags/">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="agentName" style="template" type="xs:string"/>
+<method id="untagAgent" name="DELETE"/>
+<method id="getAgentTags" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+<method id="addTagsToAgent" name="PUT">
+<request>
+<representation mediaType="application/json"/>
+</request>
+</method>
+<method id="setAgentTags" name="POST">
+<request>
+<representation mediaType="application/json"/>
+</request>
+</method>
+</resource>
+<resource path="{agentName}/tags/{tagName}">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="agentName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="tagName" style="template" type="xs:string"/>
+<method id="tagAgent" name="POST"/>
+<method id="removeTagFromAgent" name="DELETE"/>
+</resource>
+<resource path="{agentName}/Settings/AdvancedConfiguration">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="agentName" style="template" type="xs:string"/>
+<method id="updateSettings" name="PUT">
+<request>
+<representation mediaType="application/json"/>
+</request>
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+<method id="getSettings" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+<method id="deleteFromAdvancedConfig" name="DELETE">
+<request>
+<representation mediaType="application/json"/>
+</request>
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+</resource>
+<resource path="{agentName}/Settings/DiscoverySettings">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="agentName" style="template" type="xs:string"/>
+<method id="getDiscoverytSettings" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+<method id="updateDiscoverytSettings" name="PUT">
+<request>
+<representation mediaType="application/json"/>
+</request>
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+</resource>
+<resource path="{agentName}/Settings/CPUUsageRestraining">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="agentName" style="template" type="xs:string"/>
+<method id="getCPUUsageRestraining" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+<method id="setCPUUsageRestraining" name="PUT">
+<request>
+<representation mediaType="application/json"/>
+</request>
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+</resource>
+<resource path="{agentName}/GeneralDetails">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="agentName" style="template" type="xs:string"/>
+<method id="getGeneralDetails" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+</resource>
+<resource path="{agentName}/dataInterfaces">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="agentName" style="template" type="xs:string"/>
+<method id="getAllDataInterfaces" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+</resource>
+<resource path="{agentName}/gateway/{gatewayName}">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="gatewayName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="agentName" style="template" type="xs:string"/>
+<method id="moveAgentToGateway" name="POST"/>
+</resource>
+</resource>
+<resource path="mxs">
+<method id="getAllMxs" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+</resource>
+<resource path="tags">
+<method id="getAllTags" name="GET">
+<request>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="tagPrefix" style="query" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="name" style="query" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="purpose" style="query" type="xs:string"/>
+</request>
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+<resource path="{tagName}">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="tagName" style="template" type="xs:string"/>
+<method id="deleteTag" name="DELETE">
+<request>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="remove" style="query" type="xs:boolean"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="delete" style="query" type="xs:boolean"/>
+</request>
+</method>
+<method id="updateTag" name="PUT">
+<request>
+<representation mediaType="application/json"/>
+<representation mediaType="application/xml"/>
+</request>
+</method>
+<method id="createTag" name="POST"/>
+</resource>
+<resource path="{tagName}/taggedObjects">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="tagName" style="template" type="xs:string"/>
+<method id="tagObjects" name="POST">
+<request>
+<representation mediaType="application/json"/>
+</request>
+</method>
+<method id="unTagObjects" name="DELETE">
+<request>
+<representation mediaType="*/*"/>
+</request>
+</method>
+<method id="getTagObjects" name="GET">
+<request>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="purpose" style="query" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="type" style="query" type="xs:string"/>
+</request>
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+</resource>
+</resource>
+<resource path="envExport">
+<method id="exportEnvironment" name="POST">
+<request>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="should-fail-on-unsupported-dependency" style="query" type="xs:boolean" default="false"/>
+<representation mediaType="application/json"/>
+</request>
+<response>
+<representation mediaType="application/json"/>
+<representation mediaType="application/zip"/>
+</response>
+</method>
+</resource>
+<resource path="dataSets">
+<resource path="{dataSetName}/columns">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="dataSetName" style="template" type="xs:string"/>
+<method id="getDatasetColumns" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+</resource>
+<resource path="{dataSetName}/data">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="dataSetName" style="template" type="xs:string"/>
+<method id="getDatasetRecords" name="GET">
+<request>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="from" style="query" type="xs:int" default="1"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="to" style="query" type="xs:int" default="0"/>
+</request>
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+<method id="incrementalOperationsOnDataset" name="PUT">
+<request>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="overwrite" style="query" type="xs:boolean" default="true"/>
+<representation mediaType="application/json"/>
+</request>
+</method>
+<method id="updateDatasetRecords" name="POST">
+<request>
+<representation mediaType="application/json"/>
+</request>
+</method>
+<method id="deleteAllDatasetRecords" name="DELETE"/>
+</resource>
+<resource path="createDataset">
+<method id="createDataset" name="POST">
+<request>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="caseSensitive" style="query" type="xs:boolean"/>
+<representation mediaType="application/json"/>
+</request>
+</method>
+</resource>
+<resource path="{dataSetName}/deleteDataset">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="dataSetName" style="template" type="xs:string"/>
+<method id="deleteDataset" name="POST"/>
+</resource>
+</resource>
+<resource path="dasAssessment">
+<resource path="/tests">
+<method id="tests" name="POST">
+<response>
+<representation mediaType="application/json"/>
+<representation mediaType="text/plain"/>
+</response>
+</method>
+</resource>
+<resource path="/scans">
+<method id="scans" name="POST">
+<response>
+<representation mediaType="application/json"/>
+<representation mediaType="text/plain"/>
+</response>
+</method>
+</resource>
+<resource path="/scanInfo">
+<method id="scanInfo" name="POST">
+<request>
+<representation mediaType="application/json"/>
+</request>
+<response>
+<representation mediaType="application/json"/>
+<representation mediaType="text/plain"/>
+</response>
+</method>
+</resource>
+<resource path="/runDbs">
+<method id="runTargetDbs" name="POST">
+<request>
+<representation mediaType="application/json"/>
+</request>
+<response>
+<representation mediaType="application/json"/>
+<representation mediaType="text/plain"/>
+</response>
+</method>
+</resource>
+<resource path="/runFields">
+<method id="runFields" name="POST">
+<request>
+<representation mediaType="application/json"/>
+</request>
+<response>
+<representation mediaType="application/json"/>
+<representation mediaType="text/plain"/>
+</response>
+</method>
+</resource>
+<resource path="/scanResults">
+<method id="scanResults" name="POST">
+<request>
+<representation mediaType="application/json"/>
+</request>
+<response>
+<representation mediaType="application/json"/>
+<representation mediaType="text/plain"/>
+</response>
+</method>
+</resource>
+<resource path="/scanRecords">
+<method id="scanRecords" name="POST">
+<request>
+<representation mediaType="application/json"/>
+</request>
+<response>
+<representation mediaType="application/json"/>
+<representation mediaType="text/plain"/>
+</response>
+</method>
+</resource>
+<resource path="/runs">
+<method id="runs" name="POST">
+<request>
+<representation mediaType="application/json"/>
+</request>
+<response>
+<representation mediaType="application/json"/>
+<representation mediaType="text/plain"/>
+</response>
+</method>
+</resource>
+<resource path="/policies">
+<method id="policies" name="POST">
+<response>
+<representation mediaType="application/json"/>
+<representation mediaType="text/plain"/>
+</response>
+</method>
+</resource>
+</resource>
+<resource path="webServices">
+<resource path="{siteName}/{serverGroupName}/{webServiceName}">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="serverGroupName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="siteName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="webServiceName" style="template" type="xs:string"/>
+<method id="createWebService" name="POST">
+<request>
+<representation mediaType="application/json"/>
+</request>
+</method>
+<method id="deleteWebService" name="DELETE"/>
+<method id="updateWebService" name="PUT">
+<request>
+<representation mediaType="application/json"/>
+</request>
+</method>
+<method id="getWebServiceDetails" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+</resource>
+<resource path="{siteName}/{serverGroupName}/{webServiceName}/forwardedClientIp">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="serverGroupName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="siteName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="webServiceName" style="template" type="xs:string"/>
+<method id="getKrpForwardedClientIp" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+<method id="updateKrpForwardedClientIp" name="PUT">
+<request>
+<representation mediaType="application/json"/>
+</request>
+</method>
+</resource>
+<resource path="/{siteName}/{serverGroupName}/{webServiceName}/webServiceCustomPolicies/{policyName}">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="serverGroupName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="policyName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="siteName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="webServiceName" style="template" type="xs:string"/>
+<method id="applyWebCustomPolicyToWebService" name="POST"/>
+</resource>
+<resource path="{siteName}/{serverGroupName}/{webServiceName}/hostToAppMappings/{webApplicationName}/{priority}">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="serverGroupName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="webApplicationName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="siteName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="priority" style="template" type="xs:int"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="webServiceName" style="template" type="xs:string"/>
+<method id="createHostToApplicationMapping" name="POST">
+<request>
+<representation mediaType="application/json"/>
+</request>
+</method>
+</resource>
+<resource path="{siteName}/{serverGroupName}/{webServiceName}/hostToAppMappings/{priority}">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="serverGroupName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="siteName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="priority" style="template" type="xs:int"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="webServiceName" style="template" type="xs:string"/>
+<method id="removeHostToApplicationMapping" name="DELETE"/>
+<method id="getHostToApplicationMapping" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+</resource>
+<resource path="{siteName}/{serverGroupName}/{webServiceName}/hostToAppMappings">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="serverGroupName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="siteName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="webServiceName" style="template" type="xs:string"/>
+<method id="getHostToApplicationMappings" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+</resource>
+<resource path="{siteName}/{serverGroupName}/{webServiceName}/krpInboundRules/{gatewayGroupName}/{aliasName}/{gatewayPorts}">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="aliasName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="serverGroupName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="gatewayGroupName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="gatewayPorts" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="siteName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="webServiceName" style="template" type="xs:string"/>
+<method id="createKrpItem" name="POST">
+<request>
+<representation mediaType="application/json"/>
+</request>
+</method>
+</resource>
+<resource path="{siteName}/{serverGroupName}/{webServiceName}/krpInboundRules/{gatewayGroupName}/{aliasName}/{gatewayPort}">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="aliasName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="serverGroupName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="gatewayGroupName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="siteName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="webServiceName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="gatewayPort" style="template" type="xs:int"/>
+<method id="updateKrpItem" name="PUT">
+<request>
+<representation mediaType="application/json"/>
+</request>
+</method>
+<method id="deleteKrpItem" name="DELETE"/>
+<method id="getKrpItem" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+</resource>
+<resource path="{siteName}/{serverGroupName}/{webServiceName}/krpInboundRules">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="serverGroupName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="siteName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="webServiceName" style="template" type="xs:string"/>
+<method id="getAllKrpItems" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+</resource>
+<resource path="{siteName}/{serverGroupName}/{webServiceName}/krpInboundRules/{gatewayGroupName}/{aliasName}/{gatewayPort}/krpOutboundRules/{priority}">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="aliasName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="serverGroupName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="gatewayGroupName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="siteName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="priority" style="template" type="xs:int"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="webServiceName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="gatewayPort" style="template" type="xs:int"/>
+<method id="createKrpRule" name="POST">
+<request>
+<representation mediaType="application/json"/>
+</request>
+</method>
+<method id="deleteKrpRule" name="DELETE"/>
+<method id="getKrpRule" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+<method id="updateKrpRule" name="PUT">
+<request>
+<representation mediaType="application/json"/>
+</request>
+</method>
+</resource>
+<resource path="{siteName}/{serverGroupName}/{webServiceName}/krpInboundRules/{gatewayGroupName}/{aliasName}/{gatewayPort}/krpOutboundRules">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="aliasName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="serverGroupName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="gatewayGroupName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="siteName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="webServiceName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="gatewayPort" style="template" type="xs:int"/>
+<method id="getKrpRules" name="GET">
+<request>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="internalIpHost" style="query" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="serverPort" style="query" type="xs:int"/>
+</request>
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+</resource>
+<resource path="/{siteName}/{serverGroupName}/{webServiceName}/sslCertificates/{sslKeyName}">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="serverGroupName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="siteName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="sslKeyName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="webServiceName" style="template" type="xs:string"/>
+<method id="uploadCertificate" name="POST">
+<request>
+<representation mediaType="application/json"/>
+</request>
+</method>
+<method id="removeCertificate" name="DELETE"/>
+<method id="getCertificate" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+</resource>
+<resource path="{siteName}/{serverGroupName}/{webServiceName}/forwardedConnections">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="serverGroupName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="siteName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="webServiceName" style="template" type="xs:string"/>
+<method id="updateForwardedConnections" name="PUT">
+<request>
+<representation mediaType="application/json"/>
+</request>
+</method>
+<method id="getForwardedConnections" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+</resource>
+<resource path="{siteName}/{serverGroupName}">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="serverGroupName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="siteName" style="template" type="xs:string"/>
+<method id="getAllWebServices" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+</resource>
+<resource path="/{siteName}/{serverGroupName}/{webServiceName}/sslCertificates">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="serverGroupName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="siteName" style="template" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="webServiceName" style="template" type="xs:string"/>
+<method id="getCertificates" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+</resource>
+</resource>
+<resource path="ipGroups">
+<resource path="{ipGroupName}/data">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="ipGroupName" style="template" type="xs:string"/>
+<method id="updateIpGroup" name="PUT">
+<request>
+<representation mediaType="application/json"/>
+</request>
+</method>
+<method id="getAllEntriesInGroup" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+</resource>
+<resource path="{ipGroupName}/clear">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="ipGroupName" style="template" type="xs:string"/>
+<method id="removeAllInIpGroup" name="DELETE"/>
+</resource>
+</resource>
+<resource path="firewallPolicies">
+<method id="getFirewallPolicies" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+<resource path="/{policyName}">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="policyName" style="template" type="xs:string"/>
+<method id="getFirewallPolicy" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+<method id="createFirewallPolicy" name="POST">
+<request>
+<representation mediaType="application/json"/>
+</request>
+</method>
+<method id="deleteFirewallPolicy" name="DELETE"/>
+<method id="updateFirewallPolicy" name="PUT">
+<request>
+<representation mediaType="application/json"/>
+</request>
+</method>
+</resource>
+</resource>
+<resource path="webApplicationCustomPolicies">
+<method id="getAllPolicies" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+<resource path="{policyName}">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="policyName" style="template" type="xs:string"/>
+<method id="createWebApplicationCustomPolicy" name="POST">
+<request>
+<representation mediaType="application/json"/>
+</request>
+</method>
+<method id="updateWebApplicationCustomPolicy" name="PUT">
+<request>
+<representation mediaType="application/json"/>
+</request>
+</method>
+<method id="getWebApplicationCustomPolicy" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+<method id="deleteWebApplicationCustomPolicy" name="DELETE"/>
+</resource>
+</resource>
+<resource path="tableGroups">
+<method id="getTableGroupList" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+<method id="createTableGroup" name="POST">
+<request>
+<representation mediaType="application/json"/>
+</request>
+</method>
+<resource path="/{tableGroupName}">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="tableGroupName" style="template" type="xs:string"/>
+<method id="removeTableGroup" name="DELETE"/>
+</resource>
+<resource path="{tableGroupName}/data">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="tableGroupName" style="template" type="xs:string"/>
+<method id="getTableGroupRecords" name="GET">
+<request>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="from" style="query" type="xs:int" default="1"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="to" style="query" type="xs:int" default="0"/>
+</request>
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+<method id="incrementalOperationsOnTableGroup" name="PUT">
+<request>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="overwrite" style="query" type="xs:boolean" default="true"/>
+<representation mediaType="application/json"/>
+</request>
+</method>
+<method id="updateTableGroupRecords" name="POST">
+<request>
+<representation mediaType="application/json"/>
+</request>
+</method>
+<method id="deleteAllTableGroupRecords" name="DELETE"/>
+</resource>
+</resource>
+</resource>
+<resource path="/v1/administration">
+<resource path="strict">
+<method id="setStrictMode" name="PUT">
+<request>
+<representation mediaType="application/json"/>
+</request>
+</method>
+</resource>
+<resource path="log/level">
+<method id="setLogLevel" name="PUT">
+<request>
+<representation mediaType="application/json"/>
+</request>
+</method>
+</resource>
+<resource path="/license">
+<method id="uploadLicenseFile" name="POST">
+<request>
+<representation mediaType="application/json"/>
+</request>
+</method>
+</resource>
+<resource path="/challenge">
+<method id="getChallenge" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+</resource>
+<resource path="/gatewayRegistrationToken">
+<method id="getGatewayRegistrationToken" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+</resource>
+<resource path="/version">
+<method id="getVersion" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+</resource>
+<resource path="/user/password/firsttime">
+<method id="getSessionId" name="POST">
+<request>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="Authorization" style="header" type="xs:string"/>
+</request>
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+</resource>
+</resource>
+<resource path="/v1/auth">
+<resource path="session">
+<method id="logout" name="DELETE"/>
+<method id="getSessionId" name="POST">
+<request>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="Authorization" style="header" type="xs:string"/>
+</request>
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+</resource>
+</resource>
+<resource path="/v1/management">
+<resource path="jobs">
+<method id="currentlyRunningJobs" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+<resource path="{JobId}/currentRun">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="JobId" style="template" type="xs:long"/>
+<method id="abortJobById" name="DELETE"/>
+</resource>
+</resource>
+</resource>
+<resource path="/experimental">
+<method id="getOptions" name="OPTIONS"/>
+<resource path="fam">
+<resource path="repository-users">
+<method id="findMatchingUsers" name="GET">
+<request>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="prefix" style="query" type="xs:string"/>
+</request>
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+</resource>
+<resource path="do-file-permissions">
+<method id="getPermissionContent" name="GET">
+<request>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="actionDoneById" style="query" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="fullPathJsonStr" style="query" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="objIdJsonStr" style="query" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="fileContextJsonStr" style="query" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="filterJsonStr" style="query" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="pagingJsonStr" style="query" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="sortingJsonStr" style="query" type="xs:string"/>
+</request>
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+<resource path="/{dataOwnerId}">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="dataOwnerId" style="template" type="xs:string"/>
+<method id="updateFilePermissions" name="PUT">
+<request>
+<representation mediaType="application/json"/>
+</request>
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+</resource>
+<resource path="/stat/{dataOwnerId}">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="dataOwnerId" style="template" type="xs:string"/>
+<method id="getProgressStatistics" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+</resource>
+<resource path="/signoff/{dataOwnerId}">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="dataOwnerId" style="template" type="xs:string"/>
+<method id="signOffReview" name="PUT">
+<request>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="signOffName" style="query" type="xs:string"/>
+</request>
+</method>
+</resource>
+</resource>
+<resource path="do-users">
+<resource path="/{dataOwnerName}">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="dataOwnerName" style="template" type="xs:string"/>
+<method id="getAuthenticatedUser" name="GET">
+<request>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="domain" style="query" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="password" style="query" type="xs:string"/>
+</request>
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+</resource>
+</resource>
+<resource path="do-users-in-group">
+<method id="getUsersInGroup" name="GET">
+<request>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="principalId" style="query" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="fileContext" style="query" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="recordsRange" style="query" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="sorting" style="query" type="xs:string"/>
+</request>
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+</resource>
+<resource path="do-tree-folder-obj">
+<method id="getFolderObjChildren" name="GET">
+<request>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="actionDoneById" style="query" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="fullPath" style="query" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="folderObj" style="query" type="xs:string"/>
+</request>
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+<resource path="/todo">
+<method id="getNodesTodoStatus" name="PUT">
+<request>
+<representation mediaType="application/json"/>
+</request>
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+</resource>
+</resource>
+<resource path="data-owner-folder">
+<method id="getObjectsInFolder" name="GET">
+<request>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="actionDoneById" style="query" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="folderObjectId" style="query" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="fileType" style="query" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="fullPath" style="query" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="fileContext" style="query" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="filter" style="query" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="recordsRange" style="query" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="sort" style="query" type="xs:string"/>
+</request>
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+<resource path="/file_path_info">
+<method id="getFileObjectPathInfo" name="GET">
+<request>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="objectId" style="query" type="xs:string"/>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="fileContext" style="query" type="xs:string"/>
+</request>
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+</resource>
+</resource>
+<resource path="do-application-data">
+<method id="getPermissionContent" name="GET">
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+</resource>
+<resource path="do-operation-navigation">
+<method id="getNextUnReviewedOperation" name="POST">
+<request>
+<representation mediaType="application/json"/>
+</request>
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+</resource>
+</resource>
+<resource path="internal"/>
+<resource path="plugin/{pluginName}">
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="pluginName" style="template" type="xs:string"/>
+</resource>
+<resource path="token">
+<method id="getToken" name="GET">
+<response>
+<representation mediaType="*/*"/>
+</response>
+</method>
+</resource>
+<resource path="/gateway">
+<resource path="/gatewayAlias">
+<method id="createAliasesForGateway" name="POST">
+<request>
+<representation mediaType="application/json"/>
+</request>
+</method>
+</resource>
+</resource>
+</resource>
+<resource path="/v1/status/alarms">
+<resource path="/active">
+<method id="getDeploymentActiveAlarms" name="GET">
+<request>
+<param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="deployment" style="query" type="xs:string"/>
+</request>
+<response>
+<representation mediaType="application/json"/>
+</response>
+</method>
+</resource>
+</resource>
+</resource>
+</resources>
+</application>
