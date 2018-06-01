@@ -196,10 +196,10 @@ function renderMigrationUserSitesResponse(response){
 
 function loadMigSiteDataCenters(){
     if (incap_migUserSites.index[incap_migUserSites.curIndex]!=undefined){
-        var siteObj = jQuery.extend(true, {}, incap_migUserSites.members[incap_migUserSites.index[incap_migUserSites.curIndex]]);
-        var postDataObj = jQuery.extend(true, {}, getUserAuthObj(siteObj.api_id));
-        postDataObj.site_id = siteObj.site_id;
-        makeIncapCall('/api/prov/v1/sites/dataCenters/list','POST',loadMigSiteDataCentersResponse,postDataObj,'set');
+            var siteObj = jQuery.extend(true, {}, incap_migUserSites.members[incap_migUserSites.index[incap_migUserSites.curIndex]]);
+            var postDataObj = jQuery.extend(true, {}, getUserAuthObj(siteObj.api_id));
+            postDataObj.site_id = siteObj.site_id;
+            makeIncapCall('/api/prov/v1/sites/dataCenters/list','POST',loadMigSiteDataCentersResponse,postDataObj,'set');
     } else {
         //$('#incap_migrationConfig').attr('disabled',false);
         $('#incap_migrationAction').attr('disabled',false);
