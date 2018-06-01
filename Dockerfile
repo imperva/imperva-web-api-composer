@@ -20,7 +20,10 @@ COPY files /
 
 # Configure image
 RUN set -xe \
-	&& chmod +x /etc/init.d/services/*
+	&& chmod +x /etc/init.d/services/* \
+	&& chmod 0600 /etc/apache2/certs/*.key \
+	&& chown apache:www-data /etc/apache2/certs/*.key \
+	&& chown apache:www-data -R /var/www/apps
 
 # Configure environment variables
 ENV IMAGE_NAME apitool
