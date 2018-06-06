@@ -3,7 +3,7 @@ body { font: 62.5% "Trebuchet MS", sans-serif; font-size: 10px;
 	background: url('../images/bg_grad.jpg') top repeat-x #5d5d5d; margin: 0; min-height: 100%; }
 #wrapper { margin: 0 auto; position: relative; width: 100%; }
 #header { background: url('../images/bg_head.png') top right no-repeat; padding: 25px 0px 0px 25px; height: 105px; }
-#logo { background: url('../images/imperva-logo.jpg') center center no-repeat #fff; width:300px; height:75px;  }
+#logo { background: url('../images/imperva-logo.png') center center no-repeat #fff; width:300px; height:75px;  }
 
 #dialog_link {padding: .4em 1em .4em 20px; text-decoration: none; position: relative;}
 #dialog_link span.ui-icon {margin: 0 5px 0 0;position: absolute;left: .2em;top: 50%;margin-top: -8px;}
