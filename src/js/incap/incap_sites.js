@@ -20,15 +20,19 @@ $().ready(function() {
 	$.each(jsonCustomRulesFilters, function(key,obj) {
 		jsonCustomRulesFiltersIndex.push(key);
 	});
-	$('#incapSitesAccountsList').change(function(){ loadSites(); });
+	$('#incapSitesAccountsList, #incapSitesAccountIDList').change(function(){ $('#incapSitesPageNum').val('0'); loadSites(); });
+	$('#incapSitesPageNum').change(function(){ loadSites(); });
 	initFilterDialog();
 });
 
 function loadSites(){
 	if ($('#incapSitesAccountsList').val()!='') {
 		$('#sitesContent').html('loading...');
-		$.gritter.add({ title: 'Status', text: "Loading sites for account id:"+$('#incapSitesAccountsList').val()});
 		var postDataObj = getUserAuthObj($('#incapSitesAccountsList').val());
+		postDataObj.account_id=$('#incapSitesAccountIDList').val();
+		postDataObj.page_size=$('#incapSitesPageSize').val();
+		postDataObj.page_num=$('#incapSitesPageNum').val();
+		$.gritter.add({ title: 'Status', text: 'Loading page '+postDataObj.page_num+' (page size: '+postDataObj.page_size+') on account_id: '+postDataObj.account_id});
 		makeIncapCall('/api/prov/v1/sites/list','POST',loadSitesResponse,postDataObj,'set');
 	}
 }
@@ -36,7 +40,7 @@ function loadSites(){
 function loadSitesResponse(response){
 	$.gritter.add({ title: 'Status', text: "Successfully retrieved sites, puling down ADR rules for each site."});
 	curSites.sites = {};
-	$.each(response.sites, function(i,site) { curSites.sites[site.site_id] = site; });
+	$.each(response.sites, function(i,site) { if (site.account_id==$('#incapSitesAccountIDList').val()) curSites.sites[site.site_id] = site; });
 	var str = '';
 	//$('#incapSitesAccountsList').val($('#account_id').val());
 	//str += '<h3>Sites for account ID: '+$('#account_id').val()+'</h3>';
@@ -127,6 +131,7 @@ function loadSitesResponse(response){
 	$('.copyAllAcls').unbind().click(function(){ 
 		createAllRulesSampleCURL(this.id,"/api/prov/v1/sites/configure/acl"); 
 	});
+	if (str=='') $('#sitesContent').html('<p>No sites found...</p>');
 }
 function loadRulesResponse(response,input_id) {
 	var confAry = input_id.split('_');

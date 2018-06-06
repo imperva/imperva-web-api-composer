@@ -202,6 +202,8 @@ ul.ui-autocomplete { overflow: scroll; max-height: 280px; height: auto; }
 #settingsNav td { margin: 1px; }
 .usrattr { border: 1px solid #fff ; }
 #settingsNav td.editable { border: 1px solid #D3D3D3 ; }
+#settingsNav #incap_site_groups_tbl .group_site_settings select { width: auto; }
+#settingsNav #incap_site_groups_tbl .group_site_settings label { text-align: right; width: 105px; display: inline-block; }
 #incap_policies fieldset { width: 97%; }
 #incap_ACL_WAF_rules .ACL_WAF_rule_definition,
 #incap_policies .policy_definition { word-break: break-all; }
@@ -246,3 +248,5 @@ td select.auto { width: auto; }
 #incap_eventLogs span { /*font-family: "Open Sans",arial,x-locale-body,sans-serif;*/ color:#999;}
 #incap_eventLogs span.code { font-family: Consolas,Monaco,'Andale Mono','Ubuntu Mono',monospace; color:#333; }
 #incap_eventLogs .res_error { color:red; font-weight: bold; }
+
+#incapSitesPageNum { width:auto; }

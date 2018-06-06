@@ -56,10 +56,15 @@ function renderMigrationToolbar_action(obj){
     var curMigAction = $('#incap_migrationActionType').val();
     var str = '<tr>';
     if (curMigAction=="INCAP_SITES") {
-        str += '<td><b>to </b></td>';
-        str += '<td><select class="auto" id="incap_migrationAction">'+mig_renderSelectOptions('INCAP_USERS')+'</select></td>';
-        str += '<td><b>\'s account on site </b></td>';
-        str += '<td><select class="auto" id="incap_migrationAction_sites">'+mig_renderSelectOptions('incap_migUserSites')+'</select></td>';
+        var curUserObj = getUserAuthObj($('#incapAccountsList').val());
+		str += '<td><b>to </b></td>';
+        str += '<td><select class="auto incap_account_select" id="incap_migrationAction">'+mig_renderSelectOptions('INCAP_USERS')+'</select></td>';
+        str += '<td><b> account ID </b></td>';
+        str += '<td><select class="auto" id="incap_migrationAction_accountIDList"><option value="'+curUserObj.account_id+'">Parent Account ('+curUserObj.account_id+')</option></select></td>';
+        str += '<td><b> on site </b></td>';
+        str += '<td><select class="auto" id="incap_migrationAction_sites"><option value="">loading...</option></select></td>';
+        str += '<td> - sites by page <select class="auto" id="incap_migrationAction_page_num">'+renderPageNumberOptions()+'</select>';
+        str += '<input name="incap_migrationAction_page_size" id="incap_migrationAction_page_size" value="'+incapDefConfig.sitePageSize+'" type="hidden" /></td>';
     } else if (curMigAction=='INCAP_USERS') {
         str += '<td><b> to all sites on </b></td>';
         str += '<td><select class="auto" id="incap_migrationAction">'+mig_renderSelectOptions(curMigAction)+'</select></td>';
@@ -75,15 +80,20 @@ function renderMigrationToolbar_action(obj){
     }
     str += '</tr>';
     $('#incap_migrationToolbar_action').html(str);
-    
+
     $('#incap_migrationAction').unbind();
+    $('#incap_migrationAction_accountIDList').unbind();
     if ($('#incap_migrationActionType').val()=='INCAP_SITES') {
-        $('#incap_migrationAction').change(function(){ renderMigrationUserSites(); renderIncapPolicyRuleTblHTML(); });
-        if (obj!=undefined) {
-            if (obj.id=='incap_migrationActionType' && $('#incap_migrationAction_sites').val()=='') { renderMigrationUserSites(); }
-        } else if ($('#incap_migrationAction_sites').val()=='') {
-            renderMigrationUserSites(); 
-        }
+        $('#incap_migrationAction').change(function(){ loadSubAccounts(this); });
+        $('#incap_migrationAction_accountIDList').change(function(){ $('#incap_migrationAction_page_num').val('0'); renderMigrationUserSites(); });
+        $('#incap_migrationAction_page_num').change(function(){ renderMigrationUserSites(); });
+        
+        //$('#incap_migrationAction').change(function(){ renderMigrationUserSites(); renderIncapPolicyRuleTblHTML(); });
+        // if (obj!=undefined) {
+        //     if (obj.id=='incap_migrationActionType' && $('#incap_migrationAction_sites').val()=='') { renderMigrationUserSites(); }
+        // } else if ($('#incap_migrationAction_sites').val()=='') {
+        //     renderMigrationUserSites(); 
+        // }
     } else if ($('#incap_migrationActionType').val()=='INCAP_SITE_GROUPS') {
         $('#incap_migrationAction').change(function(){ renderSiteGroupStats(); renderIncapPolicyRuleTblHTML(); });
         renderSiteGroupStats();
@@ -156,17 +166,22 @@ function mig_renderSelectOptions(curMigConfig){
 function renderMigrationUserSites(){
     // //$('#incap_migrationConfig').attr('disabled','disabled');
     $('#incap_migrationAction').attr('disabled','disabled');
+    $('#incap_migrationAction_accountIDList, #incap_migrationAction_page_num').attr('disabled','disabled');
     $('#incap_migrationActionType').attr('disabled','disabled');    
     if (!incap_migUserSites.processing) {        
         INCAP_USERS = JSON.parse(localStorage.getItem('INCAP_USERS'));
         if ($("#incap_migrationAction").val()!='') {
             var curConfig = INCAP_USERS[$("#incap_migrationAction").val()];
             delete curConfig.user_name;
+            curConfig.account_id = $('#incap_migrationAction_accountIDList').val();
+            curConfig.page_size = $('#incap_migrationAction_page_size').val();
+            curConfig.page_num = $('#incap_migrationAction_page_num').val();
             //$('#incap_migrationConfig').attr('disabled','disabled');
             $('#incap_migrationAction').attr('disabled','disabled');
             $('#incap_migrationActionType').attr('disabled','disabled');
             $('#runMigration').addClass('disabled').unbind();
-            $("#incap_migrationAction_sites").html('<option value="">loading...</option>');
+            $('#incap_migrationAction_accountIDList, #incap_migrationAction_page_num').attr('disabled','disabled');
+            $("#incap_migrationAction_sites").html('<option value="">loading...</option>').attr('disabled','disabled');;
             $.gritter.add({ title: 'Status', text: "Loading sites for api_id:"+curConfig.api_id});
             incap_migUserSites = {"index":[],"members":{},"processing":true};
             makeIncapCall('/api/prov/v1/sites/list','POST',renderMigrationUserSitesResponse,curConfig,'set');
@@ -178,15 +193,17 @@ function renderMigrationUserSitesResponse(response){
     var api_id = $('#incap_migrationAction').val();
     //incap_migUserSites.index = [];    
     $.each(response.sites, function(i,siteObj) { 
-        var minSiteObj = {
-            "site_id":siteObj.site_id,
-            "domain":siteObj.domain,
-            "account_id":siteObj.account_id,
-            "api_id":api_id,
-            "DCs":{}
+        if (siteObj.account_id==$('#incap_migrationAction_accountIDList').val()) {
+            var minSiteObj = {
+                "site_id":siteObj.site_id,
+                "domain":siteObj.domain,
+                "account_id":siteObj.account_id,
+                "api_id":api_id,
+                "DCs":{}
+            }
+            incap_migUserSites.index.push(siteObj.domain);
+            incap_migUserSites.members[siteObj.domain] = minSiteObj;
         }
-        incap_migUserSites.index.push(siteObj.domain);
-        incap_migUserSites.members[siteObj.domain] = minSiteObj;
     });
     //$.each(incap_availSites.members, function(domain,siteObj) {  });
     incap_migUserSites.curIndex=0;
@@ -202,15 +219,26 @@ function loadMigSiteDataCenters(){
             makeIncapCall('/api/prov/v1/sites/dataCenters/list','POST',loadMigSiteDataCentersResponse,postDataObj,'set');
     } else {
         //$('#incap_migrationConfig').attr('disabled',false);
-        $('#incap_migrationAction').attr('disabled',false);
         $('#incap_migrationActionType').attr('disabled',false);
+        $('#incap_migrationAction').attr('disabled',false);
+        $('#incap_migrationAction_accountIDList, #incap_migrationAction_page_num').attr('disabled',false);
+        $("#incap_migrationAction_sites").attr('disabled',false);
         $('#runMigration').button().removeClass('disabled').unbind().click(function(){ loadMigrationConfigs(); });
         $("#incap_migrationAction_sites").html('');
         incap_migUserSites.index.sort();
-        $.each(incap_migUserSites.index, function(i,domain) {
-            var siteObj = incap_migUserSites.members[domain];
-            $("#incap_migrationAction_sites").append('<option title="account_id: '+siteObj.account_id+' | api_id: '+siteObj.api_id+' | site_id: '+siteObj.site_id+' | domain: '+domain+'" value="'+siteObj.account_id+';|;'+siteObj.api_id+';|;'+siteObj.site_id+';|;'+domain+'">'+domain+' ('+siteObj.site_id+')</option>');  
-        });
+        if (incap_migUserSites.index.length>0) {
+            $.each(incap_migUserSites.index, function(i,domain) {
+                var siteObj = incap_migUserSites.members[domain];
+                $("#incap_migrationAction_sites").append('<option title="account_id: '+siteObj.account_id+' | api_id: '+siteObj.api_id+' | site_id: '+siteObj.site_id+' | domain: '+domain+'" value="'+siteObj.account_id+';|;'+siteObj.api_id+';|;'+siteObj.site_id+';|;'+domain+'">'+domain+' ('+siteObj.site_id+')</option>');  
+            });
+            $('#runMigration').button().unbind().click(function(){ loadMigrationConfigs(); });	
+            if (incap_migUserSites.index.length>5) {
+                // todo
+            }
+        } else {
+            $('#runMigration').addClass('disabled').unbind();
+            $("#incap_migrationAction_sites").append('<option value="">No sites found</option>');  
+        }
         incap_migUserSites.processing=false;
         renderIncapPolicyRuleTblHTML();
     }

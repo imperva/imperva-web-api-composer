@@ -214,33 +214,29 @@ $.extend($.gritter.options, {
 						<tr>
 							<td valign="top" style="padding: 0px 10px 0px 0px;">
 								<fieldset>
-									<legend>Login Credentials</legend>
+									<legend>Request Configs</legend>
 									<table class="tableColL">
-										<tr id="incapAccountsListtr"><td align="right"><label for="incapAccountsList">API Accounts: </label></td>
-											<td><select name="incapAccountsList" id="incapAccountsList"></select></td></tr>
-										<tr id="user_nametr"><td align="right"><label for="user_name">Display Name: </label></td>
-											<td><input id="user_name" style="width: 200px;" value="" type="text" /></td></tr>
+										<tr id="incapAccountsListtr">
+											<td align="right"><label for="incapAccountsList">API ID: </label></td>
+											<td><select name="incapAccountsList" class="incap_account_select" id="incapAccountsList"></select></td>
+										</tr>
+										<tr id="incapAccountIDListtr">
+											<td align="right"><label for="incapAccountIDList">Account ID: </label></td>
+											<td><select name="incapAccountIDList" class="incap_account_ID_select" id="incapAccountIDList"></select></td>
+										</tr>
+										<!--tr id="user_nametr"><td align="right"><label for="user_name">Display Name: </label></td>
+											<td><input id="user_name" class="incap_account_input" style="width: 200px;" value="" type="text" /></td></tr>
 										<tr id="account_idtr"><td align="right"><label for="account_id">Account ID: </label></td>
-											<td><input id="account_id" style="width: 200px;" value="" type="text" /></td></tr>
+											<td><select name="account_id" class="incap_account_select" id="account_id"></select></td></tr>
 										<tr id="api_idtr"><td align="right"><label for="api_id">API ID: </label></td>
 											<td><input id="api_id" style="width: 200px;" value="" type="text" /></td></tr>
 										<tr id="api_keytr"><td align="right"><label for="api_key">API Key: </label></td>
 											<td><input id="api_key" style="width: 200px;" value="" type="password" /></td></tr>
-										<tr><td align="right"></td>
-											<td><!--a href="javascript:toggleManageCredentials();" id="manageCredentialsBtn">+ <span>Manage Credentials</span></a-->
-												<div id="manageCredentials">
-													<input id="incapSaveCredentials" value="Save as new API user" type="submit" title="Add these credentials to the list for reuse" /><br />
-													<input id="incapDeleteCredentials" value="Delete this API user" type="submit" title="Remove these credentials by Account ID from the list" /><br />
-													<input id="incapDeleteAllCredentials" value="Delete all API users" type="submit" title="Remove all saved credentials from the list" /><br />
-													<input id="incapBulkImportCredentials" value="Bulk import API users" type="submit" title="Bulk import credentials from a list" />
-												</div>
-											</td>
-										</tr>
 									</table>
 								</fieldset>
 								<fieldset>
 									<legend>Request Configs</legend>
-									<table class="tableColL">
+									<table class="tableColL"-->
 										<tr><td align="right"><label for="incapServer">Server: </label></td>
 										  <td><input id="incapServer" style="width: 200px;" value="" type="text" readonly="readonly" /></td></tr>
 										<tr>
@@ -290,13 +286,13 @@ $.extend($.gritter.options, {
 							</td>
 							<td valign="top">
 								<label for="incaprequestUrl">Request URL: </label><br clear="all" />
-								<textarea id="incapRequestUrl" name="incapRequestUrl"></textarea><br clear="all" /><br />
+								<textarea id="incapRequestUrl" style="height: 40px;" name="incapRequestUrl"></textarea><br clear="all" /><br />
 								<span style="float: right;">
 									<label for="incap_configMaskSecretKey">Mask secret key: </label>
 									<input id="incap_configMaskSecretKey" type="checkbox" checked="checked" value="maskSecretKey" />
-								</span> 
+								</span>
 								<label for="incapData">Request Data: </label><span id="incaprequestdataspan"></span><br clear="all" />
-								<textarea id="incapData" style="height: 60px;"></textarea><br clear="all" /><br clear="all" />
+								<textarea id="incapData" style="height: 60px;" ></textarea><br clear="all" /><br clear="all" />
 								<label for="incapCurlExample">CURL Example: </label><span id="incapcurlexamplespan"></span><br clear="all" />
 								<textarea id="incapCurlExample" style="height: 60px;"></textarea><br clear="all" /><br clear="all" />
 								<label for="incapResult">Response:</label><br clear="all" />
@@ -309,7 +305,21 @@ $.extend($.gritter.options, {
 				</div>
 				<div id="incapsites">
 					<a href="javascript:void(0);" class="button" id="incap_sites_refresh">Refresh Sites</a>
-					<p><label for="incapSitesAccountsList">API Accouts:</label> <select name="incapSitesAccountsList" id="incapSitesAccountsList"></select></p>
+					<table><tr>
+						<td>
+							<label for="incapSitesAccountsList">API ID:</label>
+							<select name="incapSitesAccountsList" class="incap_account_select" id="incapSitesAccountsList"></select>
+						</td>
+						<td id="incapSitesAccountIDListTd">
+							<label for="incapSitesAccountIDList">Account ID:</label>
+							<select name="incapSitesAccountIDList" class="incap_account_ID_select" id="incapSitesAccountIDList"></select>
+						</td>
+						<td id="incapSitesPageNumTd">
+							<label for="incapSitesPageNum">Sites by page: </label>
+							<select name="incapSitesPageNum" id="incapSitesPageNum" class="page_num"></select>
+							<input name="incapSitesPageSize" id="incapSitesPageSize" class="page_size" type="hidden" value="100" />
+						</td>
+					</tr></table>
 					<div id="sitesContent"></div>
 				</div>
 				<div id="migrationTools">
@@ -345,12 +355,12 @@ $.extend($.gritter.options, {
 						</div><br clear="all" />
 					</div>
 					<div class="ui-widget-content ui-corner-bottom" style="padding: 0px 15px 0px 15px;">
-						<fieldset>
+						<fieldset style="padding: 0px 5px 10px 15px;">
 							<legend>Migration Options</legend>
 							<div style="float: right;">
 								<label class="header" for="incap_migrationConfigMaskSecretKey">Mask secret key in event logs: </label>
 								<input id="incap_migrationConfigMaskSecretKey" type="checkbox" checked="checked" value="maskSecretKey" />
-							</div>
+							</div><br clear="all" />
 							<table id="incap_migrationToolbar_config"></table>
 							<table id="incap_migrationToolbar_action"></table>
 							<div id="incap_migrationPolicyRuleConfigDiv"></div>
@@ -549,10 +559,22 @@ $.extend($.gritter.options, {
 													</td>
 												</tr>
 												<tr>
-													<td colspan="3">
+													<td colspan="3" class="group_site_settings">
 														<label for="incap_site_group_account_list">Load Sites from: </label>
-														<select name="incap_site_group_account_list" id="incap_site_group_account_list" type="text">
-														</select>
+														<select name="incap_site_group_account_list" class="incap_account_select" id="incap_site_group_account_list" type="text"></select>
+													</td>
+												</tr>
+												<tr>
+													<td colspan="3" class="group_site_settings">
+														<label for="incap_site_group_account_ID_list">From Account: </label>
+														<select name="incap_site_group_account_ID_list" class="incap_account_ID_select" id="incap_site_group_account_ID_list" type="text"></select>
+													</td>
+												</tr>
+												<tr>
+													<td colspan="3" class="group_site_settings">
+														<label for="incap_site_group_page_num">Sites by page: </label>
+														<select name="incap_site_group_page_num" id="incap_site_group_page_num" class="page_num"></select>
+														<input name="incap_site_group_page_size" id="incap_site_group_page_size" class="page_size" type="hidden" value="100" />
 													</td>
 												</tr>
 												<tr>

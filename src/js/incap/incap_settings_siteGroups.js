@@ -2,6 +2,17 @@
 var incap_availSites = {"index":[],"members":{},"cur_account_sites":{},"processing":false};
 var incap_selSites = {"index":[],"members":{}};
 
+$().ready(function() {
+    $('#incap_site_group_account_ID_list').change(function(){ 
+        $('#incap_site_group_page_num').val('0'); 
+        renderSiteGroupSites(); 
+    });    
+    $('#incap_site_group_page_num').change(function(){ 
+        $('#incap_site_group_account_ID_list').attr('disabled','disabled'); 
+        renderSiteGroupSites(); 
+    });
+});
+
 // Render the current list of sites to select from based on what API key is displayed in the incap_site_group_account_list select
 function renderSiteGroupSites(){
     if (!incap_availSites.processing) {
@@ -10,7 +21,10 @@ function renderSiteGroupSites(){
         if ($("#incap_site_group_account_list").val()!='') {
             var curConfig = INCAP_USERS[$("#incap_site_group_account_list").val()];
             delete curConfig.user_name;
-            $("#avail_incap_group_sites").html('<option value="">loading...</option>');
+            curConfig.page_size = $('#incap_site_group_page_size').val();
+            curConfig.page_num = $('#incap_site_group_page_num').val();
+            curConfig.account_id = $('#incap_site_group_account_ID_list').val();
+            $("#avail_incap_group_sites").html('<option value="">loading...</option>').attr('disabled',false);
             $('#moveIncapSiteGroupMemberRight').unbind();
             $('#moveIncapSiteGroupMemberLeft').unbind();
             $('#incap_site_groups_list').attr('disabled','disabled');
@@ -27,7 +41,7 @@ function renderSiteGroupSitesResponse(response){
     $("#avail_incap_group_sites").html('');
     $('#moveIncapSiteGroupMemberRight').click(function(){ moveIncapSiteGroupMemberRight() });
     $('#moveIncapSiteGroupMemberLeft').click(function(){ moveIncapSiteGroupMemberLeft() });
-    $('#incap_site_groups_list').attr('disabled',false);
+    $('#incap_site_groups_list, #incap_site_group_account_ID_list').attr('disabled',false);
     $('#incap_site_group_account_list').attr('disabled',false);
 
     $.each(response.sites, function(i,siteObj) { 
@@ -39,17 +53,21 @@ function renderSiteGroupSitesResponse(response){
             "DCs":{}
         }
         incap_availSites.cur_account_sites[siteObj.account_id+"_"+siteObj.site_id] = true;
-        if (incap_selSites.members[siteObj.domain]==undefined) { 
+        if (incap_selSites.members[siteObj.domain]==undefined && siteObj.account_id==$('#incap_site_group_account_ID_list').val()) { 
             incap_availSites.index.push(siteObj.domain);
             incap_availSites.members[siteObj.domain] = minSiteObj;
         }
     });
     //$.each(incap_availSites.members, function(domain,siteObj) {  });
-    incap_availSites.index.sort();
-    $.each(incap_availSites.index, function(i,domain) {  
-        var siteObj = incap_availSites.members[domain];
-        $("#avail_incap_group_sites").append('<option title="api_id: '+siteObj.api_id+' | account_id: '+siteObj.account_id+' | site_id: '+siteObj.site_id+' | domain: '+domain+'" value="'+domain+'">'+domain+' ('+siteObj.site_id+')</option>');  
-    });
+    if (incap_availSites.index.length>0) {
+        incap_availSites.index.sort();
+        $.each(incap_availSites.index, function(i,domain) {  
+            var siteObj = incap_availSites.members[domain];
+            $("#avail_incap_group_sites").append('<option title="api_id: '+siteObj.api_id+' | account_id: '+siteObj.account_id+' | site_id: '+siteObj.site_id+' | domain: '+domain+'" value="'+domain+'">'+domain+' ('+siteObj.site_id+')</option>');  
+        });
+    } else {
+        $("#avail_incap_group_sites").html('<option>No sites for accout ('+$('#incap_site_group_account_ID_list').val()+') found on this page of sites...</option>').attr('disabled','disabled');
+    }
     incap_availSites.processing=false;
 }
 // Render list of available site groups from INCAP_SITE_GROUPS

@@ -1,7 +1,7 @@
 #
 # Dockerfile for Imperva Web API Tool
 #
-FROM gsateam/alpine:3.7
+FROM impervainc/alpine:3.7
 LABEL maintainer="Imperva GSA Team <gsa-team@imperva.com>"
 
 # Install packages
@@ -20,16 +20,13 @@ COPY files /
 
 # Configure image
 RUN set -xe \
-	&& chmod +x /etc/init.d/services/*
+	&& chmod +x /etc/init.d/services/* \
+	&& chmod 0600 /etc/apache2/certs/*.key \
+	&& chown apache:www-data /etc/apache2/certs/*.key \
+	&& chown apache:www-data -R /var/www/apps
 
 # Configure environment variables
 ENV IMAGE_NAME apitool
-
-# Export volumes
-#VOLUME [  ]
-
-# Set entry point
-#ENTRYPOINT [ "/usr/local/sbin/dumb-init", "--" ]
 
 # Configure default command
 CMD [ "/init.sh", "/usr/sbin/httpd", "-DFOREGROUND" ]

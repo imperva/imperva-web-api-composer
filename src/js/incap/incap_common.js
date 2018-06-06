@@ -17,6 +17,7 @@ $().ready(function() {
 			copyElement("incap_rules",incapSampleRules[confAry[0]][confAry[1]]);
 		}); 
 	});	
+	$('#incapServer').val(incapDefConfig.server);
 	$('#incapActions').change(function(){ changeAction(); });
 	$('#incapMethod').change(function(){
 		renderJSONParamsHTML();
@@ -33,7 +34,7 @@ $().ready(function() {
 
 	$('#incap_configMaskSecretKey').click(function(){ updateJSON(); });
 	$('#incapJSONparams input, #incapJSONparams textarea').blur(function(){ updateJSON(); });
-	$('#incapJSONparams select').change(function(){ updateJSON(); });
+	$('#incapJSONparams select, #incapAccountIDList').change(function(){ updateJSON(); });
 	//$('#incapRequestUrl').keyup(function(){ checkForm(); });
 	$('#incapServer').blur(function(){ updateReqURL(); });
 	$('#insertDestCreds').button().click(function(){
@@ -43,14 +44,17 @@ $().ready(function() {
 		if ($('#dest_api_key').val().trim()!='') curstr = curstr.replace(/your_api_key_here/g,$('#dest_api_key').val().trim());
 		$('#bulk_curl_examples').html(curstr);
 	});	
+	$('.page_num').html(renderPageNumberOptions());
+	$('.page_size').val(incapDefConfig.sitePageSize);
 	incapLoadAll();
 });
 
 // Main AJAX function to proxy API calls
 function makeIncapCall(action,method,callback,postDataObj,input_id) {
 	if ((input_id==undefined) || postDataObj==undefined) {
+		var postDataObj_tmp = getUserAuthObj($('#incapAccountsList').val());
 		postDataObj = JSON.parse($('#incapData').val());
-		if (postDataObj.api_key.substr(0,10)=='**********') postDataObj.api_key = $('#api_key').val();
+		if (postDataObj.api_key.substr(0,10)=='**********') postDataObj.api_key = postDataObj_tmp.api_key;
 		$('#incapResult').val('processing...');
 	} else if (input_id=='dest') {
 		postDataObj['api_key'] = $('#dest_api_key').val();
@@ -58,8 +62,9 @@ function makeIncapCall(action,method,callback,postDataObj,input_id) {
 	} else if (input_id=='set') {
 		// do nothing as the credentials are passed into the PostDataObj as an input to the function
 	} else {
-		postDataObj['api_key'] = $('#api_key').val();
-		postDataObj['api_id'] = $('#api_id').val();		
+		var postDataObj_tmp = getUserAuthObj($('#incapAccountsList').val());
+		postDataObj['api_key'] = postDataObj_tmp.api_key;
+		postDataObj['api_id'] = postDataObj_tmp.api_id;
 	}
 	var requestUrl = $('#incapServer').val()+$('#incapActions').val();
 	if (action!=undefined) {
@@ -116,29 +121,39 @@ function changeAction() {
 	updateJSON();
 }
 function updateJSON(){
-	var reqObj = {};
+	toggleDcId();
+	//var reqObj = {};
+	var reqObj = getUserAuthObj($('#incapAccountsList').val());
+	delete reqObj.account_id;
+	// reqObj['api_key'] = userObj_tmp.api_key;
+	// reqObj['api_id'] = userObj_tmp.api_id;
 	if (incapApiActions[$('#incapActions :selected').parent().attr('label')][$("#incapActions").val()] != undefined) {
 		$.each(incapApiActions[$('#incapActions :selected').parent().attr('label')][$("#incapActions").val()], function(i,paramName) {
+			if (incapApiActions) 
 			if (incapJsonParamMapping[paramName]!=undefined) {
-				var param = incapJsonParamMapping[paramName];
-				if (incapJsonParamMapping[paramName].values!=undefined && $('#'+paramName).val()!=null) {
-					if (typeof($('#'+paramName).val())=='object') {
-						reqObj[paramName] = $('#'+paramName).val().join();
-						//reqObj[paramName] = JSON.stringify($('#'+paramName).val());
-					} else if ($('#'+paramName).val().trim()!='') {
-						//if (paramName=='api_id' || paramName=='api_key' || paramName=='account_id') reqObj[paramName] = $('#'+paramName).val();
-						if (param.type=='list') {
-							reqObj[paramName] = $('#'+paramName).val();
-							//reqObj[paramName] = param.values.substr(1,(param.values.length-2)).split(',');
-						} else if (param.type=='obj') {
-							reqObj[paramName] = JSON.parse($('#'+paramName).val());
-						} else if (param.type=='int') {
-							reqObj[paramName] = parseInt($('#'+paramName).val(),10);
-						} else if (param.type=='boolean') {
-							var boolVal = false; if ($('#'+paramName).val()=='true') boolVal = true;
-							reqObj[paramName] = boolVal;
-						} else {
-							reqObj[paramName] = $('#'+paramName).val();
+				if (paramName=='account_id') {
+					reqObj['account_id'] = $('#incapAccountIDList').val();
+				} else {
+					var param = incapJsonParamMapping[paramName];
+					if (incapJsonParamMapping[paramName].values!=undefined && $('#'+paramName).val()!=null) {
+						if (typeof($('#'+paramName).val())=='object') {
+							reqObj[paramName] = $('#'+paramName).val().join();
+							//reqObj[paramName] = JSON.stringify($('#'+paramName).val());
+						} else if ($('#'+paramName).val().trim()!='') {
+							//if (paramName=='api_id' || paramName=='api_key' || paramName=='account_id') reqObj[paramName] = $('#'+paramName).val();
+							if (param.type=='list') {
+								reqObj[paramName] = $('#'+paramName).val();
+								//reqObj[paramName] = param.values.substr(1,(param.values.length-2)).split(',');
+							} else if (param.type=='obj') {
+								reqObj[paramName] = JSON.parse($('#'+paramName).val());
+							} else if (param.type=='int') {
+								reqObj[paramName] = parseInt($('#'+paramName).val(),10);
+							} else if (param.type=='boolean') {
+								var boolVal = false; if ($('#'+paramName).val()=='true') boolVal = true;
+								reqObj[paramName] = boolVal;
+							} else {
+								reqObj[paramName] = $('#'+paramName).val();
+							}
 						}
 					}
 				}
@@ -151,9 +166,9 @@ function updateJSON(){
 	$('#incapJSONparams input').unbind().blur(function(){ updateJSON(); });
 	$('#incapJSONparams textarea').unbind().blur(function(){ updateJSON(); });
 	$('#incapJSONparams select').unbind().change(function(){ updateJSON(); });
-	if ($('#incapActions').val()=='/api/prov/v1/sites/incapRules/add' || $('#incapActions').val()=='/api/prov/v1/sites/incapRules/edit') {
-		$('#action').unbind().change(function(){ toggleDcId(); updateJSON(); });
-	}
+	//if ($('#incapActions').val()=='/api/prov/v1/sites/incapRules/add' || $('#incapActions').val()=='/api/prov/v1/sites/incapRules/edit') {
+		//$('#action').unbind().change(function(){ toggleDcId(); updateJSON(); });
+	//}
 	$.each(incapGetObjectActionMapping, function(input_id,inputObj) {
 		if ($('#'+input_id).length==1) $('#'+input_id).unbind().change(function(){ loadParamChildValues(this.id); updateJSON(); });
 	});
@@ -184,102 +199,101 @@ function loadCredentials(){
 	if (localStorage.getItem('INCAP_USERS')==null) localStorage.setItem('INCAP_USERS','{}');
 	INCAP_USERS = JSON.parse(localStorage.getItem('INCAP_USERS'));
 	$("#incap_site_group_account_list").html('');
-	$("#incapAccountsList").html('');
-	$("#destIncapAccountsList").html('');
-	$("#incapSitesAccountsList").html('');
-	$('#user_name, #account_id, #api_id, #api_key').removeClass('highlight').attr('placeholder','');
+	// $("#incapAccountsList").html('');
+	// $("#incapSitesAccountsList").html('');
+	$('.incap_account_select').html('').removeClass('highlight');
+	$('.incap_account_input').val('').removeClass('highlight').attr('placeholder','');
 	$('#incap_add_new_user').removeClass('highlight');
+	// .incap_account_select = #incap_site_group_account_list, #incapAccountsList, #incapSitesAccountsList, #account_id
+	// .incap_account_ID_select = #incapAccountIDList, #incapSitesAccountIDList
+	// .incap_account_input = #user_name, #api_id, #api_key
 	$.each(INCAP_USERS, function(index_id,configObj) {
-		$("#incap_site_group_account_list").append('<option title="account_id: '+configObj.account_id+' | api_id: '+configObj.api_id+'" value="'+index_id+'">'+configObj.user_name+' ('+configObj.api_id+')</option>'); 
-		$("#incapAccountsList").append('<option title="account_id: '+configObj.account_id+' | api_id: '+configObj.api_id+'" value="'+index_id+'">'+configObj.user_name+' ('+configObj.api_id+')</option>'); 
-		$("#destIncapAccountsList").append('<option title="account_id: '+configObj.account_id+' | api_id: '+configObj.api_id+'" value="'+index_id+'">'+configObj.user_name+' ('+configObj.api_id+')</option>'); 
-		$("#incapSitesAccountsList").append('<option title="account_id: '+configObj.account_id+' | api_id: '+configObj.api_id+'" value="'+index_id+'">'+configObj.user_name+' ('+configObj.api_id+')</option>'); 
+		$(".incap_account_select").append('<option title="account_id: '+configObj.account_id+' | api_id: '+configObj.api_id+'" value="'+index_id+'">'+configObj.user_name+' ('+configObj.api_id+')</option>'); 
 	});
 	if ($('#incapAccountsList').children('option').length==0) {
-		$("#incap_site_group_account_list").html('<option value="">Add users under Settings tab</option>');
-		$("#incapAccountsList").html('<option value="">Add users under Settings tab</option>');
-		$("#destIncapAccountsList").html('<option value="">Add users under Settings tab</option>');
-		$("#incapSitesAccountsList").html('<option value="">Add users under Settings tab</option>');
-		$('#user_name, #account_id, #api_id, #api_key').addClass('highlight').attr('placeholder','Add users under Settings tab');
+		$(".incap_account_select").addClass('highlight').html('<option value="">Add users under Settings tab</option>');
+		$(".incap_account_ID_select").addClass('highlight').html('<option value="">Add users under Settings tab</option>');
+		$('.incap_account_input').addClass('highlight').attr('placeholder','Add users under Settings tab');
 		$('#incap_add_new_user').addClass('highlight');
 	} else {
-		$("#incap_site_group_account_list").unbind().change(function(){ renderSiteGroupSites(); });
-		$("#incapAccountsList").unbind().change(function(){ renderAuth(); });
+		//$("#incap_site_group_account_list").unbind().change(function(){ renderSiteGroupSites(); });
+		//$("#incapAccountsList").unbind().change(function(){ renderAuth(); });
+		$(".incap_account_select").unbind().change(function(){ loadSubAccounts(this); });
+		$.each($(".incap_account_select"), function(i,obj) { loadSubAccounts(obj); });
+		//$(".incap_account_ID_select").html('<option value="'+INCAP_USERS[$('#incapAccountsList').val()].account_id+'">User Account ('+INCAP_USERS[$('#incapAccountsList').val()].account_id+')</option>');
 		//$("#destIncapAccountsList").unbind().change(function(){ renderDestAuth(); });
 		//$("#incapSitesAccountsList").unbind().change(function(){ renderDestAuth(); });
 	}
 	renderAuth();
-	//renderDestAuth();
 	renderSiteGroupSites();
 	renderMigrationToolbar();
 	loadSites();
 }
 
-/*function toggleManageCredentials(){
-	if ($('#manageCredentials').css('display')=='none'){
-		$('#manageCredentialsBtn').html('- <span>Manage Credentials</span>');
-		$('#manageCredentials').css('display','block');
+/* Series of call back functions to load sub account IDs in the right location when changing API_KEYs on the UI */
+function loadSubAccounts(obj){
+	var postDataObj = getUserAuthObj(obj.value);
+	if (obj.id=='incapAccountsList') { // API Client
+		$('#incapAccountIDList').html('<option value="'+postDataObj.account_id+'">loading...</option>');
+		//$('#get the page num id later ').val('0');
+		makeIncapCall('/api/prov/v1/accounts/listSubAccounts','POST',loadSubAccountsResponse_APIClient,postDataObj,'set');
+	} else if (obj.id=='incapSitesAccountsList') { // Sites
+		$('#incapSitesAccountIDList').html('<option value="'+postDataObj.account_id+'">loading...</option>');
+		$('#incapSitesPageNum').val('0');
+		makeIncapCall('/api/prov/v1/accounts/listSubAccounts','POST',loadSubAccountsResponse_Sites,postDataObj,'set');
+	} else if (obj.id=='incap_migrationAction') { // Migration
+		$('#incap_migrationAction').attr('disabled','disabled');
+		$('#incap_migrationAction_accountIDList').html('<option value="'+postDataObj.account_id+'">loading...</option>').attr('disabled','disabled');;
+    	$("#incap_migrationAction_sites").html('<option value="">loading...</option>').attr('disabled','disabled');
+		$('#incap_migrationAction_page_num').val('0');
+		makeIncapCall('/api/prov/v1/accounts/listSubAccounts','POST',loadSubAccountsResponse_Migration,postDataObj,'set');
+	} else if (obj.id=='incap_site_group_account_list') { // Site Group
+		$('#incap_site_group_account_ID_list').html('<option value="'+postDataObj.account_id+'">loading...</option>').attr('disabled','disabled');
+		$('#incap_site_group_page_num').val('0');
+		$("#avail_incap_group_sites").html('<option value="">loading...</option>');
+		makeIncapCall('/api/prov/v1/accounts/listSubAccounts','POST',loadSubAccountsResponse_SiteGroup,postDataObj,'set');
+	}
+}
+
+function loadSubAccountsResponse_APIClient(response){ 
+	renderSubGroupOptionsHTML(response.resultList,'#incapAccountIDList'); renderAuth(); 
+}
+
+function loadSubAccountsResponse_Sites(response){
+	renderSubGroupOptionsHTML(response.resultList,'#incapSitesAccountIDList');
+	loadSites();
+}
+
+function loadSubAccountsResponse_Migration(response){
+	renderSubGroupOptionsHTML(response.resultList,'#incap_migrationAction_accountIDList');
+	// if (obj!=undefined) {
+	// 	if (obj.id=='incap_migrationActionType' && $('#incap_migrationAction_sites').val()=='') { renderMigrationUserSites(); }
+	// } else if ($('#incap_migrationAction_sites').val()=='') {
+		renderMigrationUserSites(); 
+	// }
+}
+
+function loadSubAccountsResponse_SiteGroup(response){
+	renderSubGroupOptionsHTML(response.resultList,'#incap_site_group_account_ID_list');
+	renderSiteGroupSites();
+}
+
+function renderSubGroupOptionsHTML(subGroupAry,input_id){
+	if (subGroupAry!=undefined) {
+		$(input_id).html('<option value="'+$(input_id).val()+'">Parent Account ('+$(input_id).val()+')</option>');
+		$.each(subGroupAry, function(i,subGroupObj) {	
+			$(input_id).append('<option value="'+subGroupObj.sub_account_id+'">'+subGroupObj.sub_account_name+' ('+subGroupObj.sub_account_id+')</option>');
+		});
 	} else {
-		$('#manageCredentialsBtn').html('+ <span>Manage Credentials</span>');
-		$('#manageCredentials').css('display','none');
+		$(input_id).html('<option value="'+$(input_id).val()+'">'+$(input_id).val()+'</option>');
 	}
+	
 }
-function incapSaveCredentials() {
-	if ($('#display_name').val()!='' && $('#account_id').val()!='' && $('#api_id').val()!='' && $('#api_key').val()!='') {
-		INCAP_USERS[$('#account_id').val()+"_"+$('#api_id').val()] = {
-			"display_name":$('#display_name').val(),
-			"account_id":$('#account_id').val(),
-			"api_id":$('#api_id').val(),
-			"api_key":$('#api_key').val()
-		};
-		localStorage.setItem('INCAP_USERS',JSON.stringify(INCAP_USERS));
-		loadCredentials();
-	} else {
-		$.gritter.add({ title: 'Invalid Credentials', text: "Please enter valid values in all of the credential fields. "});
-	}
-}
-function incapDeleteCredentials(){
-	if (confirm('Are you sure you want delete the api_id ('+$('#api_id').val()+') from this tool?')) {
-		if (INCAP_USERS[$('#account_id').val()+"_"+$('#api_id').val()]!=undefined) {
-			delete INCAP_USERS[$('#account_id').val()+"_"+$('#api_id').val()];
-			localStorage.setItem('INCAP_USERS',JSON.stringify(INCAP_USERS));
-			$('#display_name').val('');
-			$('#account_id').val('');
-			$('#api_id').val('');
-			$('#api_key').val('');
-			loadCredentials();
-		} else {
-			$.gritter.add({ title: 'User not found', text: "User with account: "+$('#account_id').val()+" and api_id: "+$('#api_id').val()+" currently not stored locally."});	
-		}
-	}
-}
-function incapDeleteAllCredentials() {
-	if (confirm('Are you sure you want delete all Incapsula credentials from this tool?')) {
-		localStorage.setItem('INCAP_USERS','{}');
-		INCAP_USERS = localStorage.getItem('INCAP_USERS');
-		$('#display_name').val('');
-		$('#account_id').val('');
-		$('#api_id').val('');
-		$('#api_key').val('');
-		loadCredentials();
-	}	
-}
-function incapBulkImportCredentials() {
-	console.log("incapBulkImportCredentials");
-	alert("Bulk Imprt Credentials");
-	renderAuth();
-	renderDestAuth();	
-}
-*/
+
+/* END subaccount functions */
 
 function renderAuth(){
-	$('#incapServer').val(incapDefConfig.server);
 	if ($("#incapAccountsList").val()!='') {
-		var curConfig = INCAP_USERS[$("#incapAccountsList").val()];
-		$('#user_name').val(curConfig.user_name);
-		$('#account_id').val(curConfig.account_id);
-		$('#api_id').val(curConfig.api_id);
-		$('#api_key').val(curConfig.api_key);
 		changeAction();
 		if ($('#curSitesAccountId').val()=='') loadSites();
 	}
@@ -307,9 +321,23 @@ function renderJSONParamsHTML(){
 				} else {
 					str += paramName+': </label></td><td>';				
 					if (param.type=="list") {
-						str += '<select name="'+paramName+'" id="'+paramName+'">';
-						$.each(param.values, function(i,value) { str += '<option value="'+value+'">'+value+'</option>'; });
-						str += '</select>';
+						var parentPresent = true;
+						if (incapGetObjectActionMapping[paramName]!=undefined) {
+							var paramActionObj = incapGetObjectActionMapping[paramName];
+							if (paramActionObj.parents!=undefined) {
+								parentPresent = false;								
+								$.each(incapApiActions[$('#incapActions :selected').parent().attr('label')][$("#incapActions").val()], function(i,paramName) {
+									$.each(paramActionObj.parents, function(i,parentId) { if (paramName==parentId) parentPresent=true; });
+								});
+							}
+						}
+						if (parentPresent==true) {
+							str += '<select name="'+paramName+'" id="'+paramName+'">';
+							$.each(param.values, function(i,value) { str += '<option value="'+value+'">'+value+'</option>'; });
+							str += '</select>';
+						} else {
+							str += '<input type="text" class="'+param.type+'" name="'+paramName+'" id="'+paramName+'" value="" />';
+						}
 					} else if (param.type=="listPair") {
 						str += '<select name="'+paramName+'" id="'+paramName+'" class="multi">';
 						$.each(param.values, function(i,paramObj) { 
@@ -345,7 +373,11 @@ function renderJSONParamsHTML(){
 		if (incapGetObjectActionMapping[paramName]!=undefined) {
 			var paramActionObj = incapGetObjectActionMapping[paramName];
 			if (paramActionObj.isParent==true) {
-				loadParamValuesByName(paramName);				
+				loadParamValuesByName(paramName);
+			} else {
+				var parentPresent = false; 
+				$.each(paramActionObj.parents, function(i,parentId) { if ($('#'+parentId)!=undefined) parentPresent=true; });
+				if (parentPresent) loadParamValuesByName(paramName);
 			}
 		}
 	});
@@ -362,7 +394,9 @@ function loadParamValuesByName(paramName){
 		var reqObj = {};
 		if (paramActionObj.parents!=undefined) {
 			$.each(paramActionObj.parents, function(i,parentId) {
-				reqObj[parentId] = $('#'+parentId).val();
+				if ($('#'+parentId)!=undefined) {
+					reqObj[parentId] = $('#'+parentId).val();
+				}
 			});
 		}
 		makeIncapCall(paramActionObj.action,'POST',renderParamListValues,reqObj,paramName);
@@ -404,7 +438,16 @@ function openFilterDialog() {
 }
 
 function toggleDcId() {
-	if ($('#action').val()=='RULE_ACTION_FORWARD_TO_DC') { $('#dc_idtr').show(); } else { $('#dc_idtr').hide(); }
+	if ($('#incapActions').val()=='/api/prov/v1/sites/incapRules/add' || $('#incapActions').val()=='/api/prov/v1/sites/incapRules/edit') {
+		if ($('#action').val()=='RULE_ACTION_FORWARD_TO_DC') {
+			$('#dc_idtr').show(); 
+		} else {
+			$('#dc_idtr').hide(); 
+			$('#dc_id').val('');
+		}
+	} else { 
+		$('#dc_idtr').show(); 
+	}
 }
 
 function toggleincapSampleRules() {
@@ -439,4 +482,12 @@ function isValidURL(str) {
 	var a  = document.createElement('a');
 	a.href = str;
 	return (a.host && a.host != window.location.host);
+}
+
+function renderPageNumberOptions(){
+	var str = '';
+	for (var i=0; i<incapDefConfig.sitePageNum; i++) {
+		str += '<option value="'+i+'">'+i+'</option>';
+	}
+	return str;
 }

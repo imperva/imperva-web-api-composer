@@ -8,8 +8,10 @@
 	]
 }*/
 var incapDefConfig = {
+	"sitePageSize":3,
+	"sitePageNum":100,
 	"localurl":"api_post.php",
-	"server":"https://my.incapsula.com"
+	"server":"https://my.incapsula.com"	
 }
 
 var ssDefConfig = {
