@@ -2,7 +2,6 @@
 # Dockerfile for Imperva Web API Tool
 #
 FROM impervainc/alpine:3.7
-LABEL maintainer="Imperva GSA Team <gsa-team@imperva.com>"
 
 # Install packages
 #   Add Apache2 and PHP7
@@ -25,8 +24,24 @@ RUN set -xe \
 	&& chown apache:www-data /etc/apache2/certs/*.key \
 	&& chown apache:www-data -R /var/www/apps
 
-# Configure environment variables
-ENV IMAGE_NAME apitool
-
 # Configure default command
 CMD [ "/init.sh", "/usr/sbin/httpd", "-DFOREGROUND" ]
+
+# Required build arguments
+ARG RELEASE_DATE
+ARG BUILD_TAG
+ARG GIT_SHA1
+
+# Image build metadata
+ENV IMAGE_NAME "web-api-composer"
+ENV IMAGE_VERSION "0.9.0"
+ENV IMAGE_RELEASE_DATE "${RELEASE_DATE}"
+ARG EXTRA_TAGS="latest beta"
+LABEL \
+	vendor="Imperva, Inc." \
+	maintainer="Imperva GSA Team <gsa-team@imperva.com>" \
+	com.imperva.image_name="${IMAGE_NAME}" \
+	com.imperva.image_version="${IMAGE_VERSION}" \
+	com.imperva.image_release_date="${IMAGE_RELEASE_DATE}" \
+	com.imperva.image_tags="${BUILD_TAG} ${IMAGE_VERSION} ${EXTRA_TAGS}" \
+	com.imperva.commit_id="${GIT_SHA1}"
