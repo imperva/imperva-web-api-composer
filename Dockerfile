@@ -34,7 +34,7 @@ ARG GIT_SHA1
 
 # Image build metadata
 ENV IMAGE_NAME "imperva-web-api-composer"
-ENV IMAGE_VERSION "0.9.0"
+ENV IMAGE_VERSION "0.9.1"
 ENV IMAGE_RELEASE_DATE "${RELEASE_DATE}"
 ARG EXTRA_TAGS="latest beta"
 LABEL \

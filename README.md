@@ -9,9 +9,47 @@ bulk.
 You will need to install both [Docker](https://www.docker.com/community-edition) and
 [Docker Compose](https://docs.docker.com/compose/install/) on your system.
 
-Once both tools are installed and Docker is running, download the **docker-compose.yml** file from the repository
-and run:
+Once both tools are installed and Docker is running, simply create a **docker-compose.yml** file with the following
+contents somewhere on your system:
+
+```
+version: "3"
+
+services:
+  imperva-web-api-composer:
+    image: impervainc/imperva-web-api-composer:latest
+    ports:
+      - 8080:80
+      - 8443:443
+    environment:
+      TZ: ${TZ:-UTC}
+      CONTAINER_NAME: imperva-web-api-composer
+```
+
+You can modify the ports if you'd prefer to run HTTP and HTTPS traffic on ports other than 8080 and 8443, respectively,
+on your system.
+
+Once that file has been created, simply run:
+`docker-compose -f <path to docker-compose.yml> up -d`
+
+or if you are running `docker-compose` from the same folder as your **docker-compose.yml** file:
 `docker-compose up -d`
+
+## Updating to the Latest Version
+
+To update the container to the latest version, simply run the following commands:
+
+```
+docker-compose -f <path to docker-compose.yml> pull
+docker-compose -f <path to docker-compose.yml> up --force-recreate -d
+```
+
+or if you are running `docker-compose` from the same folder as your **docker-compose.yml** file:
+
+```
+docker-compose pull
+docker-compose up --force-recreate -d
+```
 
 ## Building from Source
 
