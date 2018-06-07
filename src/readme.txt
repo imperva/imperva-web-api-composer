@@ -1,3 +1,4 @@
+
 If configuring this application on a mac, pleas complete the following changes.  Please update all paths to reference your local environment. 
 
 1. Update /etc/hosts file to reference your local server for impervaapi.local
