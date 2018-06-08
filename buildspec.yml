@@ -1,0 +1,14 @@
+version: 0.2
+
+phases:
+    pre_build:
+        commands:
+            - /usr/local/codebuild/prebuild-container.sh "imperva-web-api-composer"
+
+    build:
+        commands:
+            - /usr/local/codebuild/build-container.sh "imperva-web-api-composer"
+
+    post_build:
+        commands:
+            - /usr/local/codebuild/postbuild-container.sh "imperva-web-api-composer"
