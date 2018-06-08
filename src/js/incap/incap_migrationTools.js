@@ -57,14 +57,16 @@ function renderMigrationToolbar_action(obj){
     var str = '<tr>';
     if (curMigAction=="INCAP_SITES") {
         var curUserObj = getUserAuthObj($('#incapAccountsList').val());
-		str += '<td><b>to </b></td>';
-        str += '<td><select class="auto incap_account_select" id="incap_migrationAction">'+mig_renderSelectOptions('INCAP_USERS')+'</select></td>';
-        str += '<td><b> account ID </b></td>';
-        str += '<td><select class="auto" id="incap_migrationAction_accountIDList"><option value="'+curUserObj.account_id+'">Parent Account ('+curUserObj.account_id+')</option></select></td>';
-        str += '<td><b> on site </b></td>';
-        str += '<td><select class="auto" id="incap_migrationAction_sites"><option value="">loading...</option></select></td>';
-        str += '<td> - sites by page <select class="auto" id="incap_migrationAction_page_num">'+renderPageNumberOptions()+'</select>';
-        str += '<input name="incap_migrationAction_page_size" id="incap_migrationAction_page_size" value="'+incapDefConfig.sitePageSize+'" type="hidden" /></td>';
+        if (curUserObj!=null && curUserObj!=undefined) {
+            str += '<td><b>to </b></td>';
+            str += '<td><select class="auto incap_account_select" id="incap_migrationAction">'+mig_renderSelectOptions('INCAP_USERS')+'</select></td>';
+            str += '<td><b> account ID </b></td>';
+            str += '<td><select class="auto" id="incap_migrationAction_accountIDList"><option value="'+curUserObj.account_id+'">Parent Account ('+curUserObj.account_id+')</option></select></td>';
+            str += '<td><b> on site </b></td>';
+            str += '<td><select class="auto" id="incap_migrationAction_sites"><option value="">loading...</option></select></td>';
+            str += '<td> - sites by page <select class="auto" id="incap_migrationAction_page_num">'+renderPageNumberOptions()+'</select>';
+            str += '<input name="incap_migrationAction_page_size" id="incap_migrationAction_page_size" value="'+incapDefConfig.sitePageSize+'" type="hidden" /></td>';
+        }
     } else if (curMigAction=='INCAP_USERS') {
         str += '<td><b> to all sites on </b></td>';
         str += '<td><select class="auto" id="incap_migrationAction">'+mig_renderSelectOptions(curMigAction)+'</select></td>';

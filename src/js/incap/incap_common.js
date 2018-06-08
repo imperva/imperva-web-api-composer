@@ -470,10 +470,14 @@ function removeMemberAndIndexById(objAry,cur_id){
 function getUserAuthObj(user_id){
 	INCAP_USERS = JSON.parse(localStorage.getItem('INCAP_USERS'));
 	var userObj = INCAP_USERS[user_id];
-	var postDataObj = {
-		"api_key":userObj.api_key,
-		"api_id":userObj.api_id,
-		"account_id":userObj.account_id
+	if (userObj!=undefined) {
+		var postDataObj = {
+			"api_key":userObj.api_key,
+			"api_id":userObj.api_id,
+			"account_id":userObj.account_id
+		}
+	} else {
+		return null;
 	}
 	return postDataObj;
 }
