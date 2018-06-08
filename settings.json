@@ -11,7 +11,6 @@
 				],
 				"push_to_registries": [
 					"AWS-ECR-US-EAST-2",
-					"PrivateDockerHub",
 					"PublicDockerHub"
 				]
 			}
