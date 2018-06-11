@@ -413,7 +413,6 @@ function loadXsd() {
 			var xsdXML = $.parseXML(data);
             $xsdObj = $(xsdXML);
 			responseObj = $xsdObj;
-			//console.log($xsdObj.children().first().children());
 			$xsdObj.children().first().children().each(function(i) {
 				if ((this).nodeName=="xs:element") xsd.elements[$(this).attr("name")] = $(this).attr("type");
 			});
@@ -451,7 +450,6 @@ function loadWadl() {
 			var resources = $wadlObj.find("resources").eq(0).children().eq(0).children();
 			var defActionObjStr = '{"methods":{}}';
 			var defMethodObjStr = '{"urlParams":[],"jsonParams":[]}';
-			console.log(resources);
 			$.each(resources, function(i_0,res) {
 				var resPath = $(res).attr('path');
 				$.each(resources.eq(i_0).children(), function(i_1,subRes1) {
