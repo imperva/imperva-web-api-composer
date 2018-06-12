@@ -197,7 +197,7 @@ $.extend($.gritter.options, {
 										<tr>
 											<td><span>Show Default ADC Policies: </span><input  id="toggleADCPoliciesSS" name="toggleADCPoliciesSS" onclick="renderPolicyOptions('SSWAFPolicies_src',allSSWAFPolicies_src);" type="checkbox" disabled="disabled" /></td>
 											<td></td>
-											<td><a href="assets/policy_predicate_mapping.xlsx">See Policy Mappiung</a></td>
+											<td><a href="assets/policy_predicate_mapping.xlsx">See Policy Mapping</a></td>
 										</tr>
 									</table><br clear="all" />
 									<input id="migrateSSPoliciesSave_btn" class="btn" title="Convert and Save" value="Convert and Save" onclick="convertSSAndSavePolicies()" type="submit" disabled="disabled" />
