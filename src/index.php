@@ -190,9 +190,14 @@ $.extend($.gritter.options, {
 											<td valign="top">
 												<label for="SSWAFPolicies_dest">Migrate to Incapsula:</label><br clear="all" />
 												<select title="SS WAF Security Policies" multiple="multiple" class="multiPolicy" id="SSWAFPolicies_dest" name="SSWAFPolicies_dest[]"></select>
+
 											</td>
 										</tr>
-										<tr><td coldpan="3"><span>Show Default ADC Policies: </span><input  id="toggleADCPoliciesSS" name="toggleADCPoliciesSS" onclick="renderPolicyOptions('SSWAFPolicies_src',allSSWAFPolicies_src);" type="checkbox" disabled="disabled" /></td></tr>
+										<tr>
+											<td><span>Show Default ADC Policies: </span><input  id="toggleADCPoliciesSS" name="toggleADCPoliciesSS" onclick="renderPolicyOptions('SSWAFPolicies_src',allSSWAFPolicies_src);" type="checkbox" disabled="disabled" /></td>
+											<td></td>
+											<td><a href="assets/policy_predicate_mapping.xlsx">See Policy Mappiung</a></td>
+										</tr>
 									</table><br clear="all" />
 									<input id="migrateSSPoliciesSave_btn" class="btn" title="Convert and Save" value="Convert and Save" onclick="convertSSAndSavePolicies()" type="submit" disabled="disabled" />
 									<input id="migrateSSPoliciesCURL_btn" class="btn" title="Convert to CURL" value="Convert to CURL" onclick="migrateSSPoliciesToCURL()" type="submit" disabled="disabled" />
