@@ -82,7 +82,7 @@ function makeSSCall(action,method,callback,postDataObj) {
 		$('#SecureSphereAPI #SSresult').val('processing...');
 		var requestUrl = $('#SecureSphereAPI #MXServer').val()+$('#SecureSphereAPI #SSActions').val();
 		if (action!=undefined) {
-			requestUrl = ssDefConfig.proto+'://'+$('#SecureSphereAPI #MXServer').val()+':'+ssDefConfig.port+ssDefConfig.actionPrefix+action;
+			requestUrl = $('#SecureSphereAPI #MXServer').val()+ssDefConfig.actionPrefix+action;
 		} else if ($('#SecureSphereAPI #SSrequestUrl').val() != ($('#SecureSphereAPI #MXServer').val()+$('#SecureSphereAPI #SSActions').val())) {
 			requestUrl = $('#SecureSphereAPI #SSrequestUrl').val();
 		}
@@ -131,7 +131,7 @@ function loadSSCredentials(){
 	SS_AUTH = JSON.parse(localStorage.getItem('SS_AUTH'));
 	$("#MXServers").html('');
 	$.each(SS_AUTH, function(index_id,configObj) {
-		$("#MXServers").append('<option value="'+index_id+'">'+configObj.MX_display_name+' ('+configObj.MXServer+')</option>'); 
+		$("#MXServers").append('<option title="'+configObj.MX_display_name+' ('+configObj.MXServer+')" value="'+index_id+'">'+configObj.MX_display_name+'</option>'); 
 	});
 	var editVerbiage = 'Add new MX';
 	if ($('#MXServers').children('option').length>0) { editVerbiage = 'Edit current or add new MX'; }
@@ -147,7 +147,7 @@ function renderSSAuth(){
 	if ($('#SecureSphereAPI #MXServers').val()=='entermewmx') {
 		$('#SecureSphereAPI #MX_display_name').parent().parent().show();
 		$('#SecureSphereAPI #MXServer').parent().parent().show();
-		$('#SecureSphereAPI #MXServer').val('').addClass('highlight').attr('placeholder','MX IP here');
+		$('#SecureSphereAPI #MXServer').val('').addClass('highlight').attr('placeholder','https://192.168.1.2:8083');
 		$('#SecureSphereAPI #MX_display_name').val('').addClass('highlight').attr('placeholder','MX desc here');
 		$('#SecureSphereAPI #SSusername').val('').addClass('highlight').attr('placeholder','MX username here');
 		$('#SecureSphereAPI #SSpassword').val('').addClass('highlight').attr('placeholder','MX password here');
@@ -174,19 +174,35 @@ function toggleSSManageCredentials(){
 	}
 }
 function ssSaveCredentials() {
-	if ($('#MXServer').val()!='' && $('#SSusername').val()!='' && $('#SSpassword').val()!='' && $('#MX_display_name').val()!='') {
-		SS_AUTH[$('#MXServer').val()+"_"+$('#SSusername').val()] = {
-			"MX_display_name":$('#MX_display_name').val(),
-			"MXServer":$('#MXServer').val(),
-			"SSusername":$('#SSusername').val(),
-			"SSpassword":$('#SSpassword').val()
-		};
-		localStorage.setItem('SS_AUTH',JSON.stringify(SS_AUTH));
-		loadSSCredentials();
+	if ($('#MXServer').val().trim()!='' && $('#SSusername').val().trim()!='' && $('#SSpassword').val()!='' && $('#MX_display_name').val().trim()!='') {
+		var reqUrl = "ajax/ss_api_login.php?server="+$('#SecureSphereAPI #MXServer').val()+ssDefConfig.actionPrefix;
+		reqUrl += "&contentType="+$('#SecureSphereAPI #SScontentType').val();
+		reqUrl += "&method=POST";
+		$.post(encodeURI(reqUrl), {"username":$('#SSusername').val().trim(),"password":$('#SSpassword').val()}, function(data) {
+			if (data!=null) {
+				responseObj = data;
+				if (data.errors==undefined) {
+					SS_AUTH[$('#MXServer').val()+"_"+$('#SSusername').val().trim()] = {
+						"MX_display_name":$('#MX_display_name').val().trim(),
+						"MXServer":$('#MXServer').val().trim(),
+						"SSusername":$('#SSusername').val().trim(),
+						"SSpassword":$('#SSpassword').val()
+					};
+					localStorage.setItem('SS_AUTH',JSON.stringify(SS_AUTH));
+					loadSSCredentials();
+				} else {
+					$.gritter.add({ title: '<span>Error: </span>'+data.errors[0]['error-code'], text: data.errors[0]['description'], time: 20000 });
+				}
+			} else {
+				$.gritter.add({ title: '<span>Error: </span>', text: "No response from server ("+$('#MXServer').val().trim()+"), invalid server/port. Please type in a valid server name/IP, example: https://192.168.1.2:8083", time: 20000 });
+			}
+			//$.gritter.add({ title: 'Invalid Credentials', text: "Please enter a valid MX server, username and password. "});
+		});
 	} else {
-		$.gritter.add({ title: 'Invalid Credentials', text: "Please enter a valid MX server, username and password. "});
+		$.gritter.add({ title: 'MISSING FIELDS', text: "Please enter a valid MX display name, MX server address, username and password. "});
 	}
 }
+
 function ssDeleteCredentials(){
 	if (confirm('Are you sure you want delete the MX Server ('+$('#MXServer').val()+') and username ('+$('#SSusername').val()+') from this tool?')) {
 		if (SS_AUTH[$('#MXServer').val()+"_"+$('#SSusername').val()]!=undefined) {
@@ -303,7 +319,7 @@ function SSUpdateJSON(){
 		});
 	}
 	//if ($('#SecureSphereAPI #jsessionid').val()=="") reqObj = {"username":$('#SecureSphereAPI #SSusername').val(),"password":$('#SecureSphereAPI #SSpassword').val()};	
-	if ($('#SecureSphereAPI #jsessionid').val()=="") reqObj['Authorization Header'] = "Authorization: Basic "+btoa($('#SecureSphereAPI #SSusername').val()+':'+$('#SecureSphereAPI #SSpassword').val()); 
+	if ($('#SecureSphereAPI #jsessionid').val()=="") reqObj['Authorization Header'] = "Authorization: Basic "+btoa($('#SecureSphereAPI #SSusername').val()+$('#SecureSphereAPI #SSpassword').val()); 
 	$('#SecureSphereAPI #SSdata').val(JSON.stringify(reqObj));
 	$('#SecureSphereAPI #SSJSONparams input').blur(function(){ SSUpdateJSON(); });
 	$('#SecureSphereAPI #SSJSONparams textarea').blur(function(){ SSUpdateJSON(); });
@@ -315,7 +331,7 @@ function SSUpdateCURL(){
 		//alert("$('#SecureSphereAPI #SSrequestUrl').hasClass('errors')="+$('#SecureSphereAPI #SSrequestUrl').hasClass('errors'));
 		var str = 'curl -ik -X '+$('#SecureSphereAPI #SSmethod').val()+' ';
 		if ($('#SecureSphereAPI #jsessionid').val()=="") {
-			str += '-H "Authorization: Basic '+btoa($('#SecureSphereAPI #SSusername').val()+':'+$('#SecureSphereAPI #SSpassword').val())+'"'; 
+			str += '-H "Authorization: Basic '+btoa($('#SecureSphereAPI #SSusername').val()+$('#SecureSphereAPI #SSpassword').val())+'"'; 
 		} else {
 			str += '-H "Cookie: '+$('#SecureSphereAPI #jsessionid').val()+'" -H "Content-Type: application/json" -H "Accept: application/json" ';
 			if ($('#SecureSphereAPI #SSdata').val()!='{}') str += " -d '"+$('#SecureSphereAPI #SSdata').val()+"' ";
@@ -328,51 +344,55 @@ function SSUpdateCURL(){
 	}
 }
 function SSupdateReqURL() {
-	$('#SecureSphereAPI #SSrequestUrl').val(ssDefConfig.proto+'://'+$('#SecureSphereAPI #MXServer').val()+':'+ssDefConfig.port+ssDefConfig.actionPrefix+$('#SecureSphereAPI #SSActions').val());
+	$('#SecureSphereAPI #SSrequestUrl').val($('#SecureSphereAPI #MXServer').val()+ssDefConfig.actionPrefix+$('#SecureSphereAPI #SSActions').val());
 	checkForm();
 }
 
 function login() {
-	if (curSSAuth["username"]==undefined && $('#jsessionid').val()=='') {
-		curSSAuth["username"]=$("#SecureSphereAPI #SSusername").val();
-		curSSAuth["password"]=$("#SecureSphereAPI #SSpassword").val();
-	}
-	$('#SecureSphereAPI #SSresult').val('processing...');
-	var reqUrl = "ajax/ss_api_login.php?server="+ssDefConfig.proto+'://'+$('#SecureSphereAPI #MXServer').val()+':'+ssDefConfig.port+ssDefConfig.actionPrefix;
-	reqUrl += "&contentType="+$('#SecureSphereAPI #SScontentType').val();
-	reqUrl += "&method=POST";
-	$.post(encodeURI(reqUrl), curSSAuth, function(data) {
-		responseObj = data;
-		$('#SecureSphereAPI #SSresult').val(JSON.stringify(data));
-		if (data.errors==undefined) {
-			localStorage.setItem('SS_VERSION',data['serverVersion']);
-			if ($('#SecureSphereAPI #jsessionid').val()!='') {
-				$('#SecureSphereAPI #jsessionid').val(data['session-id']);
-				$.gritter.add({ title: 'Successfully logged back in!', text: "Generated new JSESSIONID"});
-				$('#SecureSphereAPI #SSActions').trigger('change');
-				$('#SecureSphereAPI #SSWAFPolicies_dest option').attr("selected", "selected");
-				moveSSPolicyLeft();
-			} else {
-				$.gritter.add({ title: 'Successful Login', text: "Loading XSD File..."});
-				$('#SecureSphereAPI #jsessionid').val(data['session-id']);
-				$("#SecureSphereAPI #SSusernametr").hide();
-				$("#SecureSphereAPI #SSpasswordtr").hide();
-				$("#SecureSphereAPI #SSlogin").hide();
-				$("#SecureSphereAPI #SSlogoutDiv").show();
-				$("#SecureSphereAPI #curUser").html("Logged is as user: <b>"+$("#SecureSphereAPI #SSusername").val()+"</b>");
-				$("#SecureSphereAPI #SSexecute").show();
-				$("#SecureSphereAPI #loadSiteTreeData").show();
-				$("#SecureSphereAPI #SSActions option").removeAttr('disabled');
-				//loadWadl();
-				loadXsd();
-				//loadSwagger();
-				$('#SecureSphereAPI #MXServers').attr("disabled", true); 
-				$('#SecureSphereAPI #MXServer').attr('readonly', true);
-			}
-		} else {
-			$.gritter.add({ title: '<span>Error: </span>'+data.errors[0]['error-code'], text: data.errors[0]['description'], time: 20000 });
+	if ($('#MXServers').val()!='entermewmx') {
+		if (curSSAuth["username"]==undefined && $('#jsessionid').val()=='') {
+			curSSAuth["username"]=$("#SecureSphereAPI #SSusername").val();
+			curSSAuth["password"]=$("#SecureSphereAPI #SSpassword").val();
 		}
-	});
+		$('#SecureSphereAPI #SSresult').val('processing...');
+		var reqUrl = "ajax/ss_api_login.php?server="+$('#SecureSphereAPI #MXServer').val()+ssDefConfig.actionPrefix;
+		reqUrl += "&contentType="+$('#SecureSphereAPI #SScontentType').val();
+		reqUrl += "&method=POST";
+		$.post(encodeURI(reqUrl), curSSAuth, function(data) {
+			responseObj = data;
+			$('#SecureSphereAPI #SSresult').val(JSON.stringify(data));
+			if (data.errors==undefined) {
+				localStorage.setItem('SS_VERSION',data['serverVersion']);
+				if ($('#SecureSphereAPI #jsessionid').val()!='') {
+					$('#SecureSphereAPI #jsessionid').val(data['session-id']);
+					$.gritter.add({ title: 'Successfully logged back in!', text: "Generated new JSESSIONID"});
+					$('#SecureSphereAPI #SSActions').trigger('change');
+					$('#SecureSphereAPI #SSWAFPolicies_dest option').attr("selected", "selected");
+					moveSSPolicyLeft();
+				} else {
+					$.gritter.add({ title: 'Successful Login', text: "Loading XSD File..."});
+					$('#SecureSphereAPI #jsessionid').val(data['session-id']);
+					$("#SecureSphereAPI #SSusernametr").hide();
+					$("#SecureSphereAPI #SSpasswordtr").hide();
+					$("#SecureSphereAPI #SSlogin").hide();
+					$("#SecureSphereAPI #SSlogoutDiv").show();
+					$("#SecureSphereAPI #curUser").html("Logged is as user: <b>"+$("#SecureSphereAPI #SSusername").val()+"</b>");
+					$("#SecureSphereAPI #SSexecute").show();
+					$("#SecureSphereAPI #loadSiteTreeData").show();
+					$("#SecureSphereAPI #SSActions option").removeAttr('disabled');
+					//loadWadl();
+					loadXsd();
+					//loadSwagger();
+					$('#SecureSphereAPI #MXServers').attr("disabled", true); 
+					$('#SecureSphereAPI #MXServer').attr('readonly', true);
+				}
+			} else {
+				$.gritter.add({ title: '<span>Error: </span>'+data.errors[0]['error-code'], text: data.errors[0]['description'], time: 2000 });
+			}
+		});
+	} else {
+		$.gritter.add({ title: '<span>MISSING CREDENTIALS</span>', text: "Please select a valid saved user from MX Servers drop down.", time: 2000 });
+	}
 }
 
 function SSLoadAll() {
@@ -395,7 +415,7 @@ function loadXsd() {
 	
 	//var requestUrl = window.location.href+'assets/xsd0_v12_2_60.xsd';
     //var requestUrl = window.location.href+"assets/xsd0_v13.xsd";
-	//var requestUrl = ssDefConfig.proto+'://'+$('#SecureSphereAPI #MXServer').val()+':'+ssDefConfig.port+ssDefConfig.actionPrefix+"/application.wadl/xsd0.xsd";
+	//var requestUrl = ssDefConfig.proto+'://'+$('#SecureSphereAPI #MXServer').val()+ssDefConfig.port+ssDefConfig.actionPrefix+"/application.wadl/xsd0.xsd";
 	// var reqUrl = "ajax/ss_api_wadl.php?server="+requestUrl;
 
 	// hack in place until the migration to swagger format
@@ -430,7 +450,7 @@ function loadXsd() {
 }
 
 function loadWadl() {
-	//var requestUrl = ssDefConfig.proto+'://'+$('#SecureSphereAPI #MXServer').val()+':'+ssDefConfig.port+ssDefConfig.actionPrefix+"/application.wadl";
+	//var requestUrl = ssDefConfig.proto+'://'+$('#SecureSphereAPI #MXServer').val()+ssDefConfig.port+ssDefConfig.actionPrefix+"/application.wadl";
 	//var requestUrl = window.location.href+'assets/v13_application.wadl';    
 	//var reqUrl = "ajax/ss_api_wadl.php?server="+requestUrl;
 	
@@ -480,8 +500,10 @@ function loadWadl() {
 														SSActions[resSubPath3].methods[$(subRes4).attr("name")].urlParams.push({"name":$(param).attr("name"),"type":$(param).attr("type"),"values":$(param).attr("values")});
 													}
 												} else if ((param).nodeName=="ns2:representation" || (param).nodeName=="representation") {
-                                                    //console.log("nodeName==representation");
-                                                    //console.log(param);
+                                                    // console.log("nodeName==representation");
+													// console.log($(param).attr("element"));
+													// console.log(xsd.elements);
+													// console.log(xsd.complexTypes);
 													if (xsd.complexTypes[xsd.elements[$(param).attr("element")]]!=undefined) {
 														$.each(xsd.complexTypes[xsd.elements[$(param).attr("element")]], function(p_i,param) {
                                                             //console.log(param);
@@ -563,7 +585,7 @@ function loadWadl() {
 
 function loadSwagger(){
 	var requestUrl = window.location.href+"assets/"+localStorage.getItem('SS_VERSION').substr(0,2)+"_swagger.json";
-	//var requestUrl = ssDefConfig.proto+'://'+$('#SecureSphereAPI #MXServer').val()+':'+ssDefConfig.port+"/api/experimental/internal/swagger";
+	//var requestUrl = ssDefConfig.proto+'://'+$('#SecureSphereAPI #MXServer').val()+ssDefConfig.port+"/api/experimental/internal/swagger";
 	var reqUrl = "ajax/ss_api_wadl.php?server="+requestUrl;
 	reqUrl += "&session="+$('#SecureSphereAPI #jsessionid').val();
 	reqUrl += "&contentType="+$('#SecureSphereAPI #SScontentType').val();

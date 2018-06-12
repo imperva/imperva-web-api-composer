@@ -86,10 +86,10 @@ $.extend($.gritter.options, {
 										  <td><select id="MXServers"></select></td></tr>
 										<tr>
 										<tr><td align="right"><label for="MX_display_name">MX Display Name: </label></td>
-										  <td><input id="MX_display_name" style="width: 200px;" value="" type="text" /></td></tr>
+										  <td><input id="MX_display_name" style="width: 200px;" placeholder="Your MX Name" value="" type="text" /></td></tr>
 										<tr>
-										<tr><td align="right"><label for="MXServer">MX IP/Hostname: </label></td>
-										  <td><input id="MXServer" style="width: 200px;" value="" type="text" /></td></tr>
+										<tr><td align="right"><label for="MXServer">MX Server: </label></td>
+										  <td><input id="MXServer" style="width: 200px;" placeholder="https://192.168.1.2:8083" value="" type="text" /></td></tr>
 										<tr>
 										  <td align="right" style="border: 1px solid red;">
 											<label for="SSActions">Action: </label>
@@ -156,7 +156,8 @@ $.extend($.gritter.options, {
 								<label for="SSdata">Request Data: </label><span id="SSrequestUrlSpan"></span><br clear="all" />
 								<textarea id="SSdata" style="resize: vertical;"></textarea><br clear="all" /><br clear="all" />
 								<label for="SScurlUrl">CURL Request: </label><br clear="all" />
-								<textarea id="SScurlUrl" style="resize: vertical;"></textarea><br clear="all" /><br clear="all" />
+								<textarea id="SScurlUrl" style="resize: vertical;"></textarea><br clear="all" />
+								<a style="float: right;" href="assets/CURL_API_Samples_SecureSphere.zip" target="_blank">Download SecureSphere CURL Samples</a><br clear="all" />
 								<label for="SSresult">Response:</label><br clear="all" />
 								<textarea id="SSresult" style="resize: vertical;"></textarea><br clear="all" /><br />
 								<a href="http://jsonformatter.curiousconcept.com/" target="_blank">JSON Formatter</a>
@@ -299,7 +300,8 @@ $.extend($.gritter.options, {
 								<label for="incapData">Request Data: </label><span id="incaprequestdataspan"></span><br clear="all" />
 								<textarea id="incapData" style="height: 60px;" ></textarea><br clear="all" /><br clear="all" />
 								<label for="incapCurlExample">CURL Example: </label><span id="incapcurlexamplespan"></span><br clear="all" />
-								<textarea id="incapCurlExample" style="height: 60px;"></textarea><br clear="all" /><br clear="all" />
+								<textarea id="incapCurlExample" style="height: 60px;"></textarea><br clear="all" />
+								<a style="float: right;" href="assets/CURL_API_Samples_Incapsula.zip" target="_blank">Download Incapsula CURL Samples</a><br clear="all" />
 								<label for="incapResult">Response:</label><br clear="all" />
 								<textarea id="incapResult"></textarea><br clear="all" /><br />
 								<a href="https://my.incapsula.com/api/docs/v1" target="_blank">Incapsula API Documentation</a><br />
@@ -324,7 +326,7 @@ $.extend($.gritter.options, {
 							<select name="incapSitesPageNum" id="incapSitesPageNum" class="page_num"></select>
 							<input name="incapSitesPageSize" id="incapSitesPageSize" class="page_size" type="hidden" value="100" />
 						</td>
-					</tr></table>
+					</tr></table><br clear="all" />
 					<div id="sitesContent"></div>
 				</div>
 				<div id="migrationTools">
