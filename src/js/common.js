@@ -85,3 +85,11 @@ function transformToCURL(requestUrl,reqObj){
 	return "curl '"+requestUrl+"' --data '"+data+"'";
 }
 
+function IsJsonString(str) {
+    try {
+        JSON.parse(str);
+    } catch (e) {
+        return false;
+    }
+    return true;
+}

@@ -1,15 +1,15 @@
 var dbPortMapping = {
-	"Oracle":"1521,1526", 
-	"MsSql":"1433,1434", 
-	"Sybase":"6262", 
-	"Db2":"", 
-	"Informix":"", 
-	"Teradata":"1025", 
-	"SybaseIQ":"", 
-	"MySql":"3306", 
-	"Netezza":"", 
-	"Progress":"", 
-	"Cache":""
+	"Oracle":[1521,1526], 
+	"MsSql":[1433,1434], 
+	"Sybase":[6262], 
+	"Db2":[], 
+	"Informix":[], 
+	"Teradata":[1025], 
+	"SybaseIQ":[], 
+	"MySql":[3306], 
+	"Netezza":[], 
+	"Progress":[], 
+	"Cache":[]
 }
 
 var SSPolicyTypeDisplayMapping = {
@@ -354,7 +354,7 @@ var SSapiParamMapping = {
 		"getAPIurlMapping":{}
 	},
 	"text-replacement":{
-		"name":"ports",
+		"name":"text-replacement",
 		"type":"array",
 		"values":[{"location":"NormalizedQuery","pattern":"somePatterntToReplace","replacement":"TeReplacementString","advanced":false}],
 		"getAPIurlMapping":{}

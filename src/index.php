@@ -103,10 +103,11 @@ $.extend($.gritter.options, {
 										  <td align="right" style="border: 1px solid red;"><label for="SSmethod">Method: </label></td>
 										  <td>
 											<select id="SSmethod">
-												<option value="POST">POST</option>
-												<option value="GET">GET</option>
-												<option value="PUT">PUT</option>
-												<option value="DELETE">DELETE</option>
+												<option value="post">POST</option>
+												<option value="get">GET</option>
+												<option value="put">PUT</option>
+												<option value="delete">DELETE</option>
+												<option value="options">OPTIONS</option>
 											</select>
 										  </td>
 										</tr>
@@ -154,9 +155,9 @@ $.extend($.gritter.options, {
 								<label for="SSrequestUrl">Request URL: </label><br clear="all" />
 								<textarea id="SSrequestUrl" name="SSrequestUrl"></textarea><br clear="all" /><br />
 								<label for="SSdata">Request Data: </label><span id="SSrequestUrlSpan"></span><br clear="all" />
-								<textarea id="SSdata" style="resize: vertical;"></textarea><br clear="all" /><br clear="all" />
+								<textarea id="SSdata" style="height: 80px; resize: vertical;"></textarea><br clear="all" /><br clear="all" />
 								<label for="SScurlUrl">CURL Request: </label><br clear="all" />
-								<textarea id="SScurlUrl" style="resize: vertical;"></textarea><br clear="all" />
+								<textarea id="SScurlUrl" style="height: 80px; resize: vertical;"></textarea><br clear="all" />
 								<a style="float: right;" href="assets/CURL_API_Samples_SecureSphere.zip" target="_blank">Download SecureSphere CURL Samples</a><br clear="all" />
 								<label for="SSresult">Response:</label><br clear="all" />
 								<textarea id="SSresult" style="resize: vertical;"></textarea><br clear="all" /><br />
@@ -197,7 +198,7 @@ $.extend($.gritter.options, {
 										<tr>
 											<td><span>Show Default ADC Policies: </span><input  id="toggleADCPoliciesSS" name="toggleADCPoliciesSS" onclick="renderPolicyOptions('SSWAFPolicies_src',allSSWAFPolicies_src);" type="checkbox" disabled="disabled" /></td>
 											<td></td>
-											<td><a href="assets/policy_predicate_mapping.xlsx">See Policy Mapping</a></td>
+											<td><a href="assets/policy_predicate_mapping.xlsx">See Policy Conversion Mapping</a></td>
 										</tr>
 									</table><br clear="all" />
 									<input id="migrateSSPoliciesSave_btn" class="btn" title="Convert and Save" value="Convert and Save" onclick="convertSSAndSavePolicies()" type="submit" disabled="disabled" />

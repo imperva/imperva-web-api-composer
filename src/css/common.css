@@ -160,7 +160,7 @@ select.min { width: 175px; }
 select.multiPolicy { height: 505px; }
 .unsupported { color:red; }
 textarea { width:510px; height:200px; }
-#JSONparams textarea { height: auto; resize:none; overflow: auto; }
+#SSJSONparams textarea { height: auto; resize:none; overflow: auto; }
 .textarea {
     -moz-appearance: textfield-multiline;
     -webkit-appearance: textarea;
