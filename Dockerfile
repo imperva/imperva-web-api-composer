@@ -25,7 +25,7 @@ RUN set -xe \
 	&& chown apache:www-data -R /var/www/apps
 
 # Configure default command
-CMD [ "/init.sh", "/usr/sbin/httpd", "-DFOREGROUND" ]
+CMD [ "/usr/sbin/httpd", "-DFOREGROUND" ]
 
 # Required build arguments
 ARG NAME
