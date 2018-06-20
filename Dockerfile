@@ -27,6 +27,9 @@ RUN set -xe \
 # Configure default command
 CMD [ "/usr/sbin/httpd", "-DFOREGROUND" ]
 
+# Add container healthcheck
+HEALTHCHECK --start-period=15s CMD /usr/local/bin/healthcheck.sh || exit 1
+
 # Required build arguments
 ARG NAME
 ARG VERSION

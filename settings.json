@@ -1,18 +1,12 @@
 {
-	"version": "0.9.3",
+	"version": "0.9.4",
 	"docker": {
 		"images": {
 			"imperva-web-api-composer": {
 				"dockerfile": "./Dockerfile",
 				"build_options": [],
-				"extra_tags": [
-					"latest",
-					"beta"
-				],
-				"push_to_registries": [
-					"AWS-ECR-US-EAST-2",
-					"PublicDockerHub"
-				]
+				"extra_tags": ["latest", "beta"],
+				"push_to_registries": ["AWS-ECR-US-EAST-2", "PublicDockerHub"]
 			}
 		}
 	}
