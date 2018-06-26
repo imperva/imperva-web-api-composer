@@ -1,14 +1,12 @@
 <?
 header('Cache-Control: no-cache, must-revalidate');
 //header('Content-type: application/json');
-$fileType = $_GET["fileType"];
+$version = $_GET["version"];
 
-if ($fileType=='WADL') {
-    print(file_get_contents('../assets/v13_application.wadl'));
-    //print(file_get_contents('../assets/v12_application.wadl'));
-} else if ($fileType=='XSD') {
-    print(file_get_contents('../assets/xsd0_v13.xsd'));
-    //print(file_get_contents('../assets/xsd0_v12_2_60.xsd'));
+if ($version=='12') {
+    print(file_get_contents('../assets/12_swagger.json'));
+} else if ($fileType=='13') {
+    print(file_get_contents('../assets/13_swagger.json'));
 } else {
     print('no file found');
 }

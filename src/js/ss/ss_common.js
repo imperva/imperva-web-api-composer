@@ -458,9 +458,9 @@ function SSLoadAll() {
 }
 
 function loadSwagger(){
-	var requestUrl = window.location.href+"assets/"+localStorage.getItem('SS_VERSION').substr(0,2)+"_swagger.json";
+	//var requestUrl = window.location.href+"assets/"+localStorage.getItem('SS_VERSION').substr(0,2)+"_swagger.json";
 	//var requestUrl = ssDefConfig.proto+'://'+$('#SecureSphereAPI #MXServer').val()+ssDefConfig.port+"/api/experimental/internal/swagger";
-	var reqUrl = "ajax/ss_api_wadl.php?server="+requestUrl;
+	var reqUrl = "ajax/ss_schema.php?version="+localStorage.getItem('SS_VERSION').substr(0,2);
 	reqUrl += "&session="+$('#SecureSphereAPI #jsessionid').val();
 	reqUrl += "&contentType="+$('#SecureSphereAPI #SScontentType').val();
 	reqUrl += "&method="+"GET";
