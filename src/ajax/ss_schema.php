@@ -5,7 +5,7 @@ $version = $_GET["version"];
 
 if ($version=='12') {
     print(file_get_contents('../assets/12_swagger.json'));
-} else if ($fileType=='13') {
+} else if ($version=='13') {
     print(file_get_contents('../assets/13_swagger.json'));
 } else {
     print('no file found');
