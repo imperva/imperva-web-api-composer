@@ -44,7 +44,7 @@ function renderPolicyOptions(selectId,policyAry){
 				} else {
 					str += '<option title="'+policyName+'" class="unsupported" value="'+policyName+'"><b>!</b> '+policyName+'</option>';
 				}
-			} 
+			}
 		});
 		str += '</optgroup>';
 	});

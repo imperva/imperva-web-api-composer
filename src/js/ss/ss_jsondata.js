@@ -24,7 +24,8 @@ var SSapiParamMapping = {
 		"getAPIurlMapping":{
 			"default":{
 				"url":"/v1/conf/agents",
-				"nestedItemName":"name"
+				"nestedItemName":"name",
+				"nestedItemLevel":1
 			}
 		}
 	},
@@ -38,7 +39,8 @@ var SSapiParamMapping = {
 		"getAPIurlMapping":{
 			"default":{
 				"url":"/v1/conf/applicationGroups",
-				"nestedItemName":"name"
+				"nestedItemName":"name",
+				"nestedItemLevel":1
 			}
 			//"default":"/v1/conf/applicationGroups/{applicationGroupName}"
 		}
@@ -60,7 +62,8 @@ var SSapiParamMapping = {
 		"getAPIurlMapping":{
 			"default":{
 				"url":"/v1/conf/agents/{agentName}/dataInterfaces",
-				"nestedItemName":"id"
+				"nestedItemName":"id",
+				"nestedItemLevel":1
 			}
 		}
 	},
@@ -149,7 +152,8 @@ var SSapiParamMapping = {
 		"getAPIurlMapping":{
 			"default":{
 				"url":"/v1/conf/serverGroups/{siteName}/{serverGroupName}/protectedIPs",
-				"nestedItemName":"ip"
+				"nestedItemName":"ip",
+				"nestedItemLevel":1
 			}
 		}
 	},
@@ -256,7 +260,8 @@ var SSapiParamMapping = {
 		"getAPIurlMapping":{
 			"default":{
 				"url":"/v1/conf/webServices/{siteName}/{serverGroupName}/{webServiceName}/hostToAppMappings",
-				"nestedItemName":"priority"
+				"nestedItemName":"priority",
+				"nestedItemLevel":1
 			}
 			//"priority_hostToAppMappings":{"default":"/v1/conf/webServices/{siteName}/{serverGroupName}/{webServiceName}/hostToAppMappings/{webApplicationName}/{priority}"},
 			//"priority_krpOutboundRules":{"default":"/v1/conf/webServices/{siteName}/{serverGroupName}/{webServiceName}/krpInboundRules/{gatewayGroupName}/{aliasName}/{gatewayPort}/krpOutboundRules/{priority}"},
@@ -358,6 +363,15 @@ var SSapiParamMapping = {
 		"type":"array",
 		"values":[{"location":"NormalizedQuery","pattern":"somePatterntToReplace","replacement":"TeReplacementString","advanced":false}],
 		"getAPIurlMapping":{}
+	},
+	"tableGroupName":{
+		"getAPIurlMapping":{
+			"default":{
+				"url":"/v1/conf/tableGroups",
+				"nestedItemName":"displayName",
+				"nestedItemLevel":0
+			}
+		}
 	},
 	"tagName":{
 		"getAPIurlMapping":{

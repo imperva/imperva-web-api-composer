@@ -380,7 +380,7 @@ function SSUpdateJSON(){
 function SSUpdateCURL(){
 	if (!$('#SecureSphereAPI #SSrequestUrl').hasClass('errors')) {
 		//alert("$('#SecureSphereAPI #SSrequestUrl').hasClass('errors')="+$('#SecureSphereAPI #SSrequestUrl').hasClass('errors'));
-		var str = 'curl -ik -X '+$('#SecureSphereAPI #SSmethod').val()+' ';
+		var str = 'curl -ik -X '+$('#SecureSphereAPI #SSmethod').val().toUpperCase()+' ';
 		if ($('#SecureSphereAPI #jsessionid').val()=="") {
 			str += '-H "Authorization: Basic '+btoa($('#SecureSphereAPI #SSusername').val()+$('#SecureSphereAPI #SSpassword').val())+'"'; 
 		} else {
@@ -548,8 +548,11 @@ function SSrenderURLParams(data){
 	try { 
 		if (SSapiParamMapping[SScurUrlParamsAry[SScurUrlParamsIndex].name].getAPIurlMapping.default!=undefined){
 			if (SSapiParamMapping[SScurUrlParamsAry[SScurUrlParamsIndex].name].getAPIurlMapping.default.nestedItemName!=undefined) {
+				var nestedMappingObj = SSapiParamMapping[SScurUrlParamsAry[SScurUrlParamsIndex].name].getAPIurlMapping.default;
 				$.each(data,function(i, ary){
-					if (ary.length!=0) { 
+					if (nestedMappingObj.nestedItemLevel==0) { 
+						tmpAry.list.push(ary[SSapiParamMapping[SScurUrlParamsAry[SScurUrlParamsIndex].name].getAPIurlMapping.default.nestedItemName]); 
+					} else if (nestedMappingObj.nestedItemLevel==1 && ary.length!=0) { 
 						$.each(ary,function(i, obj){ 
 							tmpAry.list.push(obj[SSapiParamMapping[SScurUrlParamsAry[SScurUrlParamsIndex].name].getAPIurlMapping.default.nestedItemName]); 
 						}); 
