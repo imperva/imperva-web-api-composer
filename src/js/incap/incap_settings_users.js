@@ -95,7 +95,8 @@ function set_incapSaveUserResponse(response){
 			"user_name":$('#incap_users_tbl tr.current .user_name').val(),
 			"account_id":$('#incap_users_tbl tr.current .account_id').val(),
 			"api_id":$('#incap_users_tbl tr.current .api_id').val(),
-			"api_key":$('#incap_users_tbl tr.current .api_key').val()
+			"api_key":$('#incap_users_tbl tr.current .api_key').val(),
+			"plan_name": response.plan_name.substr(0,10)
 		}
 		INCAP_USERS[$('#incap_users_tbl tr.current .api_id').val()] = usrObj;
 		localStorage.setItem('INCAP_USERS',JSON.stringify(INCAP_USERS));

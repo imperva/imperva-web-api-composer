@@ -65,8 +65,9 @@ function SSLoadWAFSecurityPolicy(curObj){
 		SSUpdateCURL();
 		$('#SecureSphereAPI #SSexecute').trigger('click');
 	} else {
-		$('#SecureSphereAPI #SSActions').val('/v1/conf/'+$(curObj).parent().attr('id')+'/{policyName}').trigger('change');
+		$('#SecureSphereAPI #SSActions').val('/v1/conf/policies/security/'+$(curObj).parent().attr('id')+'/{policyName}').trigger('change');
 	}
+	makeSSCall('/v1/conf/policies/security/'+$(curObj).parent().attr('id')+'/'+$(curObj).val(),'GET',null,{});
 	//makeSSCall('/v1/conf/'+$(curObj).parent().attr('id')+'/'+$(curObj).val(),'GET',SSLoadWAFSecurityPolicyResponse,{});
 }
 

@@ -236,36 +236,51 @@ function loadSubAccounts(obj){
 	if (obj.id=='incapAccountsList') { // API Client
 		$('#incapAccountIDList').html('<option value="'+postDataObj.account_id+'">loading...</option>');
 		//$('#get the page num id later ').val('0');
-		makeIncapCall('/api/prov/v1/accounts/listSubAccounts','POST',loadSubAccountsResponse_APIClient,postDataObj,'set');
+		makeIncapCall(getSubAccountUrlByAccountId('#incapAccountsList'),'POST',loadSubAccountsResponse_APIClient,postDataObj,'set');
 	} else if (obj.id=='incapSitesAccountsList') { // Sites
 		$('#incapSitesAccountIDList').html('<option value="'+postDataObj.account_id+'">loading...</option>');
 		$('#incapSitesPageNum').val('0');
-		makeIncapCall('/api/prov/v1/accounts/listSubAccounts','POST',loadSubAccountsResponse_Sites,postDataObj,'set');
+		makeIncapCall(getSubAccountUrlByAccountId('#incapSitesAccountsList'),'POST',loadSubAccountsResponse_Sites,postDataObj,'set');
 	} else if (obj.id=='incap_migrationAction') { // Migration
+		console.log($('#incap_migrationAction').val());
 		$('#incap_migrationAction').attr('disabled','disabled');
 		$('#incap_migrationAction_accountIDList').html('<option value="'+postDataObj.account_id+'">loading...</option>').attr('disabled','disabled');;
     	$("#incap_migrationAction_sites").html('<option value="">loading...</option>').attr('disabled','disabled');
 		$('#incap_migrationAction_page_num').val('0');
-		makeIncapCall('/api/prov/v1/accounts/listSubAccounts','POST',loadSubAccountsResponse_Migration,postDataObj,'set');
+		makeIncapCall(getSubAccountUrlByAccountId('#incap_migrationAction'),'POST',loadSubAccountsResponse_Migration,postDataObj,'set');
 	} else if (obj.id=='incap_site_group_account_list') { // Site Group
 		$('#incap_site_group_account_ID_list').html('<option value="'+postDataObj.account_id+'">loading...</option>').attr('disabled','disabled');
 		$('#incap_site_group_page_num').val('0');
 		$("#avail_incap_group_sites").html('<option value="">loading...</option>');
-		makeIncapCall('/api/prov/v1/accounts/listSubAccounts','POST',loadSubAccountsResponse_SiteGroup,postDataObj,'set');
+		makeIncapCall(getSubAccountUrlByAccountId('#incap_site_group_account_list'),'POST',loadSubAccountsResponse_SiteGroup,postDataObj,'set');
 	}
 }
 
+function getSubAccountUrlByAccountId(apiIdIputId){
+	if (localStorage.getItem('INCAP_USERS')==null) localStorage.setItem('INCAP_USERS','{}');
+	INCAP_USERS = JSON.parse(localStorage.getItem('INCAP_USERS'));
+	var subAccountURL = subAccountLookUpMap.default;
+	if ($(apiIdIputId).val()!='') { //  && $(apiIdIputId).attr('disabled')!='disabled'
+		if (INCAP_USERS[$(apiIdIputId).val()].plan_name!=undefined) {
+			if (subAccountLookUpMap[INCAP_USERS[$(apiIdIputId).val()].plan_name]!=undefined) {
+				subAccountURL = subAccountLookUpMap[INCAP_USERS[$(apiIdIputId).val()].plan_name].url;
+			}
+		}
+	}
+	return subAccountURL;
+}
+
 function loadSubAccountsResponse_APIClient(response){ 
-	renderSubGroupOptionsHTML(response.resultList,'#incapAccountIDList'); renderAuth(); 
+	renderSubGroupOptionsHTML(response,'#incapAccountIDList'); renderAuth(); 
 }
 
 function loadSubAccountsResponse_Sites(response){
-	renderSubGroupOptionsHTML(response.resultList,'#incapSitesAccountIDList');
+	renderSubGroupOptionsHTML(response,'#incapSitesAccountIDList');
 	loadSites();
 }
 
 function loadSubAccountsResponse_Migration(response){
-	renderSubGroupOptionsHTML(response.resultList,'#incap_migrationAction_accountIDList');
+	renderSubGroupOptionsHTML(response,'#incap_migrationAction_accountIDList');
 	// if (obj!=undefined) {
 	// 	if (obj.id=='incap_migrationActionType' && $('#incap_migrationAction_sites').val()=='') { renderMigrationUserSites(); }
 	// } else if ($('#incap_migrationAction_sites').val()=='') {
@@ -274,16 +289,23 @@ function loadSubAccountsResponse_Migration(response){
 }
 
 function loadSubAccountsResponse_SiteGroup(response){
-	renderSubGroupOptionsHTML(response.resultList,'#incap_site_group_account_ID_list');
+	renderSubGroupOptionsHTML(response,'#incap_site_group_account_ID_list');
 	renderSiteGroupSites();
 }
 
 function renderSubGroupOptionsHTML(subGroupAry,input_id){
 	if (subGroupAry!=undefined) {
-		$(input_id).html('<option value="'+$(input_id).val()+'">Parent Account ('+$(input_id).val()+')</option>');
-		$.each(subGroupAry, function(i,subGroupObj) {	
-			$(input_id).append('<option value="'+subGroupObj.sub_account_id+'">'+subGroupObj.sub_account_name+' ('+subGroupObj.sub_account_id+')</option>');
-		});
+		if (subGroupAry.resultList!=undefined) { 
+			$(input_id).html('<option value="'+$(input_id).val()+'">Parent Account ('+$(input_id).val()+')</option>');
+			$.each(subGroupAry.resultList, function(i,subGroupObj) {	
+				$(input_id).append('<option value="'+subGroupObj.sub_account_id+'">'+subGroupObj.sub_account_name+' ('+subGroupObj.sub_account_id+')</option>');
+			});
+		} else {
+			$(input_id).html('<option value="'+$(input_id).val()+'">Parent Account ('+$(input_id).val()+')</option>');
+			$.each(subGroupAry.accounts, function(i,subGroupObj) {	
+				$(input_id).append('<option value="'+subGroupObj.account_id+'">'+subGroupObj.account_name+' ('+subGroupObj.account_id+')</option>');
+			});
+		} 
 	} else {
 		$(input_id).html('<option value="'+$(input_id).val()+'">'+$(input_id).val()+'</option>');
 	}

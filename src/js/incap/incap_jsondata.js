@@ -1,4 +1,9 @@
- 
+var subAccountLookUpMap = {
+	"Reseller":{"url":"/api/prov/v1/accounts/list","attr":"accounts"},
+	"Enterprise":{"url":"/api/prov/v1/accounts/listSubAccounts","attr":"resultList"},
+	"default":{"url":"/api/prov/v1/accounts/listSubAccounts","attr":"resultList"}
+}
+
 var incapGetObjectActionMapping = {
 	// must map all params here as a list below as follows:
 	// "site_id":{"name":"site_id","type":"list","values":[]},

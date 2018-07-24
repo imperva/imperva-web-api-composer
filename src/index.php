@@ -74,6 +74,7 @@ $.extend($.gritter.options, {
 								<input id="SSexecute" value="execute call" onclick="makeSSCall()" type="submit" /> 
 								<!--input id="loadSiteTreeData" value="Load Site Tree Data" onclick="loadSites()" type="submit" /--> 
 							</td>
+						</tr>
 						<tr>
 							<td valign="top" style="padding: 0px 10px 0px 0px;">
 								<fieldset>
