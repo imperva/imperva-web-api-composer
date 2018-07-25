@@ -242,7 +242,6 @@ function loadSubAccounts(obj){
 		$('#incapSitesPageNum').val('0');
 		makeIncapCall(getSubAccountUrlByAccountId('#incapSitesAccountsList'),'POST',loadSubAccountsResponse_Sites,postDataObj,'set');
 	} else if (obj.id=='incap_migrationAction') { // Migration
-		console.log($('#incap_migrationAction').val());
 		$('#incap_migrationAction').attr('disabled','disabled');
 		$('#incap_migrationAction_accountIDList').html('<option value="'+postDataObj.account_id+'">loading...</option>').attr('disabled','disabled');;
     	$("#incap_migrationAction_sites").html('<option value="">loading...</option>').attr('disabled','disabled');
@@ -294,15 +293,29 @@ function loadSubAccountsResponse_SiteGroup(response){
 }
 
 function renderSubGroupOptionsHTML(subGroupAry,input_id){
+	var subAccountIndex = [];
+	var subAccountObjAry = {};
 	if (subGroupAry!=undefined) {
 		if (subGroupAry.resultList!=undefined) { 
 			$(input_id).html('<option value="'+$(input_id).val()+'">Parent Account ('+$(input_id).val()+')</option>');
 			$.each(subGroupAry.resultList, function(i,subGroupObj) {	
+				subAccountIndex.push(subGroupObj.sub_account_name+'_'+subGroupObj.sub_account_id);
+				subAccountObjAry[subGroupObj.sub_account_name+'_'+subGroupObj.sub_account_id] = subGroupObj;
+			});	
+			subAccountIndex.sort();
+			$.each(subAccountIndex, function(i,subAccountIdStr) {	
+				var subGroupObj = subAccountObjAry[subAccountIdStr];
 				$(input_id).append('<option value="'+subGroupObj.sub_account_id+'">'+subGroupObj.sub_account_name+' ('+subGroupObj.sub_account_id+')</option>');
 			});
 		} else {
 			$(input_id).html('<option value="'+$(input_id).val()+'">Parent Account ('+$(input_id).val()+')</option>');
 			$.each(subGroupAry.accounts, function(i,subGroupObj) {	
+				subAccountIndex.push(subGroupObj.account_name+'_'+subGroupObj.account_id);
+				subAccountObjAry[subGroupObj.account_name+'_'+subGroupObj.account_id] = subGroupObj;
+			});			
+			subAccountIndex.sort();
+			$.each(subAccountIndex, function(i,subAccountIdStr) {	
+				var subGroupObj = subAccountObjAry[subAccountIdStr];
 				$(input_id).append('<option value="'+subGroupObj.account_id+'">'+subGroupObj.account_name+' ('+subGroupObj.account_id+')</option>');
 			});
 		} 
