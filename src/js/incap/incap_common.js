@@ -270,7 +270,9 @@ function getSubAccountUrlByAccountId(apiIdIputId){
 }
 
 function loadSubAccountsResponse_APIClient(response){ 
-	renderSubGroupOptionsHTML(response,'#incapAccountIDList'); renderAuth(); 
+	renderSubGroupOptionsHTML(response,'#incapAccountIDList'); 
+	$('#incapAccountIDList').unbind().change(function(){ changeAction(); });
+	renderAuth(); 
 }
 
 function loadSubAccountsResponse_Sites(response){
@@ -433,6 +435,11 @@ function loadParamValuesByName(paramName){
 					reqObj[parentId] = $('#'+parentId).val();
 				}
 			});
+		}
+		if (paramName=='site_id') {
+			reqObj.account_id=$('#incapAccountIDList').val();
+			reqObj.page_size=$('#incapSitesPageSize').val();
+			reqObj.page_num=$('#incapSitesPageNum').val();
 		}
 		makeIncapCall(paramActionObj.action,'POST',renderParamListValues,reqObj,paramName);
 	}
