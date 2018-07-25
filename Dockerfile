@@ -15,6 +15,7 @@ RUN set -xe \
 
 # Add files to image
 COPY src /var/www/apps/apitool
+COPY settings.json /var/www/apps/apitool
 COPY files /
 
 # Configure image

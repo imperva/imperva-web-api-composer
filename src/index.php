@@ -605,7 +605,7 @@ $.extend($.gritter.options, {
 					</div>
 				</div>
 				<div class="ui-widget-content ui-corner-bottom footer">
-					<p>Copyright ©<?=date("Y")?> Imperva. All Rights Reserved.  <a href="#">Privacy &amp; Legal</a></p>
+					<p><span id="version" style="float: right;"></span>Copyright ©<?=date("Y")?> Imperva. All Rights Reserved.  <a href="#">Privacy &amp; Legal</a></p>
 				</div>
 			</div>
 			<div id="footer">
