@@ -453,13 +453,23 @@ function renderParamListValues(response,input_id) {
 	var paramActionObj = incapGetObjectActionMapping[input_id];
 	$("#"+input_id).html('');
 	if (input_id=='dc_id') $("#"+input_id).html('<option value="">-- select --</option>');
-	$.each(response[paramActionObj.listName], function(i,siteObj) {
-		if (paramActionObj.displayText!='' && paramActionObj.displayText !=undefined) {
-			$("#"+input_id).append('<option value="'+siteObj[paramActionObj.id]+'">'+siteObj[paramActionObj.displayText]+' ('+siteObj[paramActionObj.id]+')</option>');
-		} else {
-			$("#"+input_id).append('<option value="'+siteObj[paramActionObj.id]+'">'+siteObj[paramActionObj.id]+'</option>');
-		}
-	});
+	if (paramActionObj.displayText!='' && paramActionObj.displayText!=undefined) {
+		var paramActionObjIndex = [];
+		var paramActionObjAry = {};
+		$.each(response[paramActionObj.listName], function(i,subGroupObj) {	
+			paramActionObjIndex.push(subGroupObj[paramActionObj.displayText]+'_'+subGroupObj[paramActionObj.id]);
+			paramActionObjAry[subGroupObj[paramActionObj.displayText]+'_'+subGroupObj[paramActionObj.id]] = subGroupObj;
+		});	
+		paramActionObjIndex.sort();
+		$.each(paramActionObjIndex, function(i,paramActionIdStr) {	
+			var subGroupObj = paramActionObjAry[paramActionIdStr];
+			$("#"+input_id).append('<option value="'+subGroupObj[paramActionObj.id]+'">'+subGroupObj[paramActionObj.displayText]+' ('+subGroupObj[paramActionObj.id]+')</option>');
+		});
+	} else {
+		$.each(response[paramActionObj.listName], function(i,subGroupObj) {
+			$("#"+input_id).append('<option value="'+subGroupObj[paramActionObj.id]+'">'+subGroupObj[paramActionObj.id]+'</option>');
+		});	
+	}
 	var paramActionObj = incapGetObjectActionMapping[input_id];
 	if (paramActionObj.children!=undefined && paramActionObj.children!=length!=0) {
 		loadParamChildValues(input_id);
