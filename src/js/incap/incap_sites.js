@@ -39,12 +39,18 @@ function loadSites(){
 
 function loadSitesResponse(response){
 	$.gritter.add({ title: 'Status', text: "Successfully retrieved sites, puling down ADR rules for each site."});
+	curSites.siteIndex = [];
 	curSites.sites = {};
-	$.each(response.sites, function(i,site) { if (site.account_id==$('#incapSitesAccountIDList').val()) curSites.sites[site.site_id] = site; });
+	$.each(response.sites, function(i,site) { 
+		if (site.account_id==$('#incapSitesAccountIDList').val()) {
+			curSites.siteIndex.push(site.domain+';|;'+site.site_id);
+			curSites.sites[site.site_id] = site; 
+		}
+	});
+	curSites.siteIndex.sort();
 	var str = '';
-	//$('#incapSitesAccountsList').val($('#account_id').val());
-	//str += '<h3>Sites for account ID: '+$('#account_id').val()+'</h3>';
-	$.each(curSites.sites, function(i,site) {
+	$.each(curSites.siteIndex, function(i,siteIdStr) {
+		var site = curSites.sites[siteIdStr.substr(siteIdStr.indexOf(';|;')+3)];
 		str += '<fieldset><legend>Site: <a target="_blank" href="https://my.incapsula.com/dashboard?isolated=true&accountId='+$('#incapSitesAccountsList').val()+'&timeFrame=last_7_days&extSiteId='+site.site_id+'">'+site.domain+' ('+site.site_id+')</a></legend>';
 		str += '<table id="site_'+site.site_id+'_tbl" title="'+site.domain+' ('+site.site_id+')" class="tablesorter"><thead><tr>';
 		$.each(siteTableHeaders, function(i,header) { str += '<th title="'+header+'">'+header+'</th>'; });
