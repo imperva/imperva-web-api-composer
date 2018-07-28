@@ -17,7 +17,7 @@ version: "3"
 
 services:
   imperva-web-api-composer:
-    image: impervainc/imperva-web-api-composer:latest
+    image: registry.gitlab.com/imperva-community/tools/imperva-web-api-composer:latest
     ports:
       - 8080:80
       - 8443:443
