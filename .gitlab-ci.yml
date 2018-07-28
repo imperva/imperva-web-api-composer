@@ -1,0 +1,14 @@
+image: registry.gitlab.com/imperva-community/docker/cibuilder:stable
+
+services:
+- docker:dind
+
+stages:
+- build
+
+build:
+  stage: build
+  except:
+  - tags
+  script:
+  - build.sh "imperva-web-api-composer"
