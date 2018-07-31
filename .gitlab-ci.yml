@@ -1,4 +1,4 @@
-image: registry.gitlab.com/imperva-community/docker/cibuilder:stable
+image: registry.gitlab.com/imperva-community/public/docker/cibuilder:stable
 
 services:
 - docker:dind
