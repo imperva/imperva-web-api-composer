@@ -1,7 +1,7 @@
 #
 # Dockerfile for Imperva Web API Tool
 #
-FROM registry.gitlab.com/imperva-community/docker/alpine:3.7
+FROM registry.gitlab.com/imperva-community/public/docker/alpine:3.7
 
 # Install packages
 #   Add Apache2 and PHP7
