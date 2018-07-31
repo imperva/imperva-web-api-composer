@@ -10,8 +10,8 @@ RUN set -xe \
 	&& apk update \
 	&& apk upgrade \
 	&& apk add apache2 apache2-ssl php7 php7-apache2 php7-common php7-curl php7-json \
-	&& rm -rf /var/cache/apk/* /tmp/* /var/tmp/* \
-	&& mkdir -p /var/www/apps/apitool /run/apache2
+	&& mkdir -p /var/www/apps/apitool /run/apache2 \
+	&& rm -rf /tmp/* /var/tmp/* /var/cache/apk/*
 
 # Add files to image
 COPY src /var/www/apps/apitool
