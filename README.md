@@ -20,7 +20,7 @@ To deploy a container based on this image, follow the steps below.  The instruct
 
 1. On the Docker host, create the **docker-compose.yml** file inside the **/opt/docker/imperva-web-api-composer** folder. A sample **docker-compose.yml** file is included in this repository.
 1. Change into the **/opt/docker/imperva-web-api-composer** folder.
-   - `host# cd /opt/docker/imperva-web-api-coposer`
+   - `host# cd /opt/docker/imperva-web-api-composer`
 1. Pull the latest image from the registry:
    - `host# docker-compose pull`
 1. Use **docker-compose** to bring up the container:
