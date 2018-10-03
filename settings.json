@@ -1,12 +1,21 @@
 {
-	"version": "1.0",
+	"ci_tool": "gitlab",
+	"version": "1.0.0",
 	"docker": {
 		"images": {
 			"imperva-web-api-composer": {
-				"dockerfile": "./Dockerfile",
-				"build_options": [],
-				"extra_tags": ["latest", "beta"],
-				"push_to_registries": ["AWS-ECR-US-EAST-2", "PublicDockerHub"]
+				"cache": {
+					"pull_from_registry": "GitlabCloud",
+					"image": "imperva-web-api-composer:latest"
+				},
+				"extra_tags": [
+					"latest", 
+					"beta"
+				],
+				"push_to_registries": [
+					"GitlabCloud", 
+					"DockerHub"
+				]
 			}
 		}
 	}

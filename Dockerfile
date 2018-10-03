@@ -1,7 +1,7 @@
 #
 # Dockerfile for Imperva Web API Tool
 #
-FROM impervainc/alpine:3.7
+FROM registry.gitlab.com/imperva-community/public/docker/alpine:stable
 
 # Install packages
 #   Add Apache2 and PHP7
@@ -10,8 +10,8 @@ RUN set -xe \
 	&& apk update \
 	&& apk upgrade \
 	&& apk add apache2 apache2-ssl php7 php7-apache2 php7-common php7-curl php7-json \
-	&& rm -rf /var/cache/apk/* /tmp/* /var/tmp/* \
-	&& mkdir -p /var/www/apps/apitool /run/apache2
+	&& mkdir -p /var/www/apps/apitool /run/apache2 \
+	&& rm -rf /tmp/* /var/tmp/* /var/cache/apk/*
 
 # Add files to image
 COPY src /var/www/apps/apitool
@@ -35,9 +35,8 @@ HEALTHCHECK --start-period=15s CMD /usr/local/bin/healthcheck.sh || exit 1
 ARG NAME
 ARG VERSION
 ARG RELEASE_DATE
-ARG BUILD_TAG
 ARG GIT_SHA1
-ARG EXTRA_TAGS_FLAT
+ARG TAGS
 
 # Image build metadata
 ENV IMAGE_NAME "${NAME}"
@@ -49,5 +48,5 @@ LABEL \
 	com.imperva.image_name="${IMAGE_NAME}" \
 	com.imperva.image_version="${IMAGE_VERSION}" \
 	com.imperva.image_release_date="${IMAGE_RELEASE_DATE}" \
-	com.imperva.image_tags="${BUILD_TAG} ${IMAGE_VERSION} ${EXTRA_TAGS_FLAT}" \
+	com.imperva.image_tags="${TAGS}" \
 	com.imperva.commit_id="${GIT_SHA1}"
