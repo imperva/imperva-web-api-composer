@@ -3,6 +3,11 @@ var SSActions = {};
 var SSSwagger = {"paths":{}};
 var getSSActions = {};
 
+var ss_server_sel = '#SecureSphereAPI #MXServers';
+var ss_action_sel = '#SecureSphereAPI #SSActions';
+var ss_session_sel = '#SecureSphereAPI #jsessionid';
+var ss_data_sel = '#SecureSphereAPI #SSdata';
+
 /*
 Legacy:
 getSSActions
@@ -38,7 +43,7 @@ SSapiParamMapping
 
 SSSwagger new structure
 	basePath	"/SecureSphere/api"
-	definitions { 
+	definitions {
 		ServerGroupDTO
 			properties	Object { name: {…}, operationMode: {…} }
 			name	Object { type: "string" }
@@ -47,8 +52,8 @@ SSSwagger new structure
 			type	"string"
 			type
 	}
-	paths	{ 
-		"/v1/status/alarms/active": 
+	paths	{
+		"/v1/status/alarms/active":
 			"post"
 				operationId	"createServerGroup"
 				parameters [{
@@ -74,7 +79,7 @@ SSSwagger new structure
 
 
 
-*/ 
+*/
 
 var xsd = {"complexTypes":{},"elements":{}};
 var SScurUrlParamsAry = [];
@@ -82,7 +87,7 @@ var SScurUrlParamsIndex = 0;
 var curSSAuth = {};
 
 $().ready(function() {
-	$('#SecureSphereAPI #SSActions').change(function(){ SSchangeAction(); SScurUrlParamsIndex=0; SSgetURLParams(); });
+	$().change(function(){ SSchangeAction(); SScurUrlParamsIndex=0; SSgetURLParams(); });
 	$('#SecureSphereAPI #SSmethod').change(function(){
 		SSrenderJSONParamsHTML();
 	});
@@ -97,31 +102,31 @@ $().ready(function() {
 	$('#ssDeleteCredentials').click(function(){ ssDeleteCredentials(); });
 	loadSSCredentials();
 	$('#SecureSphereAPI #MXServer').blur(function(){ SSupdateReqURL(); });
-	$('#SecureSphereAPI #SSdata').blur(function(){ SSUpdateCURL(); });
+	$(ss_data_sel).blur(function(){ SSUpdateCURL(); });
 	SSLoadAll();
 	SSUpdateJSON();
 });
 
 // Main AJAX function to proxy API calls
 function makeSSCall(action,method,callback,postDataObj) {
-	if (action!=undefined || checkForm()) {
-		var postData = $('#SecureSphereAPI #SSdata').val();
-		if (postDataObj!=undefined) postData = JSON.stringify(postDataObj);
+	if (action!==undefined || checkForm()) {
+		var postData = $(ss_data_sel).val();
+		if (postDataObj!==undefined) postData = JSON.stringify(postDataObj);
 		$('#SecureSphereAPI #SSresult').val('processing...');
-		var requestUrl = $('#SecureSphereAPI #MXServer').val()+$('#SecureSphereAPI #SSActions').val();
-		if (action!=undefined) {
+		var requestUrl = $('#SecureSphereAPI #MXServer').val()+$(ss_action_sel).val();
+		if (action!==undefined) {
 			requestUrl = $('#SecureSphereAPI #MXServer').val()+ssDefConfig.actionPrefix+action;
-		} else if ($('#SecureSphereAPI #SSrequestUrl').val() != ($('#SecureSphereAPI #MXServer').val()+$('#SecureSphereAPI #SSActions').val())) {
+		} else if ($('#SecureSphereAPI #SSrequestUrl').val() != ($('#SecureSphereAPI #MXServer').val()+$(ss_action_sel).val())) {
 			requestUrl = $('#SecureSphereAPI #SSrequestUrl').val();
 		}
 		if (method==undefined) method = $('#SecureSphereAPI #SSmethod').val();
 		method = method.toUpperCase();
-		var postParams = JSON.parse($('#SecureSphereAPI #SSdata').val());
+		var postParams = JSON.parse($(ss_data_sel).val());
 		var reqUrl = "ajax/ss_api_post.php?server="+requestUrl;
-		reqUrl += "&session="+$('#SecureSphereAPI #jsessionid').val();
+		reqUrl += "&session="+$(ss_session_sel).val();
 		reqUrl += "&contentType="+$('#SecureSphereAPI #SScontentType').val();
 		reqUrl += "&method="+method;
-		
+
 		jQuery.ajax ({
 			url: encodeURI(reqUrl).replace('+','%2B'),
 			type: "POST",
@@ -133,16 +138,16 @@ function makeSSCall(action,method,callback,postDataObj) {
 				try { if (data['errors'][0]["description"]=="User is not logged in") { isValidSession=false; login(); } } catch(err) {}
 				responseObj = data;
 				$('#SecureSphereAPI #SSresult').val(JSON.stringify(data));
-				if (callback!=undefined) { 
-					return callback(data); 
+				if (callback!=undefined) {
+					return callback(data);
 				}
 			}
-		});	
+		});
 	/*	$.post(encodeURI(reqUrl), postParams, function(data) {
 			responseObj = data;
 			$('#SecureSphereAPI #SSresult').val(JSON.stringify(data));
-			if (callback!=undefined) { 
-				return callback(data); 
+			if (callback!=undefined) {
+				return callback(data);
 			}
 		});*/
 	}
@@ -150,30 +155,30 @@ function makeSSCall(action,method,callback,postDataObj) {
 
 // Manage credentials
 function loadSSCredentials(){
-	/*$.each(listOfMXs.MXServers, function(i,MX) { 
-		var isDefault = ''; 
+	/*$.each(listOfMXs.MXServers, function(i,MX) {
+		var isDefault = '';
 		if (MX.default) { sDefault=' selected '; $('#SecureSphereAPI #MXServer').parent().parent().hide(); }
-		$('#SecureSphereAPI #MXServers').append('<option value="'+MX.ip+'">'+MX.displayName+' ('+MX.ip+')</option>'); 
+		$(ss_server_sel).append('<option value="'+MX.ip+'">'+MX.displayName+' ('+MX.ip+')</option>');
 	});
 	*/
 	if (localStorage.getItem('SS_AUTH')==null) localStorage.setItem('SS_AUTH','{}');
 	SS_AUTH = JSON.parse(localStorage.getItem('SS_AUTH'));
 	$("#MXServers").html('');
 	$.each(SS_AUTH, function(index_id,configObj) {
-		$("#MXServers").append('<option title="'+configObj.MX_display_name+' ('+configObj.MXServer+')" value="'+index_id+'">'+configObj.MX_display_name+'</option>'); 
+		$("#MXServers").append('<option title="'+configObj.MX_display_name+' ('+configObj.MXServer+')" value="'+index_id+'">'+configObj.MX_display_name+'</option>');
 	});
 	var editVerbiage = 'Add new MX';
 	if ($('#MXServers').children('option').length>0) { editVerbiage = 'Edit current or add new MX'; }
-	$("#MXServers").append('<option value="entermewmx">'+editVerbiage+'</option>');	
+	$("#MXServers").append('<option value="entermewmx">'+editVerbiage+'</option>');
 	$("#MXServers").unbind().change(function(){ renderSSAuth(); });
-	//$('#SecureSphereAPI #MXServers').attr("disabled", false).append('<option value="entermewmx">Enter My Own</option>'); 
-	$('#SecureSphereAPI #MXServer').val($('#SecureSphereAPI #MXServers').val());
+	//$(ss_server_sel).attr("disabled", false).append('<option value="entermewmx">Enter My Own</option>');
+	$('#SecureSphereAPI #MXServer').val($(ss_server_sel).val());
 	renderSSAuth();
 }
 
 function renderSSAuth(){
 	// add click event to expand Manage Credentials manageSSCredentialsBtn and align with Edit current or add new
-	if ($('#SecureSphereAPI #MXServers').val()=='entermewmx') {
+	if ($(ss_server_sel).val()=='entermewmx') {
 		$('#SecureSphereAPI #MX_display_name').parent().parent().show();
 		$('#SecureSphereAPI #MXServer').parent().parent().show();
 		$('#SecureSphereAPI #MXServer').val('').addClass('highlight').attr('placeholder','https://192.168.1.2:8083');
@@ -182,12 +187,12 @@ function renderSSAuth(){
 		$('#SecureSphereAPI #SSpassword').val('').addClass('highlight').attr('placeholder','MX password here');
 		if ($('#manageSSCredentials').css('display')=='none') toggleSSManageCredentials();
 	} else {
-		$('#SecureSphereAPI #MX_display_name').val(SS_AUTH[$('#SecureSphereAPI #MXServers').val()].MX_display_name);
+		$('#SecureSphereAPI #MX_display_name').val(SS_AUTH[$(ss_server_sel).val()].MX_display_name);
 		$('#SecureSphereAPI #MX_display_name').parent().parent().hide();
-		$('#SecureSphereAPI #MXServer').removeClass('highlight').val(SS_AUTH[$('#SecureSphereAPI #MXServers').val()].MXServer);
+		$('#SecureSphereAPI #MXServer').removeClass('highlight').val(SS_AUTH[$(ss_server_sel).val()].MXServer);
 		$('#SecureSphereAPI #MXServer').removeClass('highlight').parent().parent().hide();
-		$('#SecureSphereAPI #SSusername').removeClass('highlight').val(SS_AUTH[$('#SecureSphereAPI #MXServers').val()].SSusername);
-		$('#SecureSphereAPI #SSpassword').removeClass('highlight').val(SS_AUTH[$('#SecureSphereAPI #MXServers').val()].SSpassword);
+		$('#SecureSphereAPI #SSusername').removeClass('highlight').val(SS_AUTH[$(ss_server_sel).val()].SSusername);
+		$('#SecureSphereAPI #SSpassword').removeClass('highlight').val(SS_AUTH[$(ss_server_sel).val()].SSpassword);
 		if ($('#manageSSCredentials').css('display')!='none') toggleSSManageCredentials();
 	}
 	SSupdateReqURL();
@@ -243,7 +248,7 @@ function ssDeleteCredentials(){
 			$('#SSpassword').val('');
 			loadSSCredentials();
 		} else {
-			$.gritter.add({ title: 'User not found', text: "User with account: "+$('#account_id').val()+" and api_id: "+$('#api_id').val()+" currently not stored locally."});	
+			$.gritter.add({ title: 'User not found', text: "User with account: "+$('#account_id').val()+" and api_id: "+$('#api_id').val()+" currently not stored locally."});
 		}
 	}
 }
@@ -258,11 +263,11 @@ function SSchangeAction() {
 		SScurUrlParamsAry = [];
 		var actionObj = SSSwagger.paths[$("#SecureSphereAPI #SSActions").val()];
 		$("#SecureSphereAPI #SSURLparams table").html('');
-		$.each(actionObj, function(method,methodObj) { 
-			$('#SecureSphereAPI #SSmethod option[value="'+method+'"]').removeAttr('disabled'); 
+		$.each(actionObj, function(method,methodObj) {
+			$('#SecureSphereAPI #SSmethod option[value="'+method+'"]').removeAttr('disabled');
 			delete methodObj.queryParams; delete methodObj.bodyParams; delete methodObj.pathParams;
-			$.each(methodObj.parameters, function(i,param) { 
-				if (param.in=="query") { 
+			$.each(methodObj.parameters, function(i,param) {
+				if (param.in=="query") {
 					if (methodObj.queryParams==undefined) methodObj.queryParams = {"index":[],"list":{}};
 					methodObj.queryParams.list[param.name] = param;
 					methodObj.queryParams.index.push(param.name);
@@ -273,20 +278,20 @@ function SSchangeAction() {
 							methodObj.bodyParams.index.push(subParamName);
 							subParamNameObj.name = subParamName;
 							methodObj.bodyParams.list[subParamName] = subParamNameObj;
-						});				
+						});
 					}
-				} else if (param.in=="path") { 
+				} else if (param.in=="path") {
 					if (methodObj.pathParams==undefined) methodObj.pathParams = {"index":[],"list":{}};
 					methodObj.pathParams.list[param.name] = param;
 					methodObj.pathParams.index.push(param.name);
 				}
-			}); 
+			});
 		});
 		$("#SecureSphereAPI #SSmethod option:not([disabled]):first").attr('selected', 'selected');
 		var curMethodObj = SSSwagger.paths[$("#SecureSphereAPI #SSActions").val()][$('#SecureSphereAPI #SSmethod').val()];
 		if (curMethodObj.queryParams!=undefined) {
 			if (curMethodObj.queryParams.index.length>0) $('#SecureSphereAPI #SSrequestUrl').val($('#SecureSphereAPI #SSrequestUrl').val()+"?");
-			$.each(curMethodObj.queryParams.index, function(i,paramName) { 
+			$.each(curMethodObj.queryParams.index, function(i,paramName) {
 				var param = curMethodObj.queryParams.list[paramName];
 				var str = param.name+'={'+param.type+'}';
 				if (curMethodObj.queryParams.length<(i-1)) str += '&';
@@ -306,20 +311,20 @@ function SSchangeAction() {
 		});
 		initSSCopyButtons();
 	}
-	if ($('#SecureSphereAPI #jsessionid').val()=="") {
+	if ($(ss_session_sel).val()=="") {
 		$("#SecureSphereAPI #SSusernametr").show();
 		$("#SecureSphereAPI #SSpasswordtr").show();
 		$("#SecureSphereAPI #SSmethod option").attr('disabled','disabled');
 		$("#SecureSphereAPI #SSmethod").val('post');
 		reqObj = {"username":$('#SecureSphereAPI #SSusername').val(),"password":$('#SecureSphereAPI #SSpassword').val()}
-		$('#SecureSphereAPI #SSdata').val(JSON.stringify(reqObj));
+		$(ss_data_sel).val(JSON.stringify(reqObj));
 	} else {
 		SSrenderJSONParamsHTML();
 	}
 }
 
 function initSSCopyButtons(){
-	$('#SecureSphereAPI .ui-icon-copy').unbind("click").click(function(){ 
+	$('#SecureSphereAPI .ui-icon-copy').unbind("click").click(function(){
 		var id = this.id.substring(0,this.id.length-4);
 		if ($("#SecureSphereAPI #"+id).val()!='') {
 			if ($("#SecureSphereAPI #"+id).hasClass("query")) {
@@ -369,9 +374,9 @@ function SSUpdateJSON(){
 			});
 		}
 	}
-	//if ($('#SecureSphereAPI #jsessionid').val()=="") reqObj = {"username":$('#SecureSphereAPI #SSusername').val(),"password":$('#SecureSphereAPI #SSpassword').val()};	
-	if ($('#SecureSphereAPI #jsessionid').val()=="") reqObj['Authorization Header'] = "Authorization: Basic "+btoa($('#SecureSphereAPI #SSusername').val()+$('#SecureSphereAPI #SSpassword').val()); 
-	$('#SecureSphereAPI #SSdata').val(JSON.stringify(reqObj));
+	//if ($(ss_session_sel).val()=="") reqObj = {"username":$('#SecureSphereAPI #SSusername').val(),"password":$('#SecureSphereAPI #SSpassword').val()};
+	if ($(ss_session_sel).val()=="") reqObj['Authorization Header'] = "Authorization: Basic "+btoa($('#SecureSphereAPI #SSusername').val()+$('#SecureSphereAPI #SSpassword').val());
+	$(ss_data_sel).val(JSON.stringify(reqObj));
 	$('#SecureSphereAPI #SSJSONparams input').blur(function(){ SSUpdateJSON(); });
 	$('#SecureSphereAPI #SSJSONparams textarea').blur(function(){ SSUpdateJSON(); });
 	$('#SecureSphereAPI #SSJSONparams select').change(function(){ SSUpdateJSON(); });
@@ -381,13 +386,13 @@ function SSUpdateCURL(){
 	if (!$('#SecureSphereAPI #SSrequestUrl').hasClass('errors')) {
 		//alert("$('#SecureSphereAPI #SSrequestUrl').hasClass('errors')="+$('#SecureSphereAPI #SSrequestUrl').hasClass('errors'));
 		var str = 'curl -ik -X '+$('#SecureSphereAPI #SSmethod').val().toUpperCase()+' ';
-		if ($('#SecureSphereAPI #jsessionid').val()=="") {
-			str += '-H "Authorization: Basic '+btoa($('#SecureSphereAPI #SSusername').val()+$('#SecureSphereAPI #SSpassword').val())+'"'; 
+		if ($(ss_session_sel).val()=="") {
+			str += '-H "Authorization: Basic '+btoa($('#SecureSphereAPI #SSusername').val()+$('#SecureSphereAPI #SSpassword').val())+'"';
 		} else {
-			str += '-H "Cookie: '+$('#SecureSphereAPI #jsessionid').val()+'" -H "Content-Type: application/json" -H "Accept: application/json" ';
-			if ($('#SecureSphereAPI #SSdata').val()!='{}') str += " -d '"+$('#SecureSphereAPI #SSdata').val()+"' ";
+			str += '-H "Cookie: '+$(ss_session_sel).val()+'" -H "Content-Type: application/json" -H "Accept: application/json" ';
+			if ($(ss_data_sel).val()!='{}') str += " -d '"+$(ss_data_sel).val()+"' ";
 		}
-		//str += ' '+$('#SecureSphereAPI #MXServer').val()+encodeURI($('#SecureSphereAPI #SSActions').val());
+		//str += ' '+$('#SecureSphereAPI #MXServer').val()+encodeURI($(ss_action_sel).val());
 		str += ' '+encodeURI($('#SecureSphereAPI #SSrequestUrl').val());
 		$('#SecureSphereAPI #SScurlUrl').val(str);
 	} else {
@@ -395,7 +400,7 @@ function SSUpdateCURL(){
 	}
 }
 function SSupdateReqURL() {
-	$('#SecureSphereAPI #SSrequestUrl').val($('#SecureSphereAPI #MXServer').val()+ssDefConfig.actionPrefix+$('#SecureSphereAPI #SSActions').val());
+	$('#SecureSphereAPI #SSrequestUrl').val($('#SecureSphereAPI #MXServer').val()+ssDefConfig.actionPrefix+$(ss_action_sel).val());
 	checkForm();
 }
 
@@ -414,15 +419,15 @@ function login() {
 			$('#SecureSphereAPI #SSresult').val(JSON.stringify(data));
 			if (data.errors==undefined) {
 				localStorage.setItem('SS_VERSION',data['serverVersion']);
-				if ($('#SecureSphereAPI #jsessionid').val()!='') {
-					$('#SecureSphereAPI #jsessionid').val(data['session-id']);
+				if ($(ss_session_sel).val()!='') {
+					$(ss_session_sel).val(data['session-id']);
 					$.gritter.add({ title: 'Successfully logged back in!', text: "Generated new JSESSIONID"});
-					$('#SecureSphereAPI #SSActions').trigger('change');
+					$(ss_action_sel).trigger('change');
 					$('#SecureSphereAPI #SSWAFPolicies_dest option').attr("selected", "selected");
 					moveSSPolicyLeft();
 				} else {
 					$.gritter.add({ title: 'Successful Login', text: "Loading Swagger API Schema..."});
-					$('#SecureSphereAPI #jsessionid').val(data['session-id']);
+					$(ss_session_sel).val(data['session-id']);
 					$("#SecureSphereAPI #SSusernametr").hide();
 					$("#SecureSphereAPI #SSpasswordtr").hide();
 					$("#SecureSphereAPI #SSlogin").hide();
@@ -432,7 +437,7 @@ function login() {
 					$("#SecureSphereAPI #loadSiteTreeData").show();
 					$("#SecureSphereAPI #SSActions option").removeAttr('disabled');
 					loadSwagger();
-					$('#SecureSphereAPI #MXServers').attr("disabled", true); 
+					$(ss_server_sel).attr("disabled", true);
 					$('#SecureSphereAPI #MXServer').attr('readonly', true);
 				}
 			} else {
@@ -461,10 +466,10 @@ function loadSwagger(){
 	//var requestUrl = window.location.href+"assets/"+localStorage.getItem('SS_VERSION').substr(0,2)+"_swagger.json";
 	//var requestUrl = ssDefConfig.proto+'://'+$('#SecureSphereAPI #MXServer').val()+ssDefConfig.port+"/api/experimental/internal/swagger";
 	var reqUrl = "ajax/ss_schema.php?version="+localStorage.getItem('SS_VERSION').substr(0,2);
-	reqUrl += "&session="+$('#SecureSphereAPI #jsessionid').val();
+	reqUrl += "&session="+$(ss_session_sel).val();
 	reqUrl += "&contentType="+$('#SecureSphereAPI #SScontentType').val();
 	reqUrl += "&method="+"GET";
-	
+
 	jQuery.ajax ({
 		url: encodeURI(reqUrl),
 		type: "GET",
@@ -472,15 +477,15 @@ function loadSwagger(){
 		success: function(data){
 			$.gritter.add({ title: 'Processing...', text: "loading Swagger schema"});
 			SSSwagger = JSON.parse(data);
-			$('#SecureSphereAPI #SSActions').html("");
+			$(ss_action_sel).html("");
 			var actionkeys = Object.keys(SSSwagger.paths);
 			actionkeys.sort();
-			for (var i=0; i<actionkeys.length; i++) { $('#SecureSphereAPI #SSActions').append('<option value="'+actionkeys[i]+'">'+actionkeys[i]+'</option>'); }
+			for (var i=0; i<actionkeys.length; i++) { $(ss_action_sel).append('<option value="'+actionkeys[i]+'">'+actionkeys[i]+'</option>'); }
 			$.gritter.add({ title: 'Success', text: "Loaded WADL and populated actions"});
 			SSchangeAction();
 			getAllWAFPolicies();
 		}
-	});	
+	});
 }
 
 function SSFormatJSONParamObj(param){
@@ -495,7 +500,7 @@ function SSresolveActionPlaceHolders(str){
 			param = param.substr(1,param.length-2);
 			str = str.replace("{"+param+"}",$("#SecureSphereAPI #"+param).val());
 		}
-	});	
+	});
 	return str;
 }
 
@@ -511,7 +516,7 @@ function SSgetURLParams(curObj) {
 		if (SSapiParamMapping[curParam]!=undefined) {
 			var curAction = null;
 			try { curAction = SSresolveActionPlaceHolders(SSapiParamMapping[curParam].getAPIurlMapping.default.url); } catch(err) {}
-			if (curAction==null && SSapiParamMapping[curParam].getAPIurlMapping[$('#SecureSphereAPI #SSActions').val()]!=undefined) curAction = SSresolveActionPlaceHolders(SSapiParamMapping[curParam].getAPIurlMapping[$('#SecureSphereAPI #SSActions').val()].url); 
+			if (curAction==null && SSapiParamMapping[curParam].getAPIurlMapping[$(ss_action_sel).val()]!=undefined) curAction = SSresolveActionPlaceHolders(SSapiParamMapping[curParam].getAPIurlMapping[$(ss_action_sel).val()].url);
 			if (curAction!=null && curAction!=undefined) {
 				makeSSCall(curAction,'GET',SSrenderURLParams,{});
 			} else {

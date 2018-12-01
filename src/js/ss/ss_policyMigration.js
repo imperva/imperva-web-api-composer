@@ -116,7 +116,9 @@ function retrieveDestPolicyConfigs(){
 function retrieveDestPolicyConfigResponse(data){
 	var isValid = true;
 	var badPredicates = [];
-	if (data["error-code"]==undefined && data["errors"]==undefined) {
+	if (data===null) {
+		isValid = false;
+	} else if (data["error-code"]==undefined && data["errors"]==undefined) {
 		$.each(data.matchCriteria, function(i,predicate) {
 			if (predicateWhiteList[predicate.type]==undefined) {
 				isValid=false;
@@ -146,9 +148,14 @@ function retrieveDestPolicyConfigResponse(data){
 		allSSWAFPolicies_src[curDestPolicyObj.policyType][curDestPolicyObj.policyName] = false;
 		delete allSSWAFPolicies_dest[curDestPolicyObj.policyType][curDestPolicyObj.policyName];
 		curDestPolicyObj = null;
+		retrieveDestPolicyConfigs();
 	}
 	renderPolicyOptions('SSWAFPolicies_src',allSSWAFPolicies_src);
 	renderPolicyOptions('SSWAFPolicies_dest',allSSWAFPolicies_dest);
+	if (JSON.stringify(allSSWAFPolicies_dest.webServiceCustomPolicies)!=='{}' || JSON.stringify(allSSWAFPolicies_dest.webApplicationCustomPolicies)!=='{}') {
+		$('#SecureSphereAPI #migrateSSPoliciesCURL_btn').attr('disabled',false);
+		$('#SecureSphereAPI #migrateSSPoliciesSave_btn').attr('disabled',false);
+	}
 }
 
 var curExtDataSrcObj = null;
@@ -170,7 +177,7 @@ function retrievePolicyExtDataSrcConfigs(){
 		});
 		$('#SecureSphereAPI #migrateSSPoliciesCURL_btn').attr('disabled',false); 
 		$('#SecureSphereAPI #migrateSSPoliciesSave_btn').attr('disabled',false); 
-		retrievePolicyExtDataSrcs()
+		retrievePolicyExtDataSrcs();
 	}
 }
 function retrievePolicyExtDataSrcConfigsResponse(data){
