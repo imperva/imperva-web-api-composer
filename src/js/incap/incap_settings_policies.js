@@ -72,7 +72,10 @@ function incapSavePolicy(obj){
     var policyObj = JSON.parse($('#incap_policies_tbl tr.current .policy_definition').val());
     $('#incap_policies_tbl tr.current').removeClass("current");
     delete INCAP_POLICY_TEMPLATES[policyType][origPolicyName];
-    INCAP_POLICY_TEMPLATES[policyType][newPolicyName] = policyObj;
+    // remove empty object attributes
+		if (policyObj.from==="") delete policyObj.from;
+		if (policyObj.filter==="") delete policyObj.filter;
+		INCAP_POLICY_TEMPLATES[policyType][newPolicyName] = policyObj;
     localStorage.setItem('INCAP_POLICY_TEMPLATES',JSON.stringify(INCAP_POLICY_TEMPLATES).replace(/\(\ /g,'(').replace(/ \)/g,')'));
     updatePolicyInPolicyGroup(policyType,origPolicyName,newPolicyName);
     $.gritter.add({ title: 'SUCCESS', text: 'Policy "'+newPolicyName+'" successfully saved'});

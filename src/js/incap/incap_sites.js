@@ -211,8 +211,10 @@ function incapSavePolicyTemplate(cur_id) {
         }
     }
     if (okToSave==true) {
-		//curPolicyObj.filter = $("<div/>").html(curPolicyObj.filter).text();
-        INCAP_POLICY_TEMPLATES[curPolicyIndexObj.ruleType][curPolicyObj.name] = curPolicyObj;
+			if (curPolicyObj.from==="") delete curPolicyObj.from;
+			if (curPolicyObj.filter==="") delete curPolicyObj.filter;
+			//curPolicyObj.filter = $("<div/>").html(curPolicyObj.filter).text();
+			INCAP_POLICY_TEMPLATES[curPolicyIndexObj.ruleType][curPolicyObj.name] = curPolicyObj;
     }
     localStorage.setItem('INCAP_POLICY_TEMPLATES',JSON.stringify(INCAP_POLICY_TEMPLATES));
     renderIncapPolcies();
