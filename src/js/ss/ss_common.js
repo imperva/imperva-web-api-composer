@@ -5,6 +5,7 @@ var getSSActions = {};
 
 var ss_server_sel = '#SecureSphereAPI #MXServers';
 var ss_action_sel = '#SecureSphereAPI #SSActions';
+var ss_method_sel = '#SecureSphereAPI #SSmethod';
 var ss_session_sel = '#SecureSphereAPI #jsessionid';
 var ss_data_sel = '#SecureSphereAPI #SSdata';
 
@@ -87,8 +88,8 @@ var SScurUrlParamsIndex = 0;
 var curSSAuth = {};
 
 $().ready(function() {
-	$().change(function(){ SSchangeAction(); SScurUrlParamsIndex=0; SSgetURLParams(); });
-	$('#SecureSphereAPI #SSmethod').change(function(){
+	$(ss_action_sel).change(function(){ SSchangeAction(); SScurUrlParamsIndex=0; SSgetURLParams(); });
+	$(ss_method_sel).change(function(){
 		SSrenderJSONParamsHTML();
 	});
 	$('#SecureSphereAPI #siteName').change(function(){
@@ -119,7 +120,7 @@ function makeSSCall(action,method,callback,postDataObj) {
 		} else if ($('#SecureSphereAPI #SSrequestUrl').val() != ($('#SecureSphereAPI #MXServer').val()+$(ss_action_sel).val())) {
 			requestUrl = $('#SecureSphereAPI #SSrequestUrl').val();
 		}
-		if (method==undefined) method = $('#SecureSphereAPI #SSmethod').val();
+		if (method==undefined) method = $(ss_method_sel).val();
 		method = method.toUpperCase();
 		var postParams = JSON.parse($(ss_data_sel).val());
 		var reqUrl = "ajax/ss_api_post.php?server="+requestUrl;
@@ -288,7 +289,7 @@ function SSchangeAction() {
 			});
 		});
 		$("#SecureSphereAPI #SSmethod option:not([disabled]):first").attr('selected', 'selected');
-		var curMethodObj = SSSwagger.paths[$("#SecureSphereAPI #SSActions").val()][$('#SecureSphereAPI #SSmethod').val()];
+		var curMethodObj = SSSwagger.paths[$("#SecureSphereAPI #SSActions").val()][$(ss_method_sel).val()];
 		if (curMethodObj.queryParams!=undefined) {
 			if (curMethodObj.queryParams.index.length>0) $('#SecureSphereAPI #SSrequestUrl').val($('#SecureSphereAPI #SSrequestUrl').val()+"?");
 			$.each(curMethodObj.queryParams.index, function(i,paramName) {
@@ -341,7 +342,7 @@ function SSUpdateJSON(){
 	var reqObj = {};
 	var actionObj = SSSwagger.paths[$("#SecureSphereAPI #SSActions").val()];
 	if (actionObj!=undefined) {
-		var methodObj = actionObj[$('#SecureSphereAPI #SSmethod').val()];
+		var methodObj = actionObj[$(ss_method_sel).val()];
 		if (methodObj.bodyParams!=undefined) {
 			$.each(methodObj.bodyParams.index, function(i,paramName) {
 				var param = methodObj.bodyParams.list[paramName];
@@ -385,7 +386,7 @@ function SSUpdateJSON(){
 function SSUpdateCURL(){
 	if (!$('#SecureSphereAPI #SSrequestUrl').hasClass('errors')) {
 		//alert("$('#SecureSphereAPI #SSrequestUrl').hasClass('errors')="+$('#SecureSphereAPI #SSrequestUrl').hasClass('errors'));
-		var str = 'curl -ik -X '+$('#SecureSphereAPI #SSmethod').val().toUpperCase()+' ';
+		var str = 'curl -ik -X '+$(ss_method_sel).val().toUpperCase()+' ';
 		if ($(ss_session_sel).val()=="") {
 			str += '-H "Authorization: Basic '+btoa($('#SecureSphereAPI #SSusername').val()+$('#SecureSphereAPI #SSpassword').val())+'"';
 		} else {
@@ -505,7 +506,7 @@ function SSresolveActionPlaceHolders(str){
 }
 
 function SSgetURLParams(curObj) {
-	var methodObj = SSSwagger.paths[$("#SecureSphereAPI #SSActions").val()][$('#SecureSphereAPI #SSmethod').val()];
+	var methodObj = SSSwagger.paths[$("#SecureSphereAPI #SSActions").val()][$(ss_method_sel).val()];
 	if (curObj!=undefined) setCurrentParamIndex(curObj);
 	if (SScurUrlParamsAry.length>(SScurUrlParamsIndex)) {
 		$('#SecureSphereAPI #'+SScurUrlParamsAry[SScurUrlParamsIndex].name).html('<option value="">loading...</option>');
@@ -571,7 +572,7 @@ function SSrenderURLParams(data){
 	$("#SecureSphereAPI #"+SScurUrlParamsAry[SScurUrlParamsIndex].name).unbind().change(function(){ SSgetURLParams(this); });
 	if (SScurUrlParamsAry[SScurUrlParamsIndex].name=='policyName') {
 		$('#SecureSphereAPI #policyName').val(curLoadedPolicyName);
-		$('#SecureSphereAPI #SSmethod').val('GET');
+		$(ss_method_sel).val('GET');
 		$('#SecureSphereAPI #policyName_btn').trigger('click');
 		SSUpdateJSON();
 		$('#SecureSphereAPI #SSexecute').trigger('click');
@@ -582,7 +583,7 @@ function SSrenderURLParams(data){
 
 function SSrenderJSONParamsHTML(){
 	$("#SecureSphereAPI #SSJSONparams table").html('');
-	var methodObj = jQuery.extend(true, {}, SSSwagger.paths[$("#SecureSphereAPI #SSActions").val()][$('#SecureSphereAPI #SSmethod').val()]);
+	var methodObj = jQuery.extend(true, {}, SSSwagger.paths[$("#SecureSphereAPI #SSActions").val()][$(ss_method_sel).val()]);
 	if (methodObj.bodyParams!=undefined) {
 		$.each(methodObj.bodyParams.index, function(i,paramName) {
 			// if (paramName!='body') {

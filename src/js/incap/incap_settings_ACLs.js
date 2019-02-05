@@ -105,7 +105,8 @@ function incapDeleteACLWAFRule(obj){
 			delete INCAP_ACL_WAF_TEMPLATES.types[ACLWAFRuleType][ACLWAFRuleIndex];
 			localStorage.setItem('INCAP_ACL_WAF_TEMPLATES',JSON.stringify(INCAP_ACL_WAF_TEMPLATES));
             set_incapDeleteACLWAFRuleFromGroup(ACLWAFRuleType,ACLWAFRuleIndex);
-			renderIncapACLWAFRules();
+            renderIncapACLWAFRules();
+            renderIncapACLWAFGroups();
 		} else {
 			$.gritter.add({ title: 'Rule not found', text: ACLWAFRuleType +' Rule "'+ACLWAFRuleName+' ('+ACLWAFRuleIndex+')" currently not stored locally.'});
 		}
