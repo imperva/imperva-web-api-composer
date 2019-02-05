@@ -76,7 +76,7 @@ function loadSitesResponse(response){
 			str += '<td>'+site.dns[1].dns_record_name+'</td><td>'+site.dns[1].set_type_to+'</td><td>'+site.dns[1].set_data_to.join(',')+'</td></tr>';
 			str += '</tbody></table>';
 		}*/
-		if (site.login_protect != undefined) {
+		if (site.login_protect !== undefined) {
 			str += '<table id="loginProtect_'+site.site_id+'_tbl" title="Login Protect" class="tablesorter"><thead><tr><th>Login Protect</th>';
 			$.each(loginProtectTableHeaders, function(i,header) { str += '<th title="'+header+'">'+header+'</th>'; });
 			str += '</tr></thead><tbody><tr><td>enabled: '+site.login_protect.enabled+'</td>';
@@ -86,9 +86,10 @@ function loadSitesResponse(response){
 			str += '</tr></tbody></table>';
 		}
 		var divId = 'site_'+site.site_id+'_rules_tbl';
-		if (site.security != undefined) {
-			if (site.security.acls != undefined) {
-				if (site.security.acls.rules != undefined) {
+
+		if (site.security !== undefined) {
+			if (site.security.acls !== undefined) {
+				if (site.security.acls.rules !== undefined) {
 					if (site.security.acls.rules.length>0) {
 						str += '<table id="site_'+site.site_id+'_acls_tbl" class="tablesorter"><thead><tr><th>';
 						str += '<a href="javascript:void(0)" id="site_'+site.site_id+'_acls" title="Create CURL samples for all rules in Migration Tools tab" class="ui-icon ui-icon-newwin copyAllAcls"> </a>';
@@ -105,16 +106,16 @@ function loadSitesResponse(response){
 					}
 				}
 			}
-			if (site.security.waf != undefined) {
-				if (site.security.waf.rules != undefined) {
+			if (site.security.waf !== undefined) {
+				if (site.security.waf.rules !== undefined) {
 					str += '<table id="site_'+site.site_id+'_acls_tbl" class="tablesorter"><thead><tr><th>';
 					str += '<a href="javascript:void(0)" id="site_'+site.site_id+'_acls" title="Create CURL samples for all rules in Migration Tools tab" class="ui-icon ui-icon-newwin copyAllAcls"> </a>';
 					str += '</th><th></th><th>WAF Rules</th><th>JSON</th></tr></thead><tbody>';
 					$.each(site.security.waf.rules, function(i,ruleObj) {
-						if (ruleObj.id!='api.threats.customRule') {
+						if (ruleObj.id!=='api.threats.customRule') {
 							str += '<tr id="'+ruleObj.id+'">';
 							str += '<td><a href="javascript:void(0)" id="acls|'+ruleObj.id.replace(/\./g,'_')+'" title="Copy individual rule" class="ui-icon ui-icon-copy copyRule"> </a></td>';
-							str += '<td class="min"><a href="javascript:void(0)" id="'+ruleObj.id+'" title="Save individual ACL" class="ui-icon ui-icon-disk saveACL"> </a></td>';
+							str += '<td class="min"><a href="javascript:void(0)" id="'+ruleObj.id+'" title="Save individual ACL" class="ui-icon ui-icon-disk saveACLWAFRule"> </a></td>';
 							str += '<td>'+ruleObj.name+'</td><td class="json" id="json_'+ruleObj.id.replace(/\./g,'_')+'">'+JSON.stringify(ruleObj)+'</td>';
 							//str += '<td class="min"><a href="javascript:void(0)" id="'+$('#incapSitesAccountsList').val()+'_'+site.site_id+'_'+ruleObj.id+'" title="Delete individual ACL" class="ui-icon ui-icon-trash deleteACLWAFRule"> </a></td>';
 							str += '</tr>';
@@ -191,13 +192,13 @@ function loadRulesResponse(response,input_id) {
 }
 
 function incapSaveAllPolicyTemplates(id) {
-    alert('incapSaveAllPolicyTemplates');
+    // alert('incapSaveAllPolicyTemplates');
 }
 
 /* START Manage Policy Functions */
 function incapSavePolicyTemplate(cur_id) {
-    var curPolicyIndexObj = JSON.parse(cur_id.replace(/'/g,'"'));
-    var curPolicyObj = JSON.parse($('#json_'+curPolicyIndexObj.id).text());
+	var curPolicyIndexObj = JSON.parse(cur_id.replace(/'/g,'"'));
+	var curPolicyObj = JSON.parse($('#json_'+curPolicyIndexObj.id).text());
 	delete curPolicyObj.id;
 	delete curPolicyObj.last_7_days_requests_count;
     INCAP_POLICY_TEMPLATES = JSON.parse(localStorage.getItem('INCAP_POLICY_TEMPLATES'));
@@ -245,9 +246,9 @@ function incapDeletePolicyFromSiteResponse(response){
 /* START Manage ACL Functions */
 function incapSaveACLWAFRuleTemplate(cur_id) {
 	var curACLObj = JSON.parse($('#json_'+cur_id.replace(/\./g,'_')).text());
-	if (curACLObj.geo!=undefined){
-		if (curACLObj.geo.continents!=undefined) curACLObj.continents=curACLObj.geo.continents;
-		if (curACLObj.geo.countries!=undefined) curACLObj.countries=curACLObj.geo.countries;
+	if (curACLObj.geo!==undefined){
+		if (curACLObj.geo.continents!==undefined) curACLObj.continents=curACLObj.geo.continents;
+		if (curACLObj.geo.countries!==undefined) curACLObj.countries=curACLObj.geo.countries;
 		delete curACLObj.geo;
 	}
 	INCAP_ACL_WAF_TEMPLATES = JSON.parse(localStorage.getItem('INCAP_ACL_WAF_TEMPLATES'));
@@ -255,8 +256,8 @@ function incapSaveACLWAFRuleTemplate(cur_id) {
 	//console.log(curACLObj);
 	$.gritter.add({ title: 'Saved', text: "Saved Security/WAF rule '"+curACLObj.name+" ("+INCAP_ACL_WAF_TEMPLATES.nextUniqueId+")'."});
 	INCAP_ACL_WAF_TEMPLATES.nextUniqueId++;
-    localStorage.setItem('INCAP_ACL_WAF_TEMPLATES',JSON.stringify(INCAP_ACL_WAF_TEMPLATES));
-    renderIncapACLWAFRules();
+	localStorage.setItem('INCAP_ACL_WAF_TEMPLATES',JSON.stringify(INCAP_ACL_WAF_TEMPLATES));
+	renderIncapACLWAFRules();
 	renderMigrationToolbar();
 }
 

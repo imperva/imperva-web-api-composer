@@ -38,7 +38,7 @@ function incapAddNewPolicy() {
 	str += '<td><input type="text" class="policy_name" value="" /></td>';
 	str += '<td><input type="text" class="policy_type" value="" /></td>';
 	str += '<td><input type="text" class="policy_definition" value="" /></td>';
-	str += '<td class="nobr" class="td_new_policy">';
+	str += '<td class="nobr td_new_policy">';
 	str += '  <a class="incap_save_policy ui-icon ui-icon-disk" title="Save"></a>';
 	str += '  <a class="incap_cancel_policy ui-icon ui-icon-cancel" title="Cancel"></a>';
 	str += '</td>';
@@ -89,7 +89,7 @@ function incapDeletePolicy(obj){
     var policyType = idsAry[1];
     var policyName = idsAry[2];
 	if (confirm('Are you sure you want delete the '+policyType+' policy "'+policyName+'" from this tool?')) {
-		if (INCAP_POLICY_TEMPLATES[policyType][policyName]!=undefined) {
+		if (INCAP_POLICY_TEMPLATES[policyType][policyName]!==undefined) {
 			delete INCAP_POLICY_TEMPLATES[policyType][policyName];
 			localStorage.setItem('INCAP_POLICY_TEMPLATES',JSON.stringify(INCAP_POLICY_TEMPLATES));
             set_incapDeletePolicyFromGroup(policyType,policyName);
@@ -116,19 +116,19 @@ function set_renderIncapPolicyHTML(policyObj,policyType){
 }
 
 function updatePolicyName(event,obj){
-    if ($('#incap_policies_tbl tr.current .policy_definition').val().trim()!='') {
+    if ($('#incap_policies_tbl tr.current .policy_definition').val().trim()!=='') {
         try {
             var isOk = false;
             var curPolicyObj = JSON.parse($('#incap_policies_tbl tr.current .policy_definition').val());
             if ($(obj).prop("tagName")=='TEXTAREA'){
-                if (curPolicyObj.name!='' && curPolicyObj.name!=undefined) {
+                if (curPolicyObj.name!='' && curPolicyObj.name!==undefined) {
                     isOk = true;
                     $('#incap_policies_tbl tr.current .policy_name, #incap_policies_tbl tr.current .policy_definition').removeClass("error");
                     $('#incap_policies_tbl tr.current .policy_name').val(curPolicyObj.name);
                 }
             } else {
                 $('#incap_policies_tbl tr.current .policy_name').val($('#incap_policies_tbl tr.current .policy_name').val().trim());
-                if ($('#incap_policies_tbl tr.current .policy_name').val()!='') {
+                if ($('#incap_policies_tbl tr.current .policy_name').val()!=='') {
                     isOk = true;
                     curPolicyObj.name = $('#incap_policies_tbl tr.current .policy_name').val();
                     $('#incap_policies_tbl tr.current .policy_definition').val(JSON.stringify(curPolicyObj));

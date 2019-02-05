@@ -130,11 +130,11 @@ function set_incapDeleteACLWAFGroup(){
 }
 
 /* Start maintain ACL/WAF groups id references */
-function set_incapDeleteACLWAFFromGroup(ruleType,ACLWAFIndex) {
+function set_incapDeleteACLWAFRuleFromGroup(ruleType,ACLWAFIndex) {
     INCAP_ACL_WAF_GROUPS = JSON.parse(localStorage.getItem('INCAP_ACL_WAF_GROUPS'));    
     $.each(INCAP_ACL_WAF_GROUPS, function(grpName,grpObj) {
         if (grpObj.members[ruleType]!=undefined) {
-            if (grpObj.members[ruleType]==ACL_WAFIndex) {
+            if (grpObj.members[ruleType]==ACLWAFIndex) {
                 delete grpObj.members[ruleType];
             }
         }
