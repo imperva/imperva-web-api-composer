@@ -337,6 +337,7 @@ $.extend($.gritter.options, {
 						<div id="migrationToolsButtons">
 							<a href="javascript:void(0);" style="margin: 3px 15px 0px 0px;" class="button" id="runMigration">Run</a>
 							<a href="javascript:void(0);" style="margin: 3px 15px 0px 0px;" class="button" id="clearEventLog">Clear Log</a>
+							<a href="javascript:void(0);" style="margin: 3px 15px 0px 0px;" class="button" id="migrate_sites_refresh">Refresh Site List</a>
 						</div>
 						<div class="formbox2">
 							<table class="tableColL">

@@ -341,7 +341,7 @@ function convertSSPolicy(option){
 		} else if (predicate.type=="sourceGeolocation") {
 			var allVals = [];
 			$.each(predicate.values, function(i,country) { if (countriesTbl[country]!=undefined) { allVals.push(countriesTbl[country]); } });
-			incapPolicy.filter += 'CountryCode == "'+allVals.join('";"')+'" '; 					
+			incapPolicy.filter += 'CountryCode == '+allVals.join(';')+' ';
 		} else if (predicate.type=="sourceIpAddresses") {
 			var allIps = {}; var allIpsStr = '';
 			if (predicate.userDefined!=undefined) { $.each(predicate.userDefined, function(i,ip) { allIps[ip]=ip; }); }

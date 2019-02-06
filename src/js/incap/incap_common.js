@@ -232,22 +232,22 @@ function loadCredentials(){
 
 /* Series of call back functions to load sub account IDs in the right location when changing API_KEYs on the UI */
 function loadSubAccounts(obj){
-	var postDataObj = getUserAuthObj(obj.value);
-	if (obj.id=='incapAccountsList') { // API Client
+	var postDataObj = getUserAuthObj($(obj).val());
+	if ($(obj).attr('id')=='incapAccountsList') { // API Client
 		$('#incapAccountIDList').html('<option value="'+postDataObj.account_id+'">loading...</option>');
 		//$('#get the page num id later ').val('0');
 		makeIncapCall(getSubAccountUrlByAccountId('#incapAccountsList'),'POST',loadSubAccountsResponse_APIClient,postDataObj,'set');
-	} else if (obj.id=='incapSitesAccountsList') { // Sites
+	} else if ($(obj).attr('id')=='incapSitesAccountsList') { // Sites
 		$('#incapSitesAccountIDList').html('<option value="'+postDataObj.account_id+'">loading...</option>');
 		$('#incapSitesPageNum').val('0');
 		makeIncapCall(getSubAccountUrlByAccountId('#incapSitesAccountsList'),'POST',loadSubAccountsResponse_Sites,postDataObj,'set');
-	} else if (obj.id=='incap_migrationAction') { // Migration
+	} else if ($(obj).attr('id')=='incap_migrationAction') { // Migration
 		$('#incap_migrationAction').attr('disabled','disabled');
 		$('#incap_migrationAction_accountIDList').html('<option value="'+postDataObj.account_id+'">loading...</option>').attr('disabled','disabled');;
     	$("#incap_migrationAction_sites").html('<option value="">loading...</option>').attr('disabled','disabled');
 		$('#incap_migrationAction_page_num').val('0');
 		makeIncapCall(getSubAccountUrlByAccountId('#incap_migrationAction'),'POST',loadSubAccountsResponse_Migration,postDataObj,'set');
-	} else if (obj.id=='incap_site_group_account_list') { // Site Group
+	} else if ($(obj).attr('id')=='incap_site_group_account_list') { // Site Group
 		$('#incap_site_group_account_ID_list').html('<option value="'+postDataObj.account_id+'">loading...</option>').attr('disabled','disabled');
 		$('#incap_site_group_page_num').val('0');
 		$("#avail_incap_group_sites").html('<option value="">loading...</option>');

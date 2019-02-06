@@ -19,6 +19,10 @@ var migDisplayText = {
 $().ready(function() {
 	$('#runMigration').button().unbind().click(function(){ loadMigrationConfigs(); });	
     $('#clearEventLog').button().click(function(){ if (confirm('Are you sure you want clear the event log?')) { $('#incap_eventLogs').html(''); } });	
+	$('#migrate_sites_refresh').button({iconPosition: "beginning", icon: "ui-icon-refresh"}).click(function(){ 
+        // renderMigrationUserSites(); 
+        loadSubAccounts($('#incap_migrationAction'));
+    });	
 });
 
 function renderMigrationToolbar(obj){
@@ -55,9 +59,11 @@ function renderMigrationToolbar_action(obj){
     var curMigConfig = $('#incap_migrationConfigType').val();
     var curMigAction = $('#incap_migrationActionType').val();
     var str = '<tr>';
+    // debugger
     if (curMigAction=="INCAP_SITES") {
         var curUserObj = getUserAuthObj($('#incapAccountsList').val());
         if (curUserObj!=null && curUserObj!=undefined) {
+            // debugger
             str += '<td><b>to </b></td>';
             str += '<td><select class="auto incap_account_select" id="incap_migrationAction">'+mig_renderSelectOptions('INCAP_USERS')+'</select></td>';
             str += '<td><b> account ID </b></td>';
@@ -68,14 +74,17 @@ function renderMigrationToolbar_action(obj){
             str += '<input name="incap_migrationAction_page_size" id="incap_migrationAction_page_size" value="'+incapDefConfig.sitePageSize+'" type="hidden" /></td>';
         }
     } else if (curMigAction=='INCAP_USERS') {
+        // debugger
         str += '<td><b> to all sites on </b></td>';
         str += '<td><select class="auto" id="incap_migrationAction">'+mig_renderSelectOptions(curMigAction)+'</select></td>';
         str += '<td><b>\'s '+migDisplayText[curMigAction]+' account (<span id="incap_migrationAction_stats">loading...</span>)</b></td>';
     } else if (curMigAction=='INCAP_USER_GROUPS') {
+        // debugger
         str += '<td><b> to all sites on all accounts in </b></td>';
         str += '<td><select class="auto" id="incap_migrationAction">'+mig_renderSelectOptions(curMigAction)+'</select></td>';
         str += '<td><b> '+migDisplayText[curMigAction]+' (<span id="incap_migrationAction_stats">loading...</span>)</b></td>';
     } else if (curMigAction=='INCAP_SITE_GROUPS') {
+        // debugger
         str += '<td><b> to </b></td>';
         str += '<td><select class="auto" id="incap_migrationAction">'+mig_renderSelectOptions(curMigAction)+'</select></td>';
         str += '<td><b>'+migDisplayText[curMigAction]+' (<span id="incap_migrationAction_stats">loading...</span>)</b></td>';
@@ -85,11 +94,13 @@ function renderMigrationToolbar_action(obj){
 
     $('#incap_migrationAction').unbind();
     $('#incap_migrationAction_accountIDList').unbind();
+    // debugger
     if ($('#incap_migrationActionType').val()=='INCAP_SITES') {
+        // debugger
         $('#incap_migrationAction').change(function(){ loadSubAccounts(this); });
+        loadSubAccounts($('#incap_migrationAction'));
         $('#incap_migrationAction_accountIDList').change(function(){ $('#incap_migrationAction_page_num').val('0'); renderMigrationUserSites(); });
-        $('#incap_migrationAction_page_num').change(function(){ renderMigrationUserSites(); });
-        
+        $('#incap_migrationAction_page_num').change(function(){ renderMigrationUserSites(); });        
         //$('#incap_migrationAction').change(function(){ renderMigrationUserSites(); renderIncapPolicyRuleTblHTML(); });
         // if (obj!=undefined) {
         //     if (obj.id=='incap_migrationActionType' && $('#incap_migrationAction_sites').val()=='') { renderMigrationUserSites(); }
@@ -97,9 +108,11 @@ function renderMigrationToolbar_action(obj){
         //     renderMigrationUserSites(); 
         // }
     } else if ($('#incap_migrationActionType').val()=='INCAP_SITE_GROUPS') {
+        // debugger
         $('#incap_migrationAction').change(function(){ renderSiteGroupStats(); renderIncapPolicyRuleTblHTML(); });
         renderSiteGroupStats();
     }
+    // debugger
     renderIncapPolicyRuleTblHTML();
 }
 
