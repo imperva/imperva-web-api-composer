@@ -4,6 +4,8 @@ header('Content-type: application/json');
 include('../functions.php');
 $logDate = date("F j, Y, g:i a");
 
+if ( !isset( $HTTP_RAW_POST_DATA ) ) $HTTP_RAW_POST_DATA =file_get_contents( 'php://input' );
+
 $post_data = $HTTP_RAW_POST_DATA;
 $server = $_GET["server"];
 $server = str_replace("+","%20",str_replace("%2F","/",str_replace("%3A",":",str_replace("%3F","?",str_replace("%3D","=",urlencode($server))))));
@@ -21,9 +23,9 @@ $post_header = array(
 );
 $logDate = date("F j, Y, g:i a");
 
-if ($method=='POST' || $method=='PUT') $contentLength = strlen(json_encode($json_data));
+if ($method=='POST' || $method=='PUT') $contentLength = strlen($post_data);
 $curlstr='curl -ik -X '.$method.' -H "Cookie: '.$session.'" -H "Content-Type: application/json" -H "Accept: application/json" ';
-if ($method=='POST' || $method=='PUT') $curlstr.=" -d '".json_encode($json_data)."' ";
+if ($method=='POST' || $method=='PUT') $curlstr.=" -d '".$post_data."' ";
 $curlstr.=$server;
 error_log($logDate." - SS API Request | ".$curlstr);
 

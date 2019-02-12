@@ -243,7 +243,7 @@ function loadSubAccounts(obj){
 		makeIncapCall(getSubAccountUrlByAccountId('#incapSitesAccountsList'),'POST',loadSubAccountsResponse_Sites,postDataObj,'set');
 	} else if ($(obj).attr('id')=='incap_migrationAction') { // Migration
 		$('#incap_migrationAction').attr('disabled','disabled');
-		$('#incap_migrationAction_accountIDList').html('<option value="'+postDataObj.account_id+'">loading...</option>').attr('disabled','disabled');;
+		$('#incap_migrationAction_accountIDList').html('<option value="'+postDataObj.account_id+'">loading...</option>').attr('disabled','disabled');
     	$("#incap_migrationAction_sites").html('<option value="">loading...</option>').attr('disabled','disabled');
 		$('#incap_migrationAction_page_num').val('0');
 		makeIncapCall(getSubAccountUrlByAccountId('#incap_migrationAction'),'POST',loadSubAccountsResponse_Migration,postDataObj,'set');
@@ -309,7 +309,7 @@ function renderSubGroupOptionsHTML(subGroupAry,input_id){
 				var subGroupObj = subAccountObjAry[subAccountIdStr];
 				$(input_id).append('<option value="'+subGroupObj.sub_account_id+'">'+subGroupObj.sub_account_name+' ('+subGroupObj.sub_account_id+')</option>');
 			});
-		} else {
+		} else if (subGroupAry.accounts!=undefined) { 
 			$(input_id).html('<option value="'+$(input_id).val()+'">Parent Account ('+$(input_id).val()+')</option>');
 			$.each(subGroupAry.accounts, function(i,subGroupObj) {	
 				subAccountIndex.push(subGroupObj.account_name+'_'+subGroupObj.account_id);
@@ -320,7 +320,9 @@ function renderSubGroupOptionsHTML(subGroupAry,input_id){
 				var subGroupObj = subAccountObjAry[subAccountIdStr];
 				$(input_id).append('<option value="'+subGroupObj.account_id+'">'+subGroupObj.account_name+' ('+subGroupObj.account_id+')</option>');
 			});
-		} 
+		} else {
+			$(input_id).html('<option value="'+$(input_id).val()+'">Account ('+$(input_id).val()+')</option>');
+		}
 	} else {
 		$(input_id).html('<option value="'+$(input_id).val()+'">'+$(input_id).val()+'</option>');
 	}

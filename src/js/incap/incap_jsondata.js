@@ -434,7 +434,7 @@ var incapApiActions = {
 		"/api/prov/v1/sites/configure/acl":["api_id","api_key","site_id","rule_id","urls","url_patterns","countries","continents","ips"],
 		"/api/prov/v1/sites/configure/htmlInjections":["api_id","api_key","site_id","url","url_pattern","location","content"],
 		"/api/prov/v1/sites/configure/security":["api_id","api_key","site_id","rule_id","block_bad_bots","challenge_suspected_bots","activation_mode","security_rule_action","quarantined_urls","ddos_traffic_threshold"],
-		"/api/prov/v1/sites/configure/whitelists":["api_id","api_key","site_id","rule_id","whitelist_id","delete_whitelist","urls","countries","continents","ips","client_app_types","client_apps","parameters","user_agents"],
+		"/api/prov/v1/sites/configure/whitelists":["api_id","api_key","site_id","rule_id","whitelist_id","delete_whitelist","urls","url_patterns","countries","continents","ips","client_app_types","client_apps","parameters","user_agents"],
 		"/api/prov/v1/sites/customCertificate/csr":["api_id","api_key","site_id","email","organization","organization_unit","country","state","city"],
 		"/api/prov/v1/sites/customCertificate/remove":["api_id","api_key","site_id"],
 		"/api/prov/v1/sites/customCertificate/upload":["api_id","api_key","site_id","certificate","private_key","passphrase"],

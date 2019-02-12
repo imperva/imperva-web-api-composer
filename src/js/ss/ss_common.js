@@ -110,9 +110,12 @@ $().ready(function() {
 
 // Main AJAX function to proxy API calls
 function makeSSCall(action,method,callback,postDataObj) {
+	// debugger
 	if (action!==undefined || checkForm()) {
-		var postData = $(ss_data_sel).val();
+		// debugger
+		var postData = $(ss_data_sel).val(); // postDataObj = JSON.parse($(ss_data_sel).val());
 		if (postDataObj!==undefined) postData = JSON.stringify(postDataObj);
+		// debugger
 		$('#SecureSphereAPI #SSresult').val('processing...');
 		var requestUrl = $('#SecureSphereAPI #MXServer').val()+$(ss_action_sel).val();
 		if (action!==undefined) {
@@ -122,12 +125,10 @@ function makeSSCall(action,method,callback,postDataObj) {
 		}
 		if (method==undefined) method = $(ss_method_sel).val();
 		method = method.toUpperCase();
-		var postParams = JSON.parse($(ss_data_sel).val());
 		var reqUrl = "ajax/ss_api_post.php?server="+requestUrl;
 		reqUrl += "&session="+$(ss_session_sel).val();
 		reqUrl += "&contentType="+$('#SecureSphereAPI #SScontentType').val();
 		reqUrl += "&method="+method;
-
 		jQuery.ajax ({
 			url: encodeURI(reqUrl).replace('+','%2B'),
 			type: "POST",

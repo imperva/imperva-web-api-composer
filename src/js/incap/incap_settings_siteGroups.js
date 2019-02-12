@@ -187,6 +187,7 @@ function set_incapSaveSiteGroup(saveasnew) {
                     $.gritter.add({ title: 'PROCESSING', text: "Loading Data Center IDs for all selected sites."});
                     incap_selSites.curIndex=0;
                     loadSiteGroupDataCenters();
+                    renderMigrationToolbar_action();
                 }
             } else {
                 $.gritter.add({ title: 'ERROR', text: "A group with this name '"+$('#incap_site_group_name').val().trim()+"' already exists."});	        
@@ -226,7 +227,8 @@ function set_incapDeleteSiteGroup(){
         if (INCAP_SITE_GROUPS[$('#incap_site_group_name').val()]!=undefined) {
 			delete INCAP_SITE_GROUPS[$('#incap_site_group_name').val()];
 			localStorage.setItem('INCAP_SITE_GROUPS',JSON.stringify(INCAP_SITE_GROUPS));
-			renderIncapSiteGroups();
+            renderIncapSiteGroups();
+            renderMigrationToolbar_action();
 		} else {
 			$.gritter.add({ title: 'Group not found', text: "Group name "+$('#incap_site_group_name').val()+" is currently not stored locally."});	
 		}

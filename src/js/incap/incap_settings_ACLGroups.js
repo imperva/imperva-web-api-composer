@@ -103,6 +103,7 @@ function set_incapSaveACLWAFGroup(saveasnew) {
                 $.gritter.add({ title: 'Saved', text: "Updated the existing group '"+$('#incap_ACL_WAF_group_name').val().trim()+"'."});
             }
             renderIncapACLWAFGroups();
+            renderMigrationToolbar_config();
         } else {
             $.gritter.add({ title: 'ERROR', text: "A group with this name '"+$('#incap_ACL_WAF_group_name').val().trim()+"' already exists."});	        
         }
@@ -121,7 +122,8 @@ function set_incapDeleteACLWAFGroup(){
         if (INCAP_ACL_WAF_GROUPS[$('#incap_ACL_WAF_group_name').val()]!=undefined) {
 			delete INCAP_ACL_WAF_GROUPS[$('#incap_ACL_WAF_group_name').val()];
 			localStorage.setItem('INCAP_ACL_WAF_GROUPS',JSON.stringify(INCAP_ACL_WAF_GROUPS));
-			renderIncapACLWAFGroups();
+            renderIncapACLWAFGroups();
+            renderMigrationToolbar_config();
 		} else {
 			$.gritter.add({ title: 'Group not found', text: "Group name "+$('#incap_ACL_WAF_group_name').val()+" is currently not stored locally."});
 		}

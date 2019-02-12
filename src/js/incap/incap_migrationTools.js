@@ -25,12 +25,12 @@ $().ready(function() {
     });	
 });
 
-function renderMigrationToolbar(obj){
-    renderMigrationToolbar_config(obj);
-    renderMigrationToolbar_action(obj);
+function renderMigrationToolbar(){
+    renderMigrationToolbar_config();
+    renderMigrationToolbar_action();
 }
 
-function renderMigrationToolbar_config(obj){
+function renderMigrationToolbar_config(){
     var curMigConfig = $('#incap_migrationConfigType').val();
     var str = '<tr>';
     str += '<td align="right"><label class="header" for="incap_migrationConfig">Migrate '+migDisplayText[curMigConfig]+'</label></td>';
@@ -55,7 +55,7 @@ function renderMigrationToolbar_config(obj){
     renderIncapPolicyRuleTblHTML();
 }
 
-function renderMigrationToolbar_action(obj){
+function renderMigrationToolbar_action(){
     var curMigConfig = $('#incap_migrationConfigType').val();
     var curMigAction = $('#incap_migrationActionType').val();
     var str = '<tr>';

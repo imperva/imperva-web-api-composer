@@ -141,7 +141,8 @@ function set_incapDeletePolicyGroup(){
         if (INCAP_POLICY_GROUPS[$('#incap_policy_group_name').val()]!=undefined) {
 			delete INCAP_POLICY_GROUPS[$('#incap_policy_group_name').val()];
 			localStorage.setItem('INCAP_POLICY_GROUPS',JSON.stringify(INCAP_POLICY_GROUPS));
-			renderIncapPolicyGroups();
+            renderIncapPolicyGroups();
+            renderMigrationToolbar_config();
 		} else {
 			$.gritter.add({ title: 'Group not found', text: "Group name "+$('#incap_policy_group_name').val()+" is currently not stored locally."});	
 		}
@@ -162,6 +163,7 @@ function updatePolicyInPolicyGroup(policyType,origPolicyName,newPolicyName){
 	});
     localStorage.setItem('INCAP_POLICY_GROUPS',JSON.stringify(INCAP_POLICY_GROUPS));
     renderIncapPolicyGroups();
+    renderMigrationToolbar_config()
 }
 
 function set_incapDeletePolicyFromGroup(policyType,policyName){
