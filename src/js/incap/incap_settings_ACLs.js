@@ -91,7 +91,7 @@ function incapSaveACLWAFRule(obj){
     //updateACLInACLGroup(ACLType,origACLName,newACLName);
     $.gritter.add({ title: 'SUCCESS', text: 'ACL "'+ACLWAFRuleName+'" successfully saved'});
     renderIncapACLWAFRules();
-    renderMigrationToolbar();
+    renderMigrationToolbar_config();
 }
 
 function incapDeleteACLWAFRule(obj){
@@ -107,6 +107,7 @@ function incapDeleteACLWAFRule(obj){
             set_incapDeleteACLWAFRuleFromGroup(ACLWAFRuleType,ACLWAFRuleIndex);
             renderIncapACLWAFRules();
             renderIncapACLWAFGroups();
+            renderMigrationToolbar_config();
 		} else {
 			$.gritter.add({ title: 'Rule not found', text: ACLWAFRuleType +' Rule "'+ACLWAFRuleName+' ('+ACLWAFRuleIndex+')" currently not stored locally.'});
 		}

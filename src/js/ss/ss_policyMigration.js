@@ -67,7 +67,7 @@ function SSLoadWAFSecurityPolicy(curObj){
 	} else {
 		$('#SecureSphereAPI #SSActions').val('/v1/conf/policies/security/'+$(curObj).parent().attr('id')+'/{policyName}').trigger('change');
 	}
-	makeSSCall('/v1/conf/policies/security/'+$(curObj).parent().attr('id')+'/'+$(curObj).val(),'GET',null,{});
+	makeSSCall('/v1/conf/policies/security/'+$(curObj).parent().attr('id')+'/'+$(curObj).val().replace("/","%2F"),'GET',null,{});
 	//makeSSCall('/v1/conf/'+$(curObj).parent().attr('id')+'/'+$(curObj).val(),'GET',SSLoadWAFSecurityPolicyResponse,{});
 }
 
@@ -252,6 +252,7 @@ function convertSSAndSavePolicies(){
 		});
 		localStorage.setItem('INCAP_POLICY_TEMPLATES',JSON.stringify(INCAP_POLICY_TEMPLATES));
 		renderIncapPolcies();
+		renderMigrationToolbar_config();
 		$('#settingsBtn').trigger("click");
 		$('#incap_policies').trigger("click");
 	}
@@ -266,9 +267,9 @@ function convertSSPolicy(option){
 		"filter":""
 	};
 	$.each(curPolicy.matchCriteria, function(i,predicate) {
-		if (incapPolicy.filter != '') { incapPolicy.filter += '%26 ' }
+		if (incapPolicy.filter != '') { incapPolicy.filter += ' & ' }
 		incapPolicy.filter += '( ';
-		var glue = '%26 '; var subOp = '!='; // for excludeAll
+		var glue = '& '; var subOp = '!='; // for excludeAll
 		if (predicate.operation=='atLeastOne') { glue = '| '; subOp='=='; } // check for atLeastOne
 		if (predicate.type=="httpRequest") {
 			if (incapPolicy.action=='matchAny') glue = '| ';
@@ -297,10 +298,10 @@ function convertSSPolicy(option){
 			$.each(predicate.cookieNames, function(i,cookieObj) { allVals.push(cookieObj.cookie); });
 			incapPolicy.filter += 'CookieExists == "'+allVals.join('";"')+'" '; 
 		} else if (predicate.type=="httpRequestFileExtension") {
-			var glue = '& '; var subOp = '!=';
-			if (predicate.operation=='atLeastOne') { glue = '| '; subOp='=='; }
+			var subGlue = '& '; var subOp = '!=';
+			if (predicate.operation=='atLeastOne') { subGlue = '| '; subOp='=='; }
 			$.each(predicate.values, function(i,matchValue) {
-				if (i>0) incapPolicy.filter += glue;
+				if (i>0) incapPolicy.filter += subGlue;
 				incapPolicy.filter += 'URL contains "'+matchValue+'$" ';
 			});
 		} else if (predicate.type=="httpRequestHeaderName") {
@@ -329,7 +330,7 @@ function convertSSPolicy(option){
 			if (predicate.match=='prefix') { prefix = '^'; if (predicate.operation=='atLeastOne') { subOp = 'contains'; } else { subOp = 'not-contains'; } }
 			$.each(predicate.values, function(i,matchValue) {
 				if (i>0) incapPolicy.filter += glue;
-				incapPolicy.filter += 'URL '+subOp+' "'+matchValue+'" ';
+				incapPolicy.filter += 'URL '+subOp+' \\"'+matchValue+'\\" ';
 			});
 		} else if (predicate.type=="httpRequestUserAgent") {
 			$.each(predicate.values, function(i,matchValue) {
@@ -404,7 +405,7 @@ function convertSSPolicy(option){
 				} else if (predicate.field=="sourceIpAddresses") {
 					incapPolicy.filter += 'ClientIP '+subOp+' '+allValsAry.join(';')+' '; 
 				} else if (predicate.field=="url") {
-					incapPolicy.filter += 'URL '+subOp+' "'+allValsAry.join('";"')+'" '; 
+					incapPolicy.filter += 'URL '+subOp+' \\"'+allValsAry.join('";"')+'\\" '; 
 				} else if (predicate.field=="userAgent") {
 					incapPolicy.filter += 'User-Agent '+subOp+' "'+allValsAry.join('";"')+'" '; 
 				}

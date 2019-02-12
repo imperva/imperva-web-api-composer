@@ -80,7 +80,7 @@ function incapSavePolicy(obj){
     updatePolicyInPolicyGroup(policyType,origPolicyName,newPolicyName);
     $.gritter.add({ title: 'SUCCESS', text: 'Policy "'+newPolicyName+'" successfully saved'});
     renderIncapPolcies();
-    renderMigrationToolbar();
+    renderMigrationToolbar_config();
 }
 
 function incapDeletePolicy(obj){
@@ -93,7 +93,8 @@ function incapDeletePolicy(obj){
 			delete INCAP_POLICY_TEMPLATES[policyType][policyName];
 			localStorage.setItem('INCAP_POLICY_TEMPLATES',JSON.stringify(INCAP_POLICY_TEMPLATES));
             set_incapDeletePolicyFromGroup(policyType,policyName);
-			renderIncapPolcies();
+            renderIncapPolcies();
+            renderMigrationToolbar_config();
 		} else {
 			$.gritter.add({ title: 'Policy not found', text: policyType +' policy "'+policyName+'" currently not stored locally.'});
 		}
