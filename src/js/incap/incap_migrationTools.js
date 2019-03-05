@@ -651,6 +651,7 @@ function runMigration(){
                             var curExceptionObj = jQuery.extend(true, {}, incap_curMigRules.currentExceptions[incap_curMigRules.index[incap_curMigRules.curIndex]]);
                             var curExceptionMember = curExceptionObj.members[curExceptionObj.curIndex];
                             if (curExceptionMember!=undefined) {
+                                debugger
                                 delete curRuleObj.ips;
                                 delete curRuleObj.client_app_types;
                                 delete curRuleObj.client_apps;
@@ -658,6 +659,7 @@ function runMigration(){
                                 delete curRuleObj.geo;
                                 delete curRuleObj.isCreated;
                                 $.each(curExceptionMember.values, function(i,curExceptionMemberObj) {
+                                    debugger
                                     if (curExceptionMemberObj.ips!=undefined) {
                                         curRuleObj.ips = curExceptionMemberObj.ips.join(',');
                                     } else if (curExceptionMemberObj.client_app_types!=undefined) {
@@ -674,10 +676,21 @@ function runMigration(){
                                         curRuleObj.urls = curRuleObj.urls.join(','); 
                                         curRuleObj.url_patterns = curRuleObj.url_patterns.join(',');
                                     } else if (curExceptionMemberObj.geo!=undefined) {
-                                        if (curExceptionMemberObj.geo.continents!=undefined) curRuleObj.continents = curExceptionMemberObj.geo.continents.join(',');
-                                        if (curExceptionMemberObj.geo.countries!=undefined) curRuleObj.countries = curExceptionMemberObj.geo.countries.join(',');
+                                        if (curExceptionMemberObj.geo.continents!=undefined) {
+                                            curRuleObj.continents = curExceptionMemberObj.geo.continents.join(',');
+                                            debugger
+                                        } else {
+                                            debugger
+                                        }
+                                        if (curExceptionMemberObj.geo.countries!=undefined) {
+                                            curRuleObj.countries = curExceptionMemberObj.geo.countries.join(',');
+                                            debugger
+                                        } else {
+                                            debugger
+                                        }
                                     }
                                 });
+                                debugger
                                 if (curExceptionObj.curIndex==0) $('#incap_eventLogs').append('<span>#Creating '+curExceptionObj.members.length+' Rule Exception on ('+incap_curMigRules[ruleAry[0]][ruleAry[1]].name+')</span><br /><br />');
                                 $('#incap_eventLogs').append('<span>#CURL REQUEST - Create Rule Exception on ('+incap_curMigRules[ruleAry[0]][ruleAry[1]].name+') - exception ('+curExceptionObj.curIndex+')</span><br />');
                                 $('#incap_eventLogs').append(incap_transformToCURL($('#incapServer').val()+'/api/prov/v1/sites/configure/whitelists',curRuleObj,$('#incap_migrationConfigMaskSecretKey').is(":checked"))+'<br /><br />');
