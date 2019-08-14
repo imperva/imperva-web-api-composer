@@ -1,9 +1,9 @@
 
 /* Start Manage Incapsula Policy Templates */
 function renderIncapPolcies(){
-    if (localStorage.getItem('INCAP_POLICY_TEMPLATES')==null) localStorage.setItem('INCAP_POLICY_TEMPLATES','{"incap_rules":{},"Redirect":{},"Rewrite":{},"Forward":{}}');
+    if (localStorage.getItem('INCAP_POLICY_TEMPLATES')==null) localStorage.setItem('INCAP_POLICY_TEMPLATES','{"incap_rules":{},"Redirect":{},"Rewrite":{},"Forward":{},"Rates":{}}');
     INCAP_POLICY_TEMPLATES = JSON.parse(localStorage.getItem('INCAP_POLICY_TEMPLATES'));
-	var str = '';
+    var str = '';
 	$.each(INCAP_POLICY_TEMPLATES, function(policyType,policyAry) {
         $.each(policyAry, function(policyName,policyObj) {
             str += '<tr id="tr;|;'+policyType+';|;'+policyName+'">'+set_renderIncapPolicyHTML(policyObj,policyType)+'</tr>';

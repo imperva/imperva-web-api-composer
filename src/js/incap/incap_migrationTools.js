@@ -485,22 +485,26 @@ function loadCurMigrationSiteObjResponse(response){
         incap_curMigSiteObj = response;
         incap_curMigSiteObj.existingExceptions = {"index":[],"curExceptionIndex":0}; // {"api.threats.bot_access_control":{"ids":[],"curIndex":0}}
         $.each(incap_curMigSiteObj.security.waf.rules, function(i,ruleObj) {
-            if (ruleObj.exceptions!=undefined) {
-                incap_curMigSiteObj.existingExceptions.index.push(ruleObj.id);
-                incap_curMigSiteObj.existingExceptions[ruleObj.id] = {"ids":[],"curIndex":0};
-                $.each(ruleObj.exceptions, function(i,exObj) {
-                    incap_curMigSiteObj.existingExceptions[ruleObj.id].ids.push(exObj.id);
-                });
-            }
-        });
-        if (incap_curMigSiteObj.security.acls!=undefined) {
-            $.each(incap_curMigSiteObj.security.acls.rules, function(i,ruleObj) {
+            if (ruleObj!=null) {
                 if (ruleObj.exceptions!=undefined) {
                     incap_curMigSiteObj.existingExceptions.index.push(ruleObj.id);
                     incap_curMigSiteObj.existingExceptions[ruleObj.id] = {"ids":[],"curIndex":0};
                     $.each(ruleObj.exceptions, function(i,exObj) {
                         incap_curMigSiteObj.existingExceptions[ruleObj.id].ids.push(exObj.id);
                     });
+                }
+            }
+        });
+        if (incap_curMigSiteObj.security.acls!=undefined) {
+            $.each(incap_curMigSiteObj.security.acls.rules, function(i,ruleObj) {
+                if (ruleObj!=null) {
+                    if (ruleObj.exceptions!=undefined) {
+                        incap_curMigSiteObj.existingExceptions.index.push(ruleObj.id);
+                        incap_curMigSiteObj.existingExceptions[ruleObj.id] = {"ids":[],"curIndex":0};
+                        $.each(ruleObj.exceptions, function(i,exObj) {
+                            incap_curMigSiteObj.existingExceptions[ruleObj.id].ids.push(exObj.id);
+                        });
+                    }
                 }
             });
         }

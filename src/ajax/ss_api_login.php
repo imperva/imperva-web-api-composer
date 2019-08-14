@@ -25,6 +25,7 @@ curl_setopt($ch, CURLOPT_HTTPHEADER, $post_header);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 $response = json_decode(curl_exec($ch));
 curl_close($ch);
+error_log($logDate." | SS API Request (Login): curl ".$server." -H 'Authorization: Basic ".base64_encode($username.':'.$password)."' \r".json_encode($response));
 
 if (isset($response->{'session-id'})) {
 	$post_header = array(
@@ -40,6 +41,7 @@ if (isset($response->{'session-id'})) {
 	curl_setopt($ch, CURLOPT_HTTPHEADER, $post_header);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 	$response2 = json_decode(curl_exec($ch));
+	error_log($logDate." | SS API Request: curl ".$server." \r".json_encode($response2));
 	$response->{'serverVersion'} = $response2->{'serverVersion'};
 	curl_close($ch);
 }

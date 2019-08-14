@@ -86,7 +86,6 @@ function loadSitesResponse(response){
 			str += '</tr></tbody></table>';
 		}
 		var divId = 'site_'+site.site_id+'_rules_tbl';
-
 		if (site.security !== undefined) {
 			if (site.security.acls !== undefined) {
 				if (site.security.acls.rules !== undefined) {
@@ -108,20 +107,24 @@ function loadSitesResponse(response){
 			}
 			if (site.security.waf !== undefined) {
 				if (site.security.waf.rules !== undefined) {
-					str += '<table id="site_'+site.site_id+'_acls_tbl" class="tablesorter"><thead><tr><th>';
-					str += '<a href="javascript:void(0)" id="site_'+site.site_id+'_acls" title="Create CURL samples for all rules in Migration Tools tab" class="ui-icon ui-icon-newwin copyAllAcls"> </a>';
-					str += '</th><th></th><th>WAF Rules</th><th>JSON</th></tr></thead><tbody>';
-					$.each(site.security.waf.rules, function(i,ruleObj) {
-						if (ruleObj.id!=='api.threats.customRule') {
-							str += '<tr id="'+ruleObj.id+'">';
-							str += '<td><a href="javascript:void(0)" id="acls|'+ruleObj.id.replace(/\./g,'_')+'" title="Copy individual rule" class="ui-icon ui-icon-copy copyRule"> </a></td>';
-							str += '<td class="min"><a href="javascript:void(0)" id="'+ruleObj.id+'" title="Save individual ACL" class="ui-icon ui-icon-disk saveACLWAFRule"> </a></td>';
-							str += '<td>'+ruleObj.name+'</td><td class="json" id="json_'+ruleObj.id.replace(/\./g,'_')+'">'+JSON.stringify(ruleObj)+'</td>';
-							//str += '<td class="min"><a href="javascript:void(0)" id="'+$('#incapSitesAccountsList').val()+'_'+site.site_id+'_'+ruleObj.id+'" title="Delete individual ACL" class="ui-icon ui-icon-trash deleteACLWAFRule"> </a></td>';
-							str += '</tr>';
-						}
-					});
-					str += '</tbody></table>';
+					if (site.security.waf.rules.length>0) {
+						str += '<table id="site_'+site.site_id+'_acls_tbl" class="tablesorter"><thead><tr><th>';
+						str += '<a href="javascript:void(0)" id="site_'+site.site_id+'_acls" title="Create CURL samples for all rules in Migration Tools tab" class="ui-icon ui-icon-newwin copyAllAcls"> </a>';
+						str += '</th><th></th><th>WAF Rules</th><th>JSON</th></tr></thead><tbody>';
+						$.each(site.security.waf.rules, function(i,ruleObj) {
+							if (ruleObj!=null) {
+								if (ruleObj.id!=='api.threats.customRule') {
+									str += '<tr id="'+ruleObj.id+'">';
+									str += '<td><a href="javascript:void(0)" id="acls|'+ruleObj.id.replace(/\./g,'_')+'" title="Copy individual rule" class="ui-icon ui-icon-copy copyRule"> </a></td>';
+									str += '<td class="min"><a href="javascript:void(0)" id="'+ruleObj.id+'" title="Save individual ACL" class="ui-icon ui-icon-disk saveACLWAFRule"> </a></td>';
+									str += '<td>'+ruleObj.name+'</td><td class="json" id="json_'+ruleObj.id.replace(/\./g,'_')+'">'+JSON.stringify(ruleObj)+'</td>';
+									//str += '<td class="min"><a href="javascript:void(0)" id="'+$('#incapSitesAccountsList').val()+'_'+site.site_id+'_'+ruleObj.id+'" title="Delete individual ACL" class="ui-icon ui-icon-trash deleteACLWAFRule"> </a></td>';
+									str += '</tr>';
+								}
+							}
+						});
+						str += '</tbody></table>';
+					}
 				}
 			}
 		}		
@@ -142,53 +145,75 @@ function loadSitesResponse(response){
 }
 function loadRulesResponse(response,input_id) {
 	var confAry = input_id.split('_');
-	curSites.sites[confAry[1]].rules = response;
-	var str = '';
-	//$.gritter.add({ title: 'Status', text: "Successfully retrieved ADR rules."+input_id});
-	if (response.incap_rules != undefined) {
-		if (response.incap_rules.All != undefined) {
-			str += '<table class="tablesorter"><thead><tr>';
-			str += '<th class="min"><a href="javascript:void(0)" id="site_'+confAry[1]+'_rules|incap_rules" title="Create CURL samples for all Incap Rules in Migration Tools tab" class="ui-icon ui-icon-newwin copyAllIncapRules"> </a></th>';
-			str += '<th class="min"><!--a href="javascript:void(0)" id="site_'+confAry[1]+'_rules|incap_rules" title="Save all rules locally as templates" class="ui-icon ui-icon-disk saveAllIncapRules"> </a--></th>';
-			str += '<th>Incap Rules</th><th>JSON</th><th class="min"></th></tr></thead><tbody>';
-			$.each(response.incap_rules.All, function(i,ruleObj) {
-				str += '<tr>';
-				str += '<td class="min"><a href="javascript:void(0)" id="incap_rules|'+ruleObj.id.replace(/\./g,'_')+'" title="Copy individual rule" class="ui-icon ui-icon-copy copyRule"> </a></td>';
-				str += '<td class="min"><a href="javascript:void(0)" id="{\'ruleType\':\'incap_rules\',\'id\':\''+ruleObj.id.replace(/\./g,'_')+'\'}" title="Save individual rule" class="ui-icon ui-icon-disk saveRule"> </a></td>';
-				str += '<td>'+ruleObj.name+'</td><td class="json" id="json_'+ruleObj.id.replace(/\./g,'_')+'">'+JSON.stringify(ruleObj)+'</td>';
-				str += '<td class="min"><a href="javascript:void(0)" id="'+$('#incapSitesAccountsList').val()+'_'+ruleObj.id+'" title="Delete individual rule" class="ui-icon ui-icon-trash deleteRule"> </a></td>';
-				str += '</tr>';
-			});
-			str += '</tbody></table>';
+	if (curSites.sites[confAry[1]]!=undefined) {
+		curSites.sites[confAry[1]].rules = response;
+		var str = '';
+		//$.gritter.add({ title: 'Status', text: "Successfully retrieved ADR rules."+input_id});
+		if (response.incap_rules != undefined) {
+			if (response.incap_rules.All != undefined) {
+				str += '<table class="tablesorter"><thead><tr>';
+				str += '<th class="min"><a href="javascript:void(0)" id="site_'+confAry[1]+'_rules|incap_rules" title="Create CURL samples for all Incap Rules in Migration Tools tab" class="ui-icon ui-icon-newwin copyAllIncapRules"> </a></th>';
+				str += '<th class="min"><!--a href="javascript:void(0)" id="site_'+confAry[1]+'_rules|incap_rules" title="Save all rules locally as templates" class="ui-icon ui-icon-disk saveAllIncapRules"> </a--></th>';
+				str += '<th>Incap Rules</th><th>JSON</th><th class="min"></th></tr></thead><tbody>';
+				$.each(response.incap_rules.All, function(i,ruleObj) {
+					str += '<tr>';
+					str += '<td class="min"><a href="javascript:void(0)" id="incap_rules|'+ruleObj.id.replace(/\./g,'_')+'" title="Copy individual rule" class="ui-icon ui-icon-copy copyRule"> </a></td>';
+					str += '<td class="min"><a href="javascript:void(0)" id="{\'ruleType\':\'incap_rules\',\'id\':\''+ruleObj.id.replace(/\./g,'_')+'\'}" title="Save individual rule" class="ui-icon ui-icon-disk saveRule"> </a></td>';
+					str += '<td>'+ruleObj.name+'</td><td class="json" id="json_'+ruleObj.id.replace(/\./g,'_')+'">'+JSON.stringify(ruleObj)+'</td>';
+					str += '<td class="min"><a href="javascript:void(0)" id="'+$('#incapSitesAccountsList').val()+'_'+ruleObj.id+'" title="Delete individual rule" class="ui-icon ui-icon-trash deleteRule"> </a></td>';
+					str += '</tr>';
+				});
+				str += '</tbody></table>';
+			}
 		}
-	}
 
-	if (response.delivery_rules != undefined) {
-		$.each(response.delivery_rules, function(ruleType,ruleAry) {
-			str += '<table class="tablesorter"><thead><tr>';
-			str += '<th><a href="javascript:void(0)" id="site_'+confAry[1]+'_rules|ADR_'+ruleType+'" title="Create CURL samples for all ADR rules in Migration Tools tab" class="ui-icon ui-icon-newwin copyAllIncapRules"> </a></th>';
-			str += '<th><!--a href="javascript:void(0)" id="site_'+confAry[1]+'_rules|ADR_'+ruleType+'" title="Save all rules locally as templates" class="ui-icon ui-icon-disk saveAllIncapRules"> </a--></th>';
-			str += '<th>ADR Rules - '+ruleType+'</th><th>JSON</th><th class="min"></tr></thead><tbody>';
-			$.each(ruleAry, function(i,ruleObj) {
-				str += '<tr>';
-				str += '<td><a href="javascript:void(0)" id="ADR_'+ruleType+'|'+ruleObj.id.replace(/\./g,'_')+'" title="Copy individual rule" class="ui-icon ui-icon-copy copyRule"> </a></td>';
-				str += '<td><a href="javascript:void(0)" id="{\'ruleType\':\''+ruleType+'\',\'id\':\''+ruleObj.id.replace(/\./g,'_')+'\'}" title="Save individual rule" class="ui-icon ui-icon-disk saveRule"> </a></td>';
-				//str += '<td><a href="javascript:void(0)" id="ADR_'+ruleType+'|'+ruleObj.id.replace(/\./g,'_')+'" title="Save individual rule" class="ui-icon ui-icon-disk saveRule"> </a></td>';
-				str += '<td class="rule_name">'+ruleObj.name+'</td><td class="json" id="json_'+ruleObj.id+'">'+JSON.stringify(ruleObj)+'</td>';
-				str += '<td class="min"><a href="javascript:void(0)" id="'+$('#incapSitesAccountsList').val()+'_'+ruleObj.id+'" title="Delete individual rule" class="ui-icon ui-icon-trash deleteRule"> </a></td>';
-				str += '</tr>';
+		if (response.delivery_rules != undefined) {
+			$.each(response.delivery_rules, function(ruleType,ruleAry) {
+				str += '<table class="tablesorter"><thead><tr>';
+				str += '<th><a href="javascript:void(0)" id="site_'+confAry[1]+'_rules|ADR_'+ruleType+'" title="Create CURL samples for all ADR rules in Migration Tools tab" class="ui-icon ui-icon-newwin copyAllIncapRules"> </a></th>';
+				str += '<th><!--a href="javascript:void(0)" id="site_'+confAry[1]+'_rules|ADR_'+ruleType+'" title="Save all rules locally as templates" class="ui-icon ui-icon-disk saveAllIncapRules"> </a--></th>';
+				str += '<th>ADR Rules - '+ruleType+'</th><th>JSON</th><th class="min"></tr></thead><tbody>';
+				$.each(ruleAry, function(i,ruleObj) {
+					str += '<tr>';
+					str += '<td><a href="javascript:void(0)" id="ADR_'+ruleType+'|'+ruleObj.id.replace(/\./g,'_')+'" title="Copy individual rule" class="ui-icon ui-icon-copy copyRule"> </a></td>';
+					str += '<td><a href="javascript:void(0)" id="{\'ruleType\':\''+ruleType+'\',\'id\':\''+ruleObj.id.replace(/\./g,'_')+'\'}" title="Save individual rule" class="ui-icon ui-icon-disk saveRule"> </a></td>';
+					//str += '<td><a href="javascript:void(0)" id="ADR_'+ruleType+'|'+ruleObj.id.replace(/\./g,'_')+'" title="Save individual rule" class="ui-icon ui-icon-disk saveRule"> </a></td>';
+					str += '<td class="rule_name">'+ruleObj.name+'</td><td class="json" id="json_'+ruleObj.id+'">'+JSON.stringify(ruleObj)+'</td>';
+					str += '<td class="min"><a href="javascript:void(0)" id="'+$('#incapSitesAccountsList').val()+'_'+ruleObj.id+'" title="Delete individual rule" class="ui-icon ui-icon-trash deleteRule"> </a></td>';
+					str += '</tr>';
+				});
+				str += '</tbody></table>';
 			});
-			str += '</tbody></table>';
+		}
+
+		if (response.rate_rules != undefined) {
+			$.each(response.rate_rules, function(ruleType,ruleAry) {
+				str += '<table class="tablesorter"><thead><tr>';
+				str += '<th><a href="javascript:void(0)" id="site_'+confAry[1]+'_rules|rate_rule_'+ruleType+'" title="Create CURL samples for all ADR rules in Migration Tools tab" class="ui-icon ui-icon-newwin copyAllIncapRules"> </a></th>';
+				str += '<th><!--a href="javascript:void(0)" id="site_'+confAry[1]+'_rules|rate_rule_'+ruleType+'" title="Save all rules locally as templates" class="ui-icon ui-icon-disk saveAllIncapRules"> </a--></th>';
+				str += '<th>ADR Rules - '+ruleType+'</th><th>JSON</th><th class="min"></tr></thead><tbody>';
+				$.each(ruleAry, function(i,ruleObj) {
+					str += '<tr>';
+					str += '<td><a href="javascript:void(0)" id="rate_rule_'+ruleType+'|'+ruleObj.id.replace(/\./g,'_')+'" title="Copy individual rule" class="ui-icon ui-icon-copy copyRule"> </a></td>';
+					str += '<td><a href="javascript:void(0)" id="{\'ruleType\':\''+ruleType+'\',\'id\':\''+ruleObj.id.replace(/\./g,'_')+'\'}" title="Save individual rule" class="ui-icon ui-icon-disk saveRule"> </a></td>';
+					//str += '<td><a href="javascript:void(0)" id="ADR_'+ruleType+'|'+ruleObj.id.replace(/\./g,'_')+'" title="Save individual rule" class="ui-icon ui-icon-disk saveRule"> </a></td>';
+					str += '<td class="rule_name">'+ruleObj.name+'</td><td class="json" id="json_'+ruleObj.id+'">'+JSON.stringify(ruleObj)+'</td>';
+					str += '<td class="min"><a href="javascript:void(0)" id="'+$('#incapSitesAccountsList').val()+'_'+ruleObj.id+'" title="Delete individual rule" class="ui-icon ui-icon-trash deleteRule"> </a></td>';
+					str += '</tr>';
+				});
+				str += '</tbody></table>';
+			});
+		}
+
+		$('#'+input_id).html(str);
+		$('.copyRule').unbind().click(function(){ copyElementHelper(this.id); });
+		$('.copyAllIncapRules').unbind().click(function(){ 
+			//createAllRulesSampleCURL(this.id,"/api/prov/v1/sites/incapRules/add"); 
 		});
+		$('.saveRule').unbind().click(function(){ incapSavePolicyTemplate(this.id); });
+		$('.saveAllIncapRules').unbind().click(function(){ incapSaveAllPolicyTemplates(); });
+		$('.deleteRule').unbind().click(function(){ incapDeletePolicyFromSite(this.id); });
 	}
-	$('#'+input_id).html(str);
-	$('.copyRule').unbind().click(function(){ copyElementHelper(this.id); });
-	$('.copyAllIncapRules').unbind().click(function(){ 
-		//createAllRulesSampleCURL(this.id,"/api/prov/v1/sites/incapRules/add"); 
-	});
-	$('.saveRule').unbind().click(function(){ incapSavePolicyTemplate(this.id); });
-	$('.saveAllIncapRules').unbind().click(function(){ incapSaveAllPolicyTemplates(); });
-	$('.deleteRule').unbind().click(function(){ incapDeletePolicyFromSite(this.id); });
 }
 
 function incapSaveAllPolicyTemplates(id) {
@@ -202,8 +227,12 @@ function incapSavePolicyTemplate(cur_id) {
 	delete curPolicyObj.id;
 	delete curPolicyObj.last_7_days_requests_count;
     INCAP_POLICY_TEMPLATES = JSON.parse(localStorage.getItem('INCAP_POLICY_TEMPLATES'));
-    var okToSave = false;
-    if (INCAP_POLICY_TEMPLATES[curPolicyIndexObj.ruleType][curPolicyObj.name]==undefined) {
+    policyTypesList = ["incap_rules","Redirect","Rewrite","Forward","Rates"];
+    $.each(policyTypesList, function(i,policyType) {
+        if (INCAP_POLICY_TEMPLATES[policyType]==undefined) INCAP_POLICY_TEMPLATES[policyType] = {};
+    });
+	var okToSave = false;
+	if (INCAP_POLICY_TEMPLATES[curPolicyIndexObj.ruleType][curPolicyObj.name]==undefined) {
         okToSave = true;
     } else {
         if (confirm('This policy ('+curPolicyObj.name+') already exists locally, would you like to overwrite it?')) {
