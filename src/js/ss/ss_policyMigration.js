@@ -58,15 +58,16 @@ function SSLoadWAFSecurityPolicy(curObj){
 	curLoadedPolicyName = $(curObj).val();
 	if ($('#SecureSphereAPI #SSActions').val()=='/v1/conf/'+$(curObj).parent().attr('id')+'/{policyName}') {
 		$('#SecureSphereAPI #SSrequestUrl').val(ssDefConfig.proto+'://'+$('#SecureSphereAPI #MXServer').val()+':'+ssDefConfig.port+ssDefConfig.actionPrefix+$('#SecureSphereAPI #SSActions').val());
-		$('#SecureSphereAPI #SSmethod').val('GET');
 		$('#SecureSphereAPI #policyName').val(curLoadedPolicyName);
 		$('#SecureSphereAPI #policyName_btn').trigger('click');
-		SSUpdateJSON();
-		SSUpdateCURL();
-		$('#SecureSphereAPI #SSexecute').trigger('click');
 	} else {
 		$('#SecureSphereAPI #SSActions').val('/v1/conf/policies/security/'+$(curObj).parent().attr('id')+'/{policyName}').trigger('change');
+		$('#SecureSphereAPI #SSrequestUrl').val($('#SecureSphereAPI #SSrequestUrl').val().replace("{policyName}",$(curObj).val()));
+		$('#SecureSphereAPI #SSmethod').val('get').trigger('change');
 	}
+	SSUpdateJSON();
+	SSUpdateCURL();
+	$('#SecureSphereAPI #SSexecute').trigger('click');
 	makeSSCall('/v1/conf/policies/security/'+$(curObj).parent().attr('id')+'/'+$(curObj).val().replace("/","%2F"),'GET',null,{});
 	//makeSSCall('/v1/conf/'+$(curObj).parent().attr('id')+'/'+$(curObj).val(),'GET',SSLoadWAFSecurityPolicyResponse,{});
 }

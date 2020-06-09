@@ -198,6 +198,7 @@ function renderSSAuth(){
 		if ($('#manageSSCredentials').css('display')!='none') toggleSSManageCredentials();
 	}
 	SSupdateReqURL();
+	SSUpdateJSON();
 }
 
 function toggleSSManageCredentials(){
@@ -377,7 +378,7 @@ function SSUpdateJSON(){
 		}
 	}
 	//if ($(ss_session_sel).val()=="") reqObj = {"username":$('#SecureSphereAPI #SSusername').val(),"password":$('#SecureSphereAPI #SSpassword').val()};
-	if ($(ss_session_sel).val()=="") reqObj['Authorization Header'] = "Authorization: Basic "+btoa($('#SecureSphereAPI #SSusername').val()+$('#SecureSphereAPI #SSpassword').val());
+	if ($(ss_session_sel).val()=="") reqObj['Authorization Header'] = "Authorization: Basic "+btoa($('#SecureSphereAPI #SSusername').val()+":"+$('#SecureSphereAPI #SSpassword').val());
 	$(ss_data_sel).val(JSON.stringify(reqObj));
 	$('#SecureSphereAPI #SSJSONparams input').blur(function(){ SSUpdateJSON(); });
 	$('#SecureSphereAPI #SSJSONparams textarea').blur(function(){ SSUpdateJSON(); });
@@ -389,7 +390,7 @@ function SSUpdateCURL(){
 		//alert("$('#SecureSphereAPI #SSrequestUrl').hasClass('errors')="+$('#SecureSphereAPI #SSrequestUrl').hasClass('errors'));
 		var str = 'curl -ik -X '+$(ss_method_sel).val().toUpperCase()+' ';
 		if ($(ss_session_sel).val()=="") {
-			str += '-H "Authorization: Basic '+btoa($('#SecureSphereAPI #SSusername').val()+$('#SecureSphereAPI #SSpassword').val())+'"';
+			str += '-H "Authorization: Basic '+btoa($('#SecureSphereAPI #SSusername').val()+":"+$('#SecureSphereAPI #SSpassword').val())+'"';
 		} else {
 			str += '-H "Cookie: '+$(ss_session_sel).val()+'" -H "Content-Type: application/json" -H "Accept: application/json" ';
 			if ($(ss_data_sel).val()!='{}') str += " -d '"+$(ss_data_sel).val()+"' ";
