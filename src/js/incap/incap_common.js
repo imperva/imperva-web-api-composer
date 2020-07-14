@@ -233,6 +233,8 @@ function loadCredentials(){
 /* Series of call back functions to load sub account IDs in the right location when changing API_KEYs on the UI */
 function loadSubAccounts(obj){
 	var postDataObj = getUserAuthObj($(obj).val());
+	postDataObj.page_size=100;
+	postDataObj.page_num=0;
 	if ($(obj).attr('id')=='incapAccountsList') { // API Client
 		$('#incapAccountIDList').html('<option value="'+postDataObj.account_id+'">loading...</option>');
 		//$('#get the page num id later ').val('0');
