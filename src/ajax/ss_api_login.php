@@ -12,7 +12,6 @@ $password = $_POST["password"];
 $post_header = array(
 	"Content-Type: application/json",
     "Accept: application/json",
-	"Content-Length: 0",
 	"Authorization: Basic ".base64_encode($username.':'.$password)
 );
 
@@ -30,7 +29,6 @@ error_log($logDate." | SS API Request (Login): curl ".$server." -H 'Authorizatio
 if (isset($response->{'session-id'})) {
 	$post_header = array(
 		"Content-Type: ".$contentType,
-		"Content-Length: ".$contentLength,
 		"Cookie: ".$response->{'session-id'}
 	);	
 	$ch = curl_init($server.'/v1/administration/version');

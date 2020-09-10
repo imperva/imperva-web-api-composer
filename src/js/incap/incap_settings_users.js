@@ -76,13 +76,15 @@ function set_renderIncapUserHTML(usrObj){
 
 function set_incapSaveUser(obj) {
 	$(obj).parent().parent().addClass("current");
+	var auth = {
+		"api_key": $('#incap_users_tbl tr.current .api_key').val(),
+		"api_id": $('#incap_users_tbl tr.current .api_id').val()
+	}
 	var postDataObj = {
-		"api_key":$('#incap_users_tbl tr.current .api_key').val(),
-		"api_id":$('#incap_users_tbl tr.current .api_id').val(),
-		"account_id":$('#incap_users_tbl tr.current .account_id').val()
+		"account_id": $('#incap_users_tbl tr.current .account_id').val()
 	}
 	$.gritter.add({ title: 'Saving User', text: 'Testing credentials on account ID "'+$('#incap_users_tbl tr.current .api_id').val()+'".'});
-	makeIncapCall('/api/prov/v1/account','POST',set_incapSaveUserResponse,postDataObj,'set');
+	makeIncapCall(getSwHost("cwaf_api_v1")+'/api/prov/v1/account','POST',auth,set_incapSaveUserResponse,postDataObj,'set',"application/x-www-form-urlencoded");
 }
 
 function set_incapSaveUserResponse(response){

@@ -1,6 +1,5 @@
 # Imperva Web API Composer
 
-[![pipeline status](https://gitlab.com/imperva-community/public/tools/imperva-web-api-composer/badges/master/build.svg)](https://gitlab.com/imperva-community/public/tools/imperva-web-api-composer/pipelines)
 [![license](https://img.shields.io/badge/license-imperva--community-blue.svg)](https://gitlab.com/imperva-community/public/tools/imperva-web-api-composer/blob/master/LICENSE.md)
 [![support](https://img.shields.io/badge/support-community-blue.svg)](https://gitlab.com/imperva-community)
 
@@ -55,3 +54,4 @@ If you have questions, find bugs or need additional help, please send an email t
 
 - [Alpine Linux Container](https://gitlab.com/imperva-community/public/docker/alpine)
 - [Docker Compose](https://github.com/docker/compose/)
+

@@ -2,19 +2,20 @@
 <html>
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-<title>Imperva API Tools</title>
+<title>Imperva API Composer</title>
 <link rel="shortcut icon" type="image/ico" href="/images/favicon.ico" />
-<link type="text/css" href="js/jquery-ui/css/black-tie/jquery-ui-1.8.17.custom.css" rel="stylesheet" />	
-<link type="text/css" href="js/jquery-ui/css/datatables.min.css" rel="stylesheet" />	
-<link type="text/css" href="js/jquery-ui/css/gritter/jquery.gritter.css" rel="stylesheet" />	
-<script src="js/jquery-ui/js/jquery-1.7.1.min.js"></script>
-<script src="js/jquery-ui/js/jquery-ui-1.8.17.custom.min.js"></script>
-<script src="js/jquery-ui/plugins/jquery.csv.js"></script>
-<script src="js/jquery-ui/plugins/jquery.gritter.js"></script>
-<script src="js/jquery-ui/plugins/datatables.min.js"></script>
-<link type="text/css" href="css/common.css" rel="stylesheet" />	
+<link type="text/css" href="css/jquery.gritter.css" rel="stylesheet" />
+<link type="text/css" href="css/jquery-ui.min.css" rel="stylesheet" />
+<link type="text/css" href="css/jquery-ui.structure.min.css" rel="stylesheet" />
+<link type="text/css" href="css/jquery-ui.theme.min.css" rel="stylesheet" />
+<script src="js/jquery-1.12.4.js"></script>
+<script src="js/jquery-ui.min.js"></script>
+<script src="js/plugins/jquery.gritter.js"></script>
+<script src="js/plugins/datatables.min.js"></script>
+<script src="js/plugins/jquery.datetimepicker.full.js"></script>
+<link type="text/css" href="css/common.css" rel="stylesheet" />
+<link type="text/css" href="css/jquery.datetimepicker.css" rel="stylesheet" />
 <script src="js/settings.js"></script>
-<!--script src="auth.js"></script-->
 <script src="js/countries.js"></script>
 <script src="js/common.js"></script>
 <script src="js/incap/incap_jsondata.js"></script>
@@ -51,13 +52,12 @@ $.extend($.gritter.options, {
 			<div id="logo" class="ui-corner-all dropshadow"></div>
 		</div>
 		<div id="contentWrapper" class="ui-widget">
-			<div class="ui-widget-header ui-corner-top">
+			<div id="header_bar" class="ui-widget-header ui-corner-top">
 				<h1>Imperva Web API Composer</h1>
 			</div>
 			<div id="mainNav" class="ui-widget-content content">
 				<ul>
 					<li><a id="SecureSphereAPIBtn" href="#SecureSphereAPI">SecureSphere API Client</a></li>
-					<!--li><a id="SecureSpherePolicyBtn" href="#SecureSpherePolicy">SecureSphere Policy Migration</a></li-->
 					<li><a id="IncapsulaAPIBtn" href="#IncapsulaAPI">Incapsula API Client</a></li>
 					<li><a id="incapsitesBtn" href="#incapsites">Incapsula Sites</a></li>
 					<li><a id="migrationToolsBtn" href="#migrationTools">Migration Tools</a></li>
@@ -135,15 +135,11 @@ $.extend($.gritter.options, {
 									</table>
 								</fieldset>
 								<fieldset id="SSURLparams">
-									<legend>URL Request Parameters</legend>
-									<table class="tableColL">
-										<!--tr id="siteNametr" class="fieldwrapper"><td align="right"><label for="siteName">Site Name: </label></td>
-										  <td><a href="javascript:void(0)" class="ui-icon ui-icon-copy" id="siteName_btn" title="Copy to Request URL">copy</a>
-										  <select name="siteName" id="siteName" class="min"><option value="">select</option></select></td></tr-->
-									</table>
+									<legend>URL Parameters</legend>
+									<table class="tableColL"></table>
 								</fieldset>
 								<fieldset id="SSJSONparams">
-									<legend>JSON Request Parameters</legend>
+									<legend>JSON Parameters</legend>
 									<table class="tableColL">
 										<tr id="SSusernametr" class="fieldwrapper"><td align="right"><label for="SSusername">Username: </label></td>
 											<td><input type="text" class="text" name="SSusername" id="SSusername" value="" /></td></tr>
@@ -258,10 +254,13 @@ $.extend($.gritter.options, {
 										  <td align="right" style="border: 1px solid red;"><label for="incapMethod">Method: </label></td>
 										  <td>
 											<select id="incapMethod">
-												<option value="POST">POST</option>
-												<!--option value="GET">GET</option>
-												<option value="PUT">PUT</option>
-												<option value="DELETE">DELETE</option-->
+												<option value="post">POST</option>
+												<option value="get">GET</option>
+												<option value="put">PUT</option>
+												<option value="delete">DELETE</option>
+												<option value="patch">PATCH</option>
+												<option value="head">HEAD</option>
+												<option value="options">OPTIONS</option>
 											</select>
 										  </td>
 										</tr>
@@ -270,9 +269,9 @@ $.extend($.gritter.options, {
 											 <label for="contentType">Content-Type</label>
 										   </td>
 										   <td>
-												<select id="contentType">
-													<option selected="selected">application/json</option>
-													<!--option>application/x-www-form-urlencoded</option-->
+												<select id="incapContentType">
+													<option selected="selected" value="application/json">application/json</option>
+													<option value="application/x-www-form-urlencoded">application/x-www-form-urlencoded</option>
 													<!--option>application/csv</option-->
 												</select>
 										   </td>
@@ -287,8 +286,20 @@ $.extend($.gritter.options, {
 										</tr>
 									</table>
 								</fieldset>
-								<fieldset id="incapJSONparams">
-									<legend>JSON Request Parameters</legend>
+								<fieldset id="incapqueryParams">
+									<legend>Query Parameters</legend>
+									<table class="tableColL"></table>
+								</fieldset>
+								<fieldset id="incappathParams">
+									<legend>URL Path Parameters</legend>
+									<table class="tableColL"></table>
+								</fieldset>
+								<fieldset id="incapbodyParams">
+									<legend>JSON Body Parameters</legend>
+									<table class="tableColL"></table>
+								</fieldset>
+								<fieldset id="incapformDataParams">
+									<legend>Form Data Parameters</legend>
 									<table class="tableColL"></table>
 								</fieldset>
 							</td>
@@ -307,6 +318,7 @@ $.extend($.gritter.options, {
 								<label for="incapResult">Response:</label><br clear="all" />
 								<textarea id="incapResult"></textarea><br clear="all" /><br />
 								<a href="https://my.incapsula.com/api/docs/v1" target="_blank">Incapsula API Documentation</a><br />
+								<a href="https://docs.imperva.com/search?q=api%20definition" target="_blank">Incapsula API Swagger Definition Files</a><br />
 								<a href="http://jsonformatter.curiousconcept.com/" target="_blank">JSON Formatter</a>
 							</td>
 						</tr>

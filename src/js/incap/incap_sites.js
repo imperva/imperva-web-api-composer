@@ -28,12 +28,14 @@ $().ready(function() {
 function loadSites(){
 	if ($('#incapSitesAccountsList').val()!='') {
 		$('#sitesContent').html('loading...');
-		var postDataObj = getUserAuthObj($('#incapSitesAccountsList').val());
-		postDataObj.account_id=$('#incapSitesAccountIDList').val();
-		postDataObj.page_size=$('#incapSitesPageSize').val();
-		postDataObj.page_num=$('#incapSitesPageNum').val();
-		$.gritter.add({ title: 'Status', text: 'Loading page '+postDataObj.page_num+' (page size: '+postDataObj.page_size+') on account_id: '+postDataObj.account_id});
-		makeIncapCall('/api/prov/v1/sites/list','POST',loadSitesResponse,postDataObj,'set');
+		var auth = getUserAuthObj($('#incapSitesAccountsList').val());
+		var postParams = {
+			"account_id": $('#incapSitesAccountIDList').val(),
+			"page_size": $('#incapSitesPageSize').val(),
+			"page_num": $('#incapSitesPageNum').val()
+		}
+		$.gritter.add({ title: 'Status', text: 'Loading page '+postParams.page_num+' (page size: '+postParams.page_size+') on account_id: '+postParams.account_id});
+		makeIncapCall(getSwHost("cwaf_api_v1")+'/api/prov/v1/sites/list','POST',auth,loadSitesResponse,postParams,'set',"application/x-www-form-urlencoded");
 	}
 }
 
@@ -130,9 +132,11 @@ function loadSitesResponse(response){
 		}		
 		str += '<div id="'+divId+'"></div></fieldset>';
 		//$.gritter.add({ title: 'Status', text: "Loading rules for site:"+site.site_id});
-		var postDataObj = getUserAuthObj($('#incapSitesAccountsList').val());
-		postDataObj.site_id = site.site_id;
-		makeIncapCall('/api/prov/v1/sites/incapRules/list','POST',loadRulesResponse,postDataObj,divId);
+		var auth = getUserAuthObj($('#incapSitesAccountsList').val());
+		postParams = {
+			"site_id": site.site_id 
+		}
+		makeIncapCall(getSwHost("cwaf_api_v1")+'/api/prov/v1/sites/incapRules/list','POST',auth,loadRulesResponse,postParams,divId,"application/x-www-form-urlencoded");
 	});
 	$('#sitesContent').html(str);
 	$('.saveACLWAFRule').unbind().click(function(){ incapSaveACLWAFRuleTemplate(this.id); });
@@ -256,9 +260,11 @@ function incapDeletePolicyFromSite(cur_id) {
 	var rule_name = $('#'+cur_id).parent().parent().find('.rule_name').html();
 	if (confirm('Are you sure you want delete the policy "'+rule_name+'" ('+idAry[1]+') from this tool?')) {
 		$('#'+cur_id).parent().parent().remove();
-		var postDataObj = getUserAuthObj(idAry[0]);
-		postDataObj.rule_id = idAry[1];
-		makeIncapCall('/api/prov/v1/sites/incapRules/delete','POST',incapDeletePolicyFromSiteResponse,postDataObj,'set');
+		var auth = getUserAuthObj(idAry[0]);
+		var postParams = {
+			"rule_id": idAry[1]
+		}
+		makeIncapCall(getSwHost("cwaf_api_v1")+'/api/prov/v1/sites/incapRules/delete','POST',auth,incapDeletePolicyFromSiteResponse,postParams,'set',"application/x-www-form-urlencoded");
 	}
 }
 
@@ -312,30 +318,30 @@ function incapDeleteACLWAFRuleFromSite(obj) {
 		if (curDeleteACLObj.exceptions!=undefined) {
 			if (curDeleteACLObj.curExceptionIndex==undefined) curDeleteACLObj.curExceptionIndex = 0;
 			if (curDeleteACLObj.exceptions[curDeleteACLObj.curExceptionIndex]!=undefined) {
-				var postDataObj = getUserAuthObj(curDeleteACLObj.api_id);
-				delete postDataObj.account_id;
-				postDataObj.site_id=curDeleteACLObj.site_id;
-				postDataObj.rule_id=curDeleteACLObj.id;
-				postDataObj.whitelist_id=curDeleteACLObj.exceptions[curDeleteACLObj.curExceptionIndex].id;
-				postDataObj.delete_whitelist=true;
+				var auth = getUserAuthObj(curDeleteACLObj.api_id);
+				delete auth.account_id;
+				var postParams = {
+					"site_id": curDeleteACLObj.site_id,
+					"rule_id": curDeleteACLObj.id,
+					"whitelist_id": curDeleteACLObj.exceptions[curDeleteACLObj.curExceptionIndex].id,
+					"delete_whitelist": true	
+				}
 				hasMoreExceptions=true;
 				// console.log('postDataObj.whitelist_id='+postDataObj.whitelist_id);
 				// console.log('hasMoreExceptions='+hasMoreExceptions);
 				// console.log('makeIncapCall(/api/prov/v1/sites/configure/whitelists)');
 				// console.log(postDataObj);
-				makeIncapCall('/api/prov/v1/sites/configure/whitelists','POST',incapDeleteACLWAFRuleFromSiteResponse,postDataObj,'set');
+				makeIncapCall(getSwHost("cwaf_api_v1")+'/api/prov/v1/sites/configure/whitelists','POST',auth,incapDeleteACLWAFRuleFromSiteResponse,postParams,'set',"application/x-www-form-urlencoded");
 			}
 		}
 		if (hasMoreExceptions==false) {
 			// console.log("okToDelete=="+okToDelete+" | hasMoreExceptions=="+hasMoreExceptions);
 			// console.log('hasMoreExceptions='+hasMoreExceptions);
-			var postDataObj = getUserAuthObj(curDeleteACLObj.api_id);
+			var auth = getUserAuthObj(curDeleteACLObj.api_id);
 			var curDefRuleObj = defaultRuleConfigMapping[curDeleteACLObj.id];
-			curDefRuleObj.api_id = postDataObj.api_id;
-			curDefRuleObj.api_key = postDataObj.api_key;
 			curDefRuleObj.site_id = curDeleteACLObj.site_id;
 			curDefRuleObj.rule_id=curDeleteACLObj.id;
-			makeIncapCall(incapCopyObjectURLMappings[curDeleteACLObj.id].action,'POST',incapDeleteACLWAFRuleFromSiteResponse,curDefRuleObj,'set');
+			makeIncapCall(getSwHost("cwaf_api_v1")+incapCopyObjectURLMappings[curDeleteACLObj.id].action,'POST',auth,incapDeleteACLWAFRuleFromSiteResponse,curDefRuleObj,'set',"application/x-www-form-urlencoded");
 			curDeleteACLObj.isComplete = true;
 		}
 	} else {
@@ -434,10 +440,10 @@ function copyElement(rule_type,ruleObj) {
 		}
 	});	
 	if ($('#incapActions').val()=='/api/prov/v1/sites/incapRules/add' || $('#incapActions').val()=='/api/prov/v1/sites/incapRules/edit') {
-		$('#incapActions').unbind().change(function(){ toggleDcId(); updateJSON(); });
-		toggleDcId();
+		$('#incapActions').unbind().change(function(){ /*toggleDcId();*/ updateRequestData(); });
+		// toggleDcId();
 	}
-	updateJSON();
+	updateRequestData();
 }
 
 function createAllRulesSampleCURL(linkId,url) {

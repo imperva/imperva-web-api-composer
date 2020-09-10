@@ -388,7 +388,7 @@ function SSUpdateJSON(){
 function SSUpdateCURL(){
 	if (!$('#SecureSphereAPI #SSrequestUrl').hasClass('errors')) {
 		//alert("$('#SecureSphereAPI #SSrequestUrl').hasClass('errors')="+$('#SecureSphereAPI #SSrequestUrl').hasClass('errors'));
-		var str = 'curl -ik -X '+$(ss_method_sel).val().toUpperCase()+' ';
+		var str = 'curl -ik -X '+$(ss_method_sel).prop("value").toUpperCase()+' ';
 		if ($(ss_session_sel).val()=="") {
 			str += '-H "Authorization: Basic '+btoa($('#SecureSphereAPI #SSusername').val()+":"+$('#SecureSphereAPI #SSpassword').val())+'"';
 		} else {

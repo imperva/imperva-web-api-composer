@@ -245,11 +245,35 @@ var SSapiParamMapping = {
 	},
 	"policyName":{
 		"getAPIurlMapping":{
-			"/v1/conf/webServiceCustomPolicies/{policyName}":{
-				"url":"/v1/conf/webServiceCustomPolicies"
+			"/v1/conf/policies/security/firewallPolicies/{policyName}":{
+				"url":"/v1/conf/policies/security/firewallPolicies/",
+				"nestedItemName":"policies",
+				"nestedItemLevel":0
 			},
-			"/v1/conf/webApplicationCustomPolicies/{policyName}":{
-				"url":"/v1/conf/webApplicationCustomPolicies"
+			"/v1/conf/policies/security/httpProtocolSignaturesPolicies/{policyName}":{
+				"url":"/v1/conf/policies/security/httpProtocolSignaturesPolicies/",
+				"nestedItemName":"policies",
+				"nestedItemLevel":0
+			},
+			"/v1/conf/policies/security/streamSignaturesPolicies/{policyName}":{
+				"url":"/v1/conf/policies/security/streamSignaturesPolicies/",
+				"nestedItemName":"policies",
+				"nestedItemLevel":0
+			},
+			"/v1/conf/policies/security/webApplicationCustomPolicies{policyName}":{
+				"url":"/v1/conf/policies/security/webApplicationCustomPolicies",
+				"nestedItemName":"customWebPolicies",
+				"nestedItemLevel":0
+			},
+			"/v1/conf/policies/security/webApplicationSignaturesPolicies/{policyName}":{
+				"url":"/v1/conf/policies/security/webApplicationSignaturesPolicies/",
+				"nestedItemName":"policies",
+				"nestedItemLevel":0
+			},			
+			"/v1/conf/policies/security/webServiceCustomPolicies/{policyName}":{
+				"url":"/v1/conf/policies/security/webServiceCustomPolicies",
+				"nestedItemName":"customWebPolicies",
+				"nestedItemLevel":0
 			},
 			"/v1/conf/auditPolicies/{policyName}":{
 				"url":"/v1/conf/auditPolicies"

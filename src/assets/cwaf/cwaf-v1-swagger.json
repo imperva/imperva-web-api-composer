@@ -1,0 +1,2789 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Imperva API1 WAF",
+        "description": "Imperva API1 WAF",
+        "version": "2.0.0",
+        "termsOfService": "https://www.imperva.com/legal/terms-of-use/",
+        "contact": {
+            "email": "support@imperva.com"
+        }
+    },
+    "externalDocs": {
+        "description": "Find out more about Imperva",
+        "url": "http://docs.imperva.com"
+    },
+    "host": "my.imperva.com",
+    "basePath": "/api/prov/v1",
+    "schemes": [
+        "https"
+    ],
+    "consumes": [
+        "application/x-www-form-urlencoded"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "securityDefinitions": {
+        "api_id": {
+            "type": "apiKey",
+            "in": "query",
+            "name": "api_id"
+        },
+        "api_key": {
+            "type": "apiKey",
+            "in": "query",
+            "name": "api_key"
+        }
+    },
+    "security": [
+        {
+            "api_id": [],
+            "api_key": []
+        }
+    ],
+    "paths": {
+        "/account": {
+            "post": {
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/accounts/add": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "email",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "parent_id",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "user_name",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "plan_id",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "ref_id",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "account_name",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "log_level",
+                        "type": "string",
+                        "enum":["default","none","full","security"]
+                    },
+                    {
+                        "in": "formData",
+                        "name": "logs_account_id",
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/accounts/audit": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "account_id",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "time_range",
+                        "type": "string",
+                        "enum":["today","last_7_days","last_30_days","last_90_days","month_to_date","custom"]
+                    },
+                    {
+                        "in": "formData",
+                        "name": "start",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "end",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "type",
+                        "type": "string"
+                    },
+                    {
+                    	"description":"The number of objects to return in the response. Default is 50. Maximum: 100",
+                        "in": "formData",
+                        "name": "page_size",
+                        "type": "integer",
+                        "enum":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100]
+                    },
+                    {
+                    	"description":"The page to return starting from 0. Default is 0.",
+                        "in": "formData",
+                        "name": "page_num",
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/accounts/configure": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "account_id",
+                        "type": "integer"
+                    },
+                    {
+                    	"description":"active: active | bypass ;\nsite_ip: 1.2.3.4,,some.cname.com (comma separated)\ndomain_validation: email | html | dns \napprover: my.approver@email.com\nignore_ssl: true | ''\nacceleration_level: none | standard | aggressive \nseal_location: api.seal_location.bottom_left | \n\t\tapi.seal_location.none | \n\t\tapi.seal_location.right_bottom | \n\t\tapi.seal_location.right | \n\t\tapi.seal_location.left | \n\t\tapi.seal_location.bottom_right | \n\t\tapi.seal_location.bottom \ndomain_redirect_to_full: true | '' ;\nremove_ssl: true | '' ;\nref_id: string (free-text/unique identifier)",
+                        "in": "formData",
+                        "name": "param",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "value",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/accounts/data-privacy/set-region-default": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "account_id",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "data_storage_region",
+                        "type": "string",
+                        "enum":["APAC","EU","US","DEFAULT"]
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/accounts/data-privacy/show": {
+            "post": {
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/accounts/delete": {
+            "post": {
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/accounts/gettoken": {
+            "post": {
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/accounts/list": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "account_id",
+                        "type": "integer"
+                    },
+                    {
+                    	"description":"The number of objects to return in the response. Default is 50. Maximum: 100",
+                        "in": "formData",
+                        "name": "page_size",
+                        "type": "integer",
+                        "enum":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100]
+                    },
+                    {
+                    	"description":"The page to return starting from 0. Default is 0.",
+                        "in": "formData",
+                        "name": "page_num",
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/accounts/setlog": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "account_id",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "log_level",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/accounts/setAmazonSiemStorage": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "account_id",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "bucket_name",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "access_key",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "secret_key",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/accounts/setSftpSiemStorage": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "account_id",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "host",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "user_name",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "password",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "destination_folder",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/accounts/setDefaultSiemStorage": {
+            "post": {
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/accounts/testS3Connection": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "account_id",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "bucket_name",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "access_key",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "secret_key",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "save_on_success",
+                        "type": "boolean"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/accounts/testSftpConnection": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "account_id",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "host",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "user_name",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "password",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "destination_folder",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "save_on_success",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/subaccounts/add": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "sub_account_name",
+                        "type": "string"
+                    },
+                    {
+                    	"description":"The newly created account's parent id. If not specified, the invoking account will be assigned as the parent account. (optional)",
+                        "in": "formData",
+                        "name": "parent_id",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "ref_id",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "log_level",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "logs_account_id",
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/subaccounts/delete": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "sub_account_id",
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/accounts/listSubAccounts": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "account_id",
+                        "type": "integer"
+                    },
+                    {
+                    	"description":"The number of objects to return in the response. Default is 50. Maximum: 100",
+                        "in": "formData",
+                        "name": "page_size",
+                        "type": "integer",
+                        "enum":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100]
+                    },
+                    {
+                    	"description":"The page to return starting from 0. Default is 0.",
+                        "in": "formData",
+                        "name": "page_num",
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/caa/check-compliance": {
+            "post": {
+                "parameters": [
+                    {
+                    	"description":"Numeric identifier of the site to operate on.",
+                        "in": "formData",
+                        "name": "site_id",
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/domain/emails": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "domain",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/sites/data-privacy/region-change": {
+            "post": {
+                "parameters": [
+                    {
+                    	"description":"Numeric identifier of the site to operate on.",
+                        "in": "formData",
+                        "name": "site_id",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "data_storage_region",
+                        "type": "string",
+                        "enum":["APAC","EU","US","DEFAULT"]
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/sites/data-privacy/show": {
+            "post": {
+                "parameters": [
+                    {
+                    	"description":"Numeric identifier of the site to operate on.",
+                        "in": "formData",
+                        "name": "site_id",
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/sites/add": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "domain",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "account_id",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "ref_id",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "send_site_setup_emails",
+                        "type": "boolean"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "site_ip",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "force_ssl",
+                        "type": "boolean"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "log_level",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "logs_account_id",
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/sites/cache/purge": {
+            "post": {
+                "parameters": [
+                    {
+                    	"description":"Numeric identifier of the site to operate on.",
+                        "in": "formData",
+                        "name": "site_id",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "purge_pattern",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/sites/configure": {
+            "post": {
+                "parameters": [
+                    {
+                    	"description":"Numeric identifier of the site to operate on.",
+                        "in": "formData",
+                        "name": "site_id",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "param",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "value",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/sites/configure/acl": {
+            "post": {
+                "parameters": [
+                    {
+                    	"description":"Numeric identifier of the site to operate on.",
+                        "in": "formData",
+                        "name": "site_id",
+                        "type": "integer"
+                    },
+                    {
+                    	"description":"The id of the acl, e.g api.acl.blacklisted_ips:\r\n• api.acl.blacklisted_countries - Visitors from blacklisted countries/continents\r\n• api.acl.blacklisted_urls - Visitors from blacklisted URLs\r\n• api.acl.blacklisted_ips - Visitors from blacklisted IPs\r\n• api.acl.whitelisted_ips - Visitors from whitelisted IPs\n\r\n\rBlacklisted URLs Example:\r\nrule_id=api.acl.blacklisted_urls\r\nurls=%2Fadmin%2Fdashboard%2Fstats%3Fx%3D1%26y%3D2%23z%3D3,%2Fadmin\r\nurl_patterns=contains,equals\r\n\r\nBlacklisted Countries Example:\r\nrule_id=api.acl.blacklisted_countries\r\ncountries=CA,US\r\ncontinents=SA\r\n\r\nBlacklisted IPs Example:\r\nrule_id=api.acl.blacklisted_ips\r\nips=1.2.3.4,192.168.1.1-192.168.1.100,192.168.1.1/24\r\n\r\nWhitelisted IPs Example:\r\nrule_id=api.acl.whitelisted_ips\r\nips=1.2.3.4\r\n\r\nDelete the IPs ACL Example (send an empty list of IPs):\r\nrule_id=api.acl.blacklisted_ips\r\nips=\r\n",
+                        "in": "formData",
+                        "name": "rule_id",
+                        "type": "string",
+                        "enum":["api.acl.blacklisted_countries","api.acl.blacklisted_ips","api.acl.blacklisted_urls","api.acl.whitelisted_ips","api.threats.backdoor","api.threats.bot_access_control","api.threats.cross_site_scripting","api.threats.ddos","api.threats.illegal_resource_access","api.threats.remote_file_inclusion","api.threats.sql_injection"]
+                    },
+                    {
+                        "in": "formData",
+                        "name": "urls",
+                        "type": "string"
+                    },
+                    {
+                        "description":"A comma separated list of url patterns. Possible values: contains | equals | prefix | suffix | not_equals | not_contain | not_prefix | not_suffix. The patterns should be in accordance with the matching urls sent by the urls parameter.",
+                        "in": "formData",
+                        "name": "url_patterns",
+                        "type": "string",
+                        "uniqueItems":false,
+                        "enum":["contains","equals","prefix","suffix","not_equals","not_contain","not_prefix","not_suffix"]
+                    },
+                    {
+                        "in": "formData",
+                        "name": "countries",
+                        "type": "string",
+                        "uniqueItems":false,
+                        "enum":["AF","AX","AL","DZ","AS","AD","AO","AI","AQ","AG","AR","AM","AW","AU","AT","AZ","BS","BH","BD","BB","BY","BE","BZ","BJ","BM","BT","BO","BA","BW","BV","BR","VG","IO","BN","BG","BF","BI","KH","CM","CA","CV","KY","CF","TD","CL","CN","HK","MO","CX","CC","CO","KM","CG","CD","CK","CR","CI","HR","CU","CY","CZ","DK","DJ","DM","DO","EC","EG","SV","GQ","ER","EE","ET","FK","FO","FJ","FI","FR","GF","PF","TF","GA","GM","GE","DE","GH","GI","GR","GL","GD","GP","GU","GT","GG","GN","GW","GY","HT","HM","VA","HN","HU","IS","IN","ID","IR","IQ","IE","IM","IL","IT","JM","JP","JE","JO","KZ","KE","KI","KP","KR","KW","KG","LA","LV","LB","LS","LR","LY","LI","LT","LU","MK","MG","MW","MY","MV","ML","MT","MH","MQ","MR","MU","YT","MX","FM","MD","MC","MN","ME","MS","MA","MZ","MM","NA","NR","NP","NL","AN","NC","NZ","NI","NE","NG","NU","NF","MP","NO","OM","PK","PW","PS","PA","PG","PY","PE","PH","PN","PL","PT","PR","QA","RE","RO","RU","RW","BL","SH","KN","LC","MF","PM","VC","WS","SM","ST","SA","SN","RS","SC","SL","SG","SK","SI","SB","SO","ZA","GS","SS","ES","LK","SD","SR","SJ","SZ","SE","CH","SY","TW","TJ","TZ","TH","TL","TG","TK","TO","TT","TN","TR","TM","TC","TV","UG","UA","AE","GB","US","UM","UY","UZ","VU","VE","VN","VI","WF","EH","YE","ZM","ZW"]
+                    },
+                    {
+                        "in": "formData",
+                        "name": "continents",
+                        "type": "string",
+                        "uniqueItems":false,
+                        "enum":["AF","AN","AS","EU","NA","OC","SA"]
+                    },
+                    {
+                    	"description":"A comma seperated list of IPs or IP ranges, e.g: 192.168.1.1, 192.168.1.1-192.168.1.100 or 192.168.1.1/24",
+                        "in": "formData",
+                        "name": "ips",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/sites/configure/htmlInjections": {
+            "post": {
+                "parameters": [
+                    {
+                    	"description":"Numeric identifier of the site to operate on.",
+                        "in": "formData",
+                        "name": "site_id",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "url",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "url_pattern",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "location",
+                        "type": "string",
+                        "enum":["head","body_end"]
+                    },
+                    {
+                        "in": "formData",
+                        "name": "content",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/sites/configure/security": {
+            "post": {
+                "parameters": [
+                    {
+                    	"description":"Numeric identifier of the site to operate on.",
+                        "in": "formData",
+                        "name": "site_id",
+                        "type": "integer"
+                    },
+                    {
+                    	"description":"The id of the acl, e.g api.acl.blacklisted_ips:\r\n• api.acl.blacklisted_countries - Visitors from blacklisted countries/continents\r\n• api.acl.blacklisted_urls - Visitors from blacklisted URLs\r\n• api.acl.blacklisted_ips - Visitors from blacklisted IPs\r\n• api.acl.whitelisted_ips - Visitors from whitelisted IPs\n\r\n\rBlacklisted URLs Example:\r\nrule_id=api.acl.blacklisted_urls\r\nurls=%2Fadmin%2Fdashboard%2Fstats%3Fx%3D1%26y%3D2%23z%3D3,%2Fadmin\r\nurl_patterns=contains,equals\r\n\r\nBlacklisted Countries Example:\r\nrule_id=api.acl.blacklisted_countries\r\ncountries=CA,US\r\ncontinents=SA\r\n\r\nBlacklisted IPs Example:\r\nrule_id=api.acl.blacklisted_ips\r\nips=1.2.3.4,192.168.1.1-192.168.1.100,192.168.1.1/24\r\n\r\nWhitelisted IPs Example:\r\nrule_id=api.acl.whitelisted_ips\r\nips=1.2.3.4\r\n\r\nDelete the IPs ACL Example (send an empty list of IPs):\r\nrule_id=api.acl.blacklisted_ips\r\nips=\r\n",
+                        "in": "formData",
+                        "name": "rule_id",
+                        "type": "string",
+                        "enum":["api.acl.blacklisted_countries","api.acl.blacklisted_ips","api.acl.blacklisted_urls","api.acl.whitelisted_ips","api.threats.backdoor","api.threats.bot_access_control","api.threats.cross_site_scripting","api.threats.ddos","api.threats.illegal_resource_access","api.threats.remote_file_inclusion","api.threats.sql_injection"]
+                    },
+                    {
+                        "in": "formData",
+                        "name": "block_bad_bots",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "challenge_suspected_bots",
+                        "type": "boolean"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "activation_mode",
+                        "type": "string"
+                    },
+                    {
+                    	"description":"The action that should be taken when a threat is detected, for example: api.threats.action.block_ip. Different actions are allowed per different threats, e.g. backdoors may only be quarantined, ignored or trigger an alert. For possible values see below:\r\n\r\n• api.threats.action.disabled - Threat is not blocked, site owner is not notified.\r\n• api.threats.action.alert - Threat is not blocked, site owner is notified.\r\n• api.threats.action.block_request - Threat blocked by stopping the request, site owner is notified.\r\n• api.threats.action.block_user - Threat blocked by stopping the request. Additional requests by the client application will be automatically blocked for a duration of several minutes. Site owner is notified.\r\n• api.threats.action.block_ip - Threat blocked by stopping the request. Additional requests from the same IP addresses will be automatically blocked for a duration of several minutes. Site owner is notified.\r\n• api.threats.action.quarantine_url - Relevant only for Backdoor Protect. When detecting a backdoor, additional requests to the URL of the backdoor will be automatically blocked. Site owner is notified.",
+                        "in": "formData",
+                        "name": "security_rule_action",
+                        "type": "string",
+                        "enum":["api.threats.action.disabled","api.threats.action.alert","api.threats.action.block_request","api.threats.action.block_user","api.threats.action.block_ip","api.threats.action.quarantine_url"]
+                    },
+                    {
+                        "in": "formData",
+                        "name": "quarantined_urls",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "ddos_traffic_threshold",
+                        "type": "integer",
+                        "enum":[10, 20, 50, 100, 200, 500, 750, 1000, 2000, 3000, 4000, 5000]
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/sites/configure/whitelists": {
+            "post": {
+                "parameters": [
+                    {
+                    	"description":"Numeric identifier of the site to operate on.",
+                        "in": "formData",
+                        "name": "site_id",
+                        "type": "integer"
+                    },
+                    {
+                    	"description":"The id of the acl, e.g api.acl.blacklisted_ips:\r\n• api.acl.blacklisted_countries - Visitors from blacklisted countries/continents\r\n• api.acl.blacklisted_urls - Visitors from blacklisted URLs\r\n• api.acl.blacklisted_ips - Visitors from blacklisted IPs\r\n• api.acl.whitelisted_ips - Visitors from whitelisted IPs\n\r\n\rBlacklisted URLs Example:\r\nrule_id=api.acl.blacklisted_urls\r\nurls=%2Fadmin%2Fdashboard%2Fstats%3Fx%3D1%26y%3D2%23z%3D3,%2Fadmin\r\nurl_patterns=contains,equals\r\n\r\nBlacklisted Countries Example:\r\nrule_id=api.acl.blacklisted_countries\r\ncountries=CA,US\r\ncontinents=SA\r\n\r\nBlacklisted IPs Example:\r\nrule_id=api.acl.blacklisted_ips\r\nips=1.2.3.4,192.168.1.1-192.168.1.100,192.168.1.1/24\r\n\r\nWhitelisted IPs Example:\r\nrule_id=api.acl.whitelisted_ips\r\nips=1.2.3.4\r\n\r\nDelete the IPs ACL Example (send an empty list of IPs):\r\nrule_id=api.acl.blacklisted_ips\r\nips=\r\n",
+                        "in": "formData",
+                        "name": "rule_id",
+                        "type": "string",
+                        "enum":["api.acl.blacklisted_countries","api.acl.blacklisted_ips","api.acl.blacklisted_urls","api.acl.whitelisted_ips","api.threats.backdoor","api.threats.bot_access_control","api.threats.cross_site_scripting","api.threats.ddos","api.threats.illegal_resource_access","api.threats.remote_file_inclusion","api.threats.sql_injection"]
+                    },
+                    {
+                    	"description":"The id (an integer) of the whitelist to be set. This field is optional - in case no id is supplied, a new whitelist will be created.",
+                        "in": "formData",
+                        "name": "whitelist_id",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "delete_whitelist",
+                        "type": "boolean"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "urls",
+                        "type": "string"
+                    },
+                    {
+                        "description":"A comma separated list of url patterns. Possible values: contains | equals | prefix | suffix | not_equals | not_contain | not_prefix | not_suffix. The patterns should be in accordance with the matching urls sent by the urls parameter.",
+                        "in": "formData",
+                        "name": "url_patterns",
+                        "type": "string",
+                        "uniqueItems":false,
+                        "enum":["contains","equals","prefix","suffix","not_equals","not_contain","not_prefix","not_suffix"]
+                    },
+                    {
+                        "in": "formData",
+                        "name": "countries",
+                        "type": "string",
+                        "uniqueItems":false,
+                        "enum":["AF","AX","AL","DZ","AS","AD","AO","AI","AQ","AG","AR","AM","AW","AU","AT","AZ","BS","BH","BD","BB","BY","BE","BZ","BJ","BM","BT","BO","BA","BW","BV","BR","VG","IO","BN","BG","BF","BI","KH","CM","CA","CV","KY","CF","TD","CL","CN","HK","MO","CX","CC","CO","KM","CG","CD","CK","CR","CI","HR","CU","CY","CZ","DK","DJ","DM","DO","EC","EG","SV","GQ","ER","EE","ET","FK","FO","FJ","FI","FR","GF","PF","TF","GA","GM","GE","DE","GH","GI","GR","GL","GD","GP","GU","GT","GG","GN","GW","GY","HT","HM","VA","HN","HU","IS","IN","ID","IR","IQ","IE","IM","IL","IT","JM","JP","JE","JO","KZ","KE","KI","KP","KR","KW","KG","LA","LV","LB","LS","LR","LY","LI","LT","LU","MK","MG","MW","MY","MV","ML","MT","MH","MQ","MR","MU","YT","MX","FM","MD","MC","MN","ME","MS","MA","MZ","MM","NA","NR","NP","NL","AN","NC","NZ","NI","NE","NG","NU","NF","MP","NO","OM","PK","PW","PS","PA","PG","PY","PE","PH","PN","PL","PT","PR","QA","RE","RO","RU","RW","BL","SH","KN","LC","MF","PM","VC","WS","SM","ST","SA","SN","RS","SC","SL","SG","SK","SI","SB","SO","ZA","GS","SS","ES","LK","SD","SR","SJ","SZ","SE","CH","SY","TW","TJ","TZ","TH","TL","TG","TK","TO","TT","TN","TR","TM","TC","TV","UG","UA","AE","GB","US","UM","UY","UZ","VU","VE","VN","VI","WF","EH","YE","ZM","ZW"]
+                    },
+                    {
+                        "in": "formData",
+                        "name": "continents",
+                        "type": "string",
+                        "uniqueItems":false,
+                        "enum":["AF","AN","AS","EU","NA","OC","SA"]
+                    },
+                    {
+                    	"description":"A comma seperated list of IPs or IP ranges, e.g: 192.168.1.1, 192.168.1.1-192.168.1.100 or 192.168.1.1/24",
+                        "in": "formData",
+                        "name": "ips",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "client_app_types",
+                        "type": "string"
+                    },
+                    {
+                    	"description":"Number of packets per second.",
+                        "in": "formData",
+                        "name": "client_apps",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "parameters",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "user_agents",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/sites/customCertificate/csr": {
+            "post": {
+                "parameters": [
+                    {
+                    	"description":"Numeric identifier of the site to operate on.",
+                        "in": "formData",
+                        "name": "site_id",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "email",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "organization",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "organization_unit",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "country",
+                        "type": "string",
+                        "enum":["AF","AX","AL","DZ","AS","AD","AO","AI","AQ","AG","AR","AM","AW","AU","AT","AZ","BS","BH","BD","BB","BY","BE","BZ","BJ","BM","BT","BO","BA","BW","BV","BR","VG","IO","BN","BG","BF","BI","KH","CM","CA","CV","KY","CF","TD","CL","CN","HK","MO","CX","CC","CO","KM","CG","CD","CK","CR","CI","HR","CU","CY","CZ","DK","DJ","DM","DO","EC","EG","SV","GQ","ER","EE","ET","FK","FO","FJ","FI","FR","GF","PF","TF","GA","GM","GE","DE","GH","GI","GR","GL","GD","GP","GU","GT","GG","GN","GW","GY","HT","HM","VA","HN","HU","IS","IN","ID","IR","IQ","IE","IM","IL","IT","JM","JP","JE","JO","KZ","KE","KI","KP","KR","KW","KG","LA","LV","LB","LS","LR","LY","LI","LT","LU","MK","MG","MW","MY","MV","ML","MT","MH","MQ","MR","MU","YT","MX","FM","MD","MC","MN","ME","MS","MA","MZ","MM","NA","NR","NP","NL","AN","NC","NZ","NI","NE","NG","NU","NF","MP","NO","OM","PK","PW","PS","PA","PG","PY","PE","PH","PN","PL","PT","PR","QA","RE","RO","RU","RW","BL","SH","KN","LC","MF","PM","VC","WS","SM","ST","SA","SN","RS","SC","SL","SG","SK","SI","SB","SO","ZA","GS","SS","ES","LK","SD","SR","SJ","SZ","SE","CH","SY","TW","TJ","TZ","TH","TL","TG","TK","TO","TT","TN","TR","TM","TC","TV","UG","UA","AE","GB","US","UM","UY","UZ","VU","VE","VN","VI","WF","EH","YE","ZM","ZW"]
+                    },
+                    {
+                        "in": "formData",
+                        "name": "state",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "city",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/sites/customCertificate/remove": {
+            "post": {
+                "parameters": [
+                    {
+                    	"description":"Numeric identifier of the site to operate on.",
+                        "in": "formData",
+                        "name": "site_id",
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/sites/customCertificate/upload": {
+            "post": {
+                "parameters": [
+                    {
+                    	"description":"Numeric identifier of the site to operate on.",
+                        "in": "formData",
+                        "name": "site_id",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "certificate",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "private_key",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "passphrase",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/sites/dataCenters/add": {
+            "post": {
+                "parameters": [
+                    {
+                    	"description":"Numeric identifier of the site to operate on.",
+                        "in": "formData",
+                        "name": "site_id",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "name",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "server_address",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "is_standby",
+                        "type": "boolean"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "is_content",
+                        "type": "boolean"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/sites/dataCenters/delete": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "dc_id",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/sites/dataCenters/edit": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "dc_id",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "name",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "is_standby",
+                        "type": "boolean"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "is_content",
+                        "type": "boolean"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/sites/dataCenters/list": {
+            "post": {
+                "parameters": [
+                    {
+                    	"description":"Numeric identifier of the site to operate on.",
+                        "in": "formData",
+                        "name": "site_id",
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/sites/dataCenters/servers/add": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "dc_id",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "server_address",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "is_standby",
+                        "type": "boolean"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/sites/dataCenters/servers/delete": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "server_id",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/sites/dataCenters/servers/edit": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "server_id",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "server_address",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "is_enabled",
+                        "type": "boolean"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "is_standby",
+                        "type": "boolean"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/sites/delete": {
+            "post": {
+                "parameters": [
+                    {
+                    	"description":"Numeric identifier of the site to operate on.",
+                        "in": "formData",
+                        "name": "site_id",
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/sites/hostname/purge": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "host_name",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/sites/htmlinjections": {
+            "post": {
+                "parameters": [
+                    {
+                    	"description":"Numeric identifier of the site to operate on.",
+                        "in": "formData",
+                        "name": "site_id",
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/sites/incapRules/list": {
+            "post": {
+                "parameters": [
+                    {
+                    	"description":"Numeric identifier of the site to operate on.",
+                        "in": "formData",
+                        "name": "site_id",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "include_ad_rules",
+                        "type": "boolean"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "include_incap_rules",
+                        "type": "boolean"
+                    },
+                    {
+                    	"description":"The number of objects to return in the response. Default is 50. Maximum: 100",
+                        "in": "formData",
+                        "name": "page_size",
+                        "type": "integer",
+                        "enum":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100]
+                    },
+                    {
+                    	"description":"The page to return starting from 0. Default is 0.",
+                        "in": "formData",
+                        "name": "page_num",
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/sites/incapRules/add": {
+            "post": {
+                "parameters": [
+                    {
+                    	"description":"Numeric identifier of the site to operate on.",
+                        "in": "formData",
+                        "name": "site_id",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "name",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "action",
+                        "type": "string",
+                        "enum": [
+                        	"RULE_ACTION_REDIRECT",
+							"RULE_ACTION_REWRITE_URL",
+							"RULE_ACTION_REWRITE_HEADER",
+							"RULE_ACTION_REWRITE_COOKIE",
+							"RULE_ACTION_DELETE_HEADER",
+							"RULE_ACTION_DELETE_COOKIE",
+							"RULE_ACTION_FORWARD_TO_DC",
+							"RULE_ACTION_ALERT",
+							"RULE_ACTION_BLOCK",
+							"RULE_ACTION_BLOCK_USER",
+							"RULE_ACTION_BLOCK_IP",
+							"RULE_ACTION_RETRY",
+							"RULE_ACTION_INTRUSIVE_HTML",
+							"RULE_ACTION_CAPTCHA"
+						]
+                    },
+                    {
+                        "in": "formData",
+                        "name": "filter",
+                        "type": "filter"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "response_code",
+                        "type": "integer",
+                        "enum":[301, 302, 303, 307, 308]
+                    },
+                    {
+                        "in": "formData",
+                        "name": "protocol",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "add_missing",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "from",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "to",
+                        "type": "string"
+                    },
+                    {
+                    	"description":"Name of cookie or header to rewrite. Applies only for RULE_ACTION_REWRITE_COOKIE and RULE_ACTION_REWRITE_HEADER",
+                        "in": "formData",
+                        "name": "rewrite_name",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "dc_id",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "is_test_mode",
+                        "type": "boolean"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "lb_algorithm",
+                        "type": "string",
+                        "enum":["LB_LEAST_PENDING_REQUESTS","LB_LEAST_OPEN_CONNECTIONS","LB_SOURCE_IP_HASH","RANDOM"]
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/sites/incapRules/delete": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "rule_id",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/sites/incapRules/edit": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "rule_id",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "name",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "action",
+                        "type": "string",
+                        "enum": [
+                        	"RULE_ACTION_REDIRECT",
+							"RULE_ACTION_REWRITE_URL",
+							"RULE_ACTION_REWRITE_HEADER",
+							"RULE_ACTION_REWRITE_COOKIE",
+							"RULE_ACTION_DELETE_HEADER",
+							"RULE_ACTION_DELETE_COOKIE",
+							"RULE_ACTION_FORWARD_TO_DC",
+							"RULE_ACTION_ALERT",
+							"RULE_ACTION_BLOCK",
+							"RULE_ACTION_BLOCK_USER",
+							"RULE_ACTION_BLOCK_IP",
+							"RULE_ACTION_RETRY",
+							"RULE_ACTION_INTRUSIVE_HTML",
+							"RULE_ACTION_CAPTCHA"
+						]
+                    },
+                    {
+                        "in": "formData",
+                        "name": "filter",
+                        "type": "filter"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "response_code",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "protocol",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "add_missing",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "from",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "to",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "rewrite_name",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "dc_id",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "is_test_mode",
+                        "type": "boolean"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "lb_algorithm",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/sites/incapRules/enableDisable": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "rule_id",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "enable",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/sites/incapRules/list": {
+            "post": {
+                "parameters": [
+                    {
+                    	"description":"Numeric identifier of the site to operate on.",
+                        "in": "formData",
+                        "name": "site_id",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "include_ad_rules",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "include_incap_rules",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/sites/incapRules/priority/set": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "rule_id",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "priority",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/sites/incapRules/revert": {
+            "post": {
+                "parameters": [
+                    {
+                    	"description":"Numeric identifier of the site to operate on.",
+                        "in": "formData",
+                        "name": "site_id",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "rule_id",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "revision_id",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/sites/incapRules/revisions": {
+            "post": {
+                "parameters": [
+                    {
+                    	"description":"Numeric identifier of the site to operate on.",
+                        "in": "formData",
+                        "name": "site_id",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "rule_id",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/sites/list": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "account_id",
+                        "type": "integer"
+                    },
+                    {
+                    	"description":"The number of objects to return in the response. Default is 50. Maximum: 100",
+                        "in": "formData",
+                        "name": "page_size",
+                        "type": "integer",
+                        "enum":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100]
+                    },
+                    {
+                    	"description":"The page to return starting from 0. Default is 0.",
+                        "in": "formData",
+                        "name": "page_num",
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/sites/moveSite": {
+            "post": {
+                "parameters": [
+                    {
+                    	"description":"Numeric identifier of the site to operate on.",
+                        "in": "formData",
+                        "name": "site_id",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "destination_account_id",
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/sites/performance/advanced": {
+            "post": {
+                "parameters": [
+                    {
+                    	"description":"Numeric identifier of the site to operate on.",
+                        "in": "formData",
+                        "name": "site_id",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "param",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "value",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/sites/performance/cache-mode": {
+            "post": {
+                "parameters": [
+                    {
+                    	"description":"Numeric identifier of the site to operate on.",
+                        "in": "formData",
+                        "name": "site_id",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "cache_mode",
+                        "type": "string",
+                        "enum": ["static_only","disable","static_and_dynamic","aggressive"]
+                    },
+                    {
+                        "in": "formData",
+                        "name": "dynamic_cache_duration",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "aggressive_cache_duration",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/sites/performance/caching-rules": {
+            "post": {
+                "parameters": [
+                    {
+                    	"description":"Numeric identifier of the site to operate on.",
+                        "in": "formData",
+                        "name": "site_id",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "always_cache_resource_url",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "always_cache_resource_pattern",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "always_cache_resource_duration",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "never_cache_resource_url",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "never_cahce_resource_pattern",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "cahce_headers",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "clear_always_cache_rules",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "clear_never_cache_rules",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "clear_cache_headers_rules",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/sites/performance/purge": {
+            "post": {
+                "parameters": [
+                    {
+                    	"description":"Numeric identifier of the site to operate on.",
+                        "in": "formData",
+                        "name": "site_id",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "resource_url",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "resource_pattern",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "should_purge_all_site_resources",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/sites/report": {
+            "post": {
+                "parameters": [
+                    {
+                    	"description":"Numeric identifier of the site to operate on.",
+                        "in": "formData",
+                        "name": "site_id",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "report",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "format",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "time_range",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "start",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "end",
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/sites/setlog": {
+            "post": {
+                "parameters": [
+                    {
+                    	"description":"Numeric identifier of the site to operate on.",
+                        "in": "formData",
+                        "name": "site_id",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "log_level",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/sites/status": {
+            "post": {
+                "parameters": [
+                    {
+                    	"description":"Numeric identifier of the site to operate on.",
+                        "in": "formData",
+                        "name": "site_id",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "tests",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/sites/tls": {
+            "post": {
+                "parameters": [
+                    {
+                    	"description":"Numeric identifier of the site to operate on.",
+                        "in": "formData",
+                        "name": "site_id",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "support_all_tls_versions",
+                        "type": "boolean"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/sites/xray/get-link": {
+            "post": {
+                "parameters": [
+                    {
+                    	"description":"Numeric identifier of the site to operate on.",
+                        "in": "formData",
+                        "name": "site_id",
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/logscollector/change/status": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "config_id",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "logs_config_new_status",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/logscollector/upload/publickey": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "config_id",
+                        "type": "string"
+                    },
+                    {
+                    	"description":"The public key file(2048bit) in base64 format (without password protection)",
+                        "in": "formData",
+                        "name": "public_key",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/stats/v1": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "account_id",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "time_range",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "start",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "end",
+                        "type": "integer"
+                    },
+                    {
+                    	"description":"Numeric identifier of the site to operate on.",
+                        "in": "formData",
+                        "name": "site_id",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "stats",
+                        "type": "string",
+                        "enum":["visits_timeseries","hits_timeseries","bandwidth_timeseries","requests_geo_dist_summary","visits_dist_summary","caching","caching_timeseries","threats"]
+                    },
+                    {
+                        "in": "formData",
+                        "name": "granularity",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/visits/v1": {
+            "post": {
+                "parameters": [
+                    {
+                    	"description":"Numeric identifier of the site to operate on.",
+                        "in": "formData",
+                        "name": "site_id",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "time_range",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "start",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "end",
+                        "type": "integer"
+                    },
+                    {
+                    	"description":"The number of objects to return in the response. Default is 50. Maximum: 100",
+                        "in": "formData",
+                        "name": "page_size",
+                        "type": "integer",
+                        "enum":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100]
+                    },
+                    {
+                    	"description":"The page to return starting from 0. Default is 0.",
+                        "in": "formData",
+                        "name": "page_num",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "security",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "country",
+                        "type": "string",
+                        "enum":["AF","AX","AL","DZ","AS","AD","AO","AI","AQ","AG","AR","AM","AW","AU","AT","AZ","BS","BH","BD","BB","BY","BE","BZ","BJ","BM","BT","BO","BA","BW","BV","BR","VG","IO","BN","BG","BF","BI","KH","CM","CA","CV","KY","CF","TD","CL","CN","HK","MO","CX","CC","CO","KM","CG","CD","CK","CR","CI","HR","CU","CY","CZ","DK","DJ","DM","DO","EC","EG","SV","GQ","ER","EE","ET","FK","FO","FJ","FI","FR","GF","PF","TF","GA","GM","GE","DE","GH","GI","GR","GL","GD","GP","GU","GT","GG","GN","GW","GY","HT","HM","VA","HN","HU","IS","IN","ID","IR","IQ","IE","IM","IL","IT","JM","JP","JE","JO","KZ","KE","KI","KP","KR","KW","KG","LA","LV","LB","LS","LR","LY","LI","LT","LU","MK","MG","MW","MY","MV","ML","MT","MH","MQ","MR","MU","YT","MX","FM","MD","MC","MN","ME","MS","MA","MZ","MM","NA","NR","NP","NL","AN","NC","NZ","NI","NE","NG","NU","NF","MP","NO","OM","PK","PW","PS","PA","PG","PY","PE","PH","PN","PL","PT","PR","QA","RE","RO","RU","RW","BL","SH","KN","LC","MF","PM","VC","WS","SM","ST","SA","SN","RS","SC","SL","SG","SK","SI","SB","SO","ZA","GS","SS","ES","LK","SD","SR","SJ","SZ","SE","CH","SY","TW","TJ","TZ","TH","TL","TG","TK","TO","TT","TN","TR","TM","TC","TV","UG","UA","AE","GB","US","UM","UY","UZ","VU","VE","VN","VI","WF","EH","YE","ZM","ZW"]
+                    },
+                    {
+                        "in": "formData",
+                        "name": "ip",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "visit_id",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "list_live_visits",
+                        "type": "boolean"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/v1/infra/stats": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "account_id",
+                        "type": "integer"
+                    },
+                    {
+                    	"description":"Specific Protected IP or IP range. For example, 1.1.1.0/24.",
+                        "in": "formData",
+                        "name": "ip_prefix",
+                        "type": "string"
+                    },
+                    {
+                    	"description":"Specific traffic. One of: Total, Passed, Blocked.",
+                        "in": "formData",
+                        "name": "traffic",
+                        "type": "string",
+                        "enum":["Total","Passed","Blocked"]
+                    },
+                    {
+                    	"description":"A comma separated list of specific traffic types. Any of: UDP, TCP, DNS, DNS_RESPONSE, ICMP, SYN, FRAG, LARGE_SYN, NTP, NETFLOW, SSDP, GENERAL. Cannot be used together with the pop parameter.",
+                        "in": "formData",
+                        "name": "traffic_type",
+                        "type": "string",
+                        "enum":["UDP","TCP","DNS","DNS_RESPONSE","ICMP","SYN","FRAG","LARGE_SYN","NTP","NETFLOW","SSDP","GENERAL"]
+                    },
+                    {
+                    	"description":"A comma separated list of specific PoP names. For example: iad, tko. Cannot be used together with the traffic_type parameter. For the list of PoP codes and locations, see Imperva Data Centers (PoPs).",
+                        "in": "formData",
+                        "name": "pop",
+                        "type": "string"
+                    },
+                    {
+                    	"description":"The start date in milliseconds, since 1970.",
+                        "in": "formData",
+                        "name": "start",
+                        "type": "integer"
+                    },
+                    {
+                    	"description":"The end date in milliseconds, since 1970.",
+                        "in": "formData",
+                        "name": "end",
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/v1/infra/events": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "account_id",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "event_type",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "ip_prefix",
+                        "type": "string"
+                    },
+                    {
+                    	"description":"The number of objects to return in the response. Default is 50. Maximum: 100",
+                        "in": "formData",
+                        "name": "page_size",
+                        "type": "integer",
+                        "enum":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100]
+                    },
+                    {
+                    	"description":"The page to return starting from 0. Default is 0.",
+                        "in": "formData",
+                        "name": "page_num",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "start",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "end",
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/sites/lp/add-user": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "account_id",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "email",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "name",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "phone",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "is_email_verified",
+                        "type": "boolean"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "is_phone_verified",
+                        "type": "boolean"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "should_send_activation_email",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/sites/lp/configure-app": {
+            "post": {
+                "parameters": [
+                    {
+                    	"description":"Numeric identifier of the site to operate on.",
+                        "in": "formData",
+                        "name": "site_id",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "protected_app",
+                        "type": "string",
+                        "enum":["joomla","wordpress","phpBB"]
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/sites/lp/configure": {
+            "post": {
+                "parameters": [
+                    {
+                    	"description":"Numeric identifier of the site to operate on.",
+                        "in": "formData",
+                        "name": "site_id",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "enabled",
+                        "type": "boolean"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "specific_users_list",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "send_lp_notifications",
+                        "type": "boolean"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "allow_all_users",
+                        "type": "boolean"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "authentication_methods",
+                        "type": "string",
+                        "enum":["email","ga"]
+                    },
+                    {
+                        "in": "formData",
+                        "name": "urls",
+                        "type": "string"
+                    },
+                    {
+                        "description":"A comma separated list of url patterns. Possible values: contains | equals | prefix | suffix | not_equals | not_contain | not_prefix | not_suffix. The patterns should be in accordance with the matching urls sent by the urls parameter.",
+                        "in": "formData",
+                        "name": "url_patterns",
+                        "type": "string",
+                        "uniqueItems":false,
+                        "enum":["contains","equals","prefix","suffix","not_equals","not_contain","not_prefix","not_suffix"]
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/sites/lp/edit-user": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "account_id",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "email",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "name",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "phone",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "is_email_verified",
+                        "type": "boolean"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "is_phone_verified",
+                        "type": "boolean"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "should_send_activation_email",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/sites/lp/remove": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "account_id",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "email",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/sites/lp/send-sms": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "account_id",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "email",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "sms_text",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/sites/lp/users": {
+            "post": {
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/v1/infra-protect/test-alerts/ddos/start": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "ip_prefix",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "bps",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "pps",
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/v1/infra-protect/test-alerts/ddos/stop": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "ip_prefix",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "bps",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "pps",
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/v1/infra-protect/test-alerts/connection/up": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "connection_name",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/v1/infra-protect/test-alerts/connection/down": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "connection_name",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/v1/infra-protect/test-alerts/ip-protection-status/down": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "ip_protection",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/v1/infra-protect/test-alerts/ip-protection-status/up": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "ip_protection",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/v1/infra-protect/test-alerts/monitoring/attack-start": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "ip_prefix",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "bps",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "pps",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "packet_type",
+                        "type": "string",
+                        "enum":["UDP","TCP","DNS","DNS_RESPONSE","ICMP","SYN","FRAG","LARGE_SYN","NTP","NETFLOW","SSDP","GENERAL"]
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/v1/infra-protect/test-alerts/monitoring/bad-data": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "exporter_ip",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/v1/infra-protect/test-alerts/monitoring/start": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "exporter_ip",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/v1/infra-protect/test-alerts/monitoring/stop": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "exporter_ip",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/integration/v1/clapps": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "api_id",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "api_key",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/integration/v1/geo": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "api_id",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "api_key",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/integration/v1/ips": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "resp_format",
+                        "type": "string",
+                        "enum":["json","apache","nginx","iptables","text"]
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/integration/v1/texts": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "api_id",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "api_key",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/v1/sites/settings/customRules/showOptimizedMultiValues": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "extSiteId",
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/v1/sites/settings/customRules/init": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "extSiteId",
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/v1/sites/settings/customRules/validateCustomRule": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "extSiteId",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "filter",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/sites/rules/redirect/dismiss": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "extSiteId",
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        }
+    }
+}
