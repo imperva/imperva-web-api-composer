@@ -858,19 +858,21 @@ function renderParamsHTML(){
 			});
 			// }
 		}
-	});	
-	$.each(incapAPIDefinitions[$('#incapActions :selected').parent().attr('label')].definition.paths[currentAction][$('#incapMethod').val()].parameters, function(i,param) {
-		if (incapGetObjectActionMapping[param.name]!=undefined) {
-			var paramActionObj = incapGetObjectActionMapping[param.name];
-			if (paramActionObj.isParent==true) {
-				loadParamValuesByName(param.name);
-			} else {
-				var parentPresent = false; 
-				if (paramActionObj.parents!=undefined) $.each(paramActionObj.parents, function(i,parentId) { if ($('#'+parentId)!=undefined) parentPresent=($('#'+parentId).addClass('processing')) ? false : true; });
-				if (parentPresent) loadParamValuesByName(param.name);
+		for (var i=0; i<methodObj[paramType].index.length; i++) {
+			var param = methodObj[paramType].list[methodObj[paramType].index[i]];
+			if (incapGetObjectActionMapping[param.name]!=undefined) {
+				var paramActionObj = incapGetObjectActionMapping[param.name];
+				if (paramActionObj.isParent==true) {
+					loadParamValuesByName(param.name);
+				} else {
+					var parentPresent = false; 
+					if (paramActionObj.parents!=undefined) $.each(paramActionObj.parents, function(i,parentId) { if ($('#'+parentId)!=undefined) parentPresent=($('#'+parentId).addClass('processing')) ? false : true; });
+					if (parentPresent) loadParamValuesByName(param.name);
+				}
 			}
 		}
-	});
+	});	
+
 	// toggleDcId();
 	$('#incappathParams .ui-icon-copy').unbind("click").click(function(){ incapCopyPathParam(this); })
 	$('#incapqueryParams input, #incapqueryParams textarea').unbind().blur(function(){ incapUpdateReqURL(); });
