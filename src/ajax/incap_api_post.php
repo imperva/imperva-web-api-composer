@@ -38,8 +38,7 @@ curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
 $response = curl_exec($ch);
 error_log($logDate." | Incapsula API Response: ".$response);
 curl_close($ch);
-
-header('Content-type: '.((is_object(json_decode($response))) ? 'text/json' : 'application/html'));
+header('Content-type: '.((is_object(json_decode($response))) ? 'text/json' : ((is_array(json_decode($response))) ? 'text/json' : 'application/html')));
 print($response);
 
 

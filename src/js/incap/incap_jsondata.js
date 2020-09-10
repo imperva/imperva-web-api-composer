@@ -60,43 +60,43 @@ var incapGetObjectActionMapping = {
 	// "site_id":{"name":"site_id","type":"list","values":[]},
 	"site_id":{
 		"definition":"Cloud WAF API (v1)",
+		"isParent":true,
 		"action":"/api/prov/v1/sites/list",
-		"listName":"sites",
+		"listName":"sites", // objectName, listName
 		"id":"site_id",
 		"displayText":"domain",
-		"isParent":true,
 		"children":["dc_id"]
 	},
 	"dc_id":{
 		"definition":"Cloud WAF API (v1)",
 		"action":"/api/prov/v1/sites/dataCenters/list",
-		"listName":"DCs",
+		"listName":"DCs", // objectName, listName
 		"id":"id",
 		"displayText":"name",
 		"parents":["site_id"]
 	},
 	"siteId":{
 		"definition":"Cloud WAF API (v1)",
+		"isParent":true,
 		"action":"/api/prov/v1/sites/list",
-		"listName":"sites",
+		"listName":"sites", // objectName, listName
 		"id":"site_id",
 		"displayText":"domain",
-		"isParent":true,
 		"children":["apiId","ruleId"]
 	},
 	"apiId":{
 		"definition":"API Security",
+		"isParent":true,
 		"action":"/api-security",
-		"listName":"value",
+		"listName":"value", // objectName, listName
 		"id":"id",
 		"displayText":"siteName",
-		"isParent":true,
 		"parents":["siteId"]
 	},
 	"endpointId":{
 		"definition":"API Security",
 		"action":"/api-security/endpoint/{apiId}",
-		"listName":"value",
+		"listName":"value", // objectName, listName
 		"id":"id",
 		"displayText":"path",
 		"parents":["apiId"]
@@ -104,7 +104,7 @@ var incapGetObjectActionMapping = {
 	"ruleId":{
 		"definition":"Performance Settings",
 		"action":"/api/prov/v2/sites/{siteId}/settings/cache/rules",
-		"listName":"value",
+		"listName":"value", // objectName, listName
 		"id":"id",
 		"displayText":"path",
 		"parents":["siteId"]
@@ -118,37 +118,38 @@ var incapGetObjectActionMapping = {
 	"assetId":{
 		"definition":"Policy Management",
 		"action":"/policies/v2/policies",
-		"listName":"value",
+		"listName":"value", // objectName, listName
 		"id":"id",
 		"displayText":"name"
 	},
 	"assetType":{
 		"definition":"Policy Management",
 		"action":"/policies/v2/policies",
-		"listName":"value",
+		"listName":"value", // objectName, listName
 		"id":"id",
 		"displayText":"name"
 	},
 	"policyId":{
 		"definition":"Policy Management",
+		"isParent":true,
 		"action":"/policies/v2/policies",
-		"listName":"value",
+		"listName":"value", // objectName, listName
 		"id":"id",
 		"displayText":"name"
 	},
 	"accountId":{
 		"definition":"Cloud WAF API (v1)",
-		"action":"/api/prov/v1/account",
-		// "listName":"resultList",
 		"isParent":true,
+		"action":"/api/prov/v1/account",
+		"objectName":"account", // objectName, listName
 		"id":"account_id",
 		"displayText":"name"
 	},
 	"caid":{
 		"definition":"Cloud WAF API (v1)",
-		"action":"/api/prov/v1/account",
-		"listName":"account",
 		"isParent":true,
+		"action":"/api/prov/v1/account",
+		// "objectName":"account", // objectName, listName
 		"id":"account_id",
 		"displayText":"account_name"
 	}

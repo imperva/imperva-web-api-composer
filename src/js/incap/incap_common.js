@@ -195,7 +195,7 @@ function incap_transformToCURL(requestUrl=$('#incapRequestUrl').val(),auth=getUs
 		// Check for content type and format
 		var reqData = $('#incapData').val();
 		if ($('#incapContentType').val()=='application/json') {
-			curlStr = "curl -k -X "+method.toUpperCase()+" '"+curRequestUrl+"?"+paramsAry.join("&")+"'"+(($('#incapData').val()!='{}') ? " --data-raw '"+reqData+"'" : '');
+			curlStr = "curl -k -X "+method.toUpperCase()+" '"+curRequestUrl+"?"+paramsAry.join("&")+"'"+(($('#incapData').val().replace("{}",'')!='') ? " --data-raw '"+reqData+"'" : '');
 		} else {
 			curlStr = "curl -k -X "+method.toUpperCase()+" '"+curRequestUrl+"?"+paramsAry.join("&")+"'";			
 			if ($('#incapData').val()!='{}' && $('#incapData').val()!='') {
@@ -279,7 +279,7 @@ function changeAction() {
 				}
 			});
 		});
-		$(incap_method_sel+" option:not([disabled]):first").attr('selected', 'selected');
+		$("#IncapsulaAPI #incapMethod").val($("#IncapsulaAPI #incapMethod option:not([disabled]):first").val());
 	}
 	renderParamsHTML();
 	toggleincapSampleRules();
@@ -303,6 +303,7 @@ function getNestedBodyParams(bodyParamsAry,parentParamPath,curParamDefinition){
 }
 
 function updateRequestData() {
+	incapUpdateReqURL();
 	updateRequestDataFromJsonParams();
 	updateRequestDataFromFormDataParams();
 }
@@ -894,6 +895,7 @@ function incapCopyPathParam(input){
 }
 
 function loadParamValuesByName(paramName){
+	// console.log(paramName);
 	if (incapGetObjectActionMapping[paramName]!=undefined) {
 		var paramActionObj = incapGetObjectActionMapping[paramName];
 		$("#"+paramName).addClass('processing').html('<option value="">loading...</option>');
@@ -930,7 +932,6 @@ function renderParamListValues(response,input_id) {
 	// console.log("===========renderParamListValues(response,input_id)==============");
 	// console.log(response);
 	// console.log(input_id);
-	// debugger
 	// TODO: Render parent and child params, specifically dc_id
 	var paramActionObj = incapGetObjectActionMapping[input_id];
 	// console.log("paramActionObj");
@@ -938,9 +939,9 @@ function renderParamListValues(response,input_id) {
 	$("#"+input_id).removeClass('processing').html('');
 	if (input_id=='dc_id') $("#"+input_id).html('<option value="">-- select --</option>');
 	// debugger
-	if (paramActionObj.displayText!='' && paramActionObj.displayText!=undefined) {
-		var paramActionObjIndex = [];
-		var paramActionObjAry = {};
+	var paramActionObjIndex = [];
+	var paramActionObjAry = {};
+	if (paramActionObj.listName!=undefined) {
 		$.each(response[paramActionObj.listName], function(i,subGroupObj) {	
 			// console.log(subGroupObj);
 			paramActionObjIndex.push(subGroupObj[paramActionObj.displayText]+'_'+subGroupObj[paramActionObj.id]);
@@ -950,12 +951,12 @@ function renderParamListValues(response,input_id) {
 		// console.log(paramActionObjIndex);
 		$.each(paramActionObjIndex, function(i,paramActionIdStr) {	
 			var subGroupObj = paramActionObjAry[paramActionIdStr];
-			$("#"+input_id).append('<option value="'+subGroupObj[paramActionObj.id]+'">'+subGroupObj[paramActionObj.displayText]+' ('+subGroupObj[paramActionObj.id]+')</option>');
-		});
-	} else {
-		$.each(response[paramActionObj.listName], function(i,subGroupObj) {
-			$("#"+input_id).append('<option value="'+subGroupObj[paramActionObj.id]+'">'+subGroupObj[paramActionObj.id]+'</option>');
+			$("#"+input_id).append('<option value="">-- select --</option><option value="'+subGroupObj[paramActionObj.id]+'">'+subGroupObj[paramActionObj.displayText]+' ('+subGroupObj[paramActionObj.id]+')</option>');
 		});	
+	} else if (paramActionObj.objectName!=undefined) {
+		$("#"+input_id).append('<option value="">-- select --</option><option value="'+response[paramActionObj.objectName][paramActionObj.id]+'">'+response[paramActionObj.objectName][paramActionObj.displayText]+' ('+response[paramActionObj.objectName][paramActionObj.id]+')</option>');
+	} else {
+		$("#"+input_id).append('<option value="">-- select --</option><option value="'+response[paramActionObj.id]+'">'+response[paramActionObj.displayText]+' ('+response[paramActionObj.id]+')</option>');
 	}
 	if (paramActionObj.children!=undefined && paramActionObj.children!=length!=0) {
 		loadParamChildValues(input_id);
