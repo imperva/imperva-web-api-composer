@@ -121,7 +121,7 @@ function makeIncapCall(apiUrl,method,auth,callback,postDataObj,input_id, content
 			if (contentType=="application/json"){
 				postDataObj = {"jsonData":$('#incapData').val()};
 			} else {
-				postDataObj = JSON.parse($('#incapData').val());
+				postDataObj = ($('#incapData').val()!='') ? JSON.parse($('#incapData').val()) : '';
 				// postDataObj = JSON.parse($('#incapData').val());
 			}
 		}

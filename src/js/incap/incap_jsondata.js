@@ -143,7 +143,16 @@ var incapGetObjectActionMapping = {
 		"isParent":true,
 		"id":"account_id",
 		"displayText":"name"
+	},
+	"caid":{
+		"definition":"Cloud WAF API (v1)",
+		"action":"/api/prov/v1/account",
+		"listName":"account",
+		"isParent":true,
+		"id":"account_id",
+		"displayText":"account_name"
 	}
+	
 	
 	
 	/*,

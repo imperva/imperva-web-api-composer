@@ -2,12 +2,12 @@ version: "3"
 
 services:
   imperva-web-api-composer:
-    image: registry.gitlab.com/imperva-community/public/tools/imperva-web-api-composer:latest
-    # build: .
+    # image: registry.gitlab.com/imperva-community/public/tools/imperva-web-api-composer:latest
+    build: .
     # volumes:
     #  - ./target/:/usr/local/tomcat/webapps/
     ports:
-    - 8080:80
+    - 8080:8080
     - 8443:443
     environment:
       TZ: ${TZ:-UTC}
