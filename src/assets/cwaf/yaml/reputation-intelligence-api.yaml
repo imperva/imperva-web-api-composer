@@ -1,0 +1,252 @@
+---
+swagger: "2.0"
+info:
+  description: "This is an api for Imperva IP Reputation"
+  version: "v1"
+  title: "IP Reputation API"
+  license:
+    name: "ISC"
+    url: "https://opensource.org/licenses/ISC"
+host: "api.imperva.com"
+basePath: "/ip-reputation"
+tags:
+- name: "v1"
+schemes:
+- "https"
+security:
+- api_id: []
+  api_key: []
+paths:
+  /v1/reputation:
+    get:
+      tags:
+      - "v1"
+      summary: "Retrieve reputation intelligence data for a specified IP."
+      description: "Use this operation to get Reputation Intelligence details on a\
+        \ specified IP address."
+      operationId: "getIpReputation"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "ip"
+        in: "query"
+        description: "Unique IP"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Legal response"
+          schema:
+            $ref: "#/definitions/IPDataApi"
+        500:
+          description: "Error while fetching IP reputation"
+          schema:
+            $ref: "#/definitions/ErrorResponseWrapper"
+securityDefinitions:
+  api_id:
+    description: "An API ID created and managed in the Imperva Cloud Security Console\
+      \ and used for authentication"
+    type: "apiKey"
+    name: "api_id"
+    in: "query"
+  api_key:
+    description: "An API key created and managed in the Imperva Cloud Security Console\
+      \ and used for authentication"
+    type: "apiKey"
+    name: "api_key"
+    in: "query"
+definitions:
+  AsnData:
+    type: "object"
+    properties:
+      organization_name:
+        type: "string"
+        example: "Telefonica De Espana"
+        description: "The organization name associated with the specific IP address."
+        readOnly: true
+      organization_number:
+        type: "integer"
+        format: "int32"
+        example: 3352
+        description: "The ASN number associated with the specific IP address."
+        readOnly: true
+  ErrorResponseWrapper:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        example: "Xu09cHAb"
+        description: "Unique id to identify the error in the logs"
+        readOnly: true
+      code:
+        type: "string"
+        example: "500"
+        description: "HTTP response code"
+        readOnly: true
+        enum:
+        - "OK"
+        - "CREATED"
+        - "ACCEPTED"
+        - "NO_CONTENT"
+        - "RESET_CONTENT"
+        - "PARTIAL_CONTENT"
+        - "MOVED_PERMANENTLY"
+        - "FOUND"
+        - "SEE_OTHER"
+        - "NOT_MODIFIED"
+        - "USE_PROXY"
+        - "TEMPORARY_REDIRECT"
+        - "BAD_REQUEST"
+        - "UNAUTHORIZED"
+        - "PAYMENT_REQUIRED"
+        - "FORBIDDEN"
+        - "NOT_FOUND"
+        - "METHOD_NOT_ALLOWED"
+        - "NOT_ACCEPTABLE"
+        - "PROXY_AUTHENTICATION_REQUIRED"
+        - "REQUEST_TIMEOUT"
+        - "CONFLICT"
+        - "GONE"
+        - "LENGTH_REQUIRED"
+        - "PRECONDITION_FAILED"
+        - "REQUEST_ENTITY_TOO_LARGE"
+        - "REQUEST_URI_TOO_LONG"
+        - "UNSUPPORTED_MEDIA_TYPE"
+        - "REQUESTED_RANGE_NOT_SATISFIABLE"
+        - "EXPECTATION_FAILED"
+        - "PRECONDITION_REQUIRED"
+        - "TOO_MANY_REQUESTS"
+        - "REQUEST_HEADER_FIELDS_TOO_LARGE"
+        - "INTERNAL_SERVER_ERROR"
+        - "NOT_IMPLEMENTED"
+        - "BAD_GATEWAY"
+        - "SERVICE_UNAVAILABLE"
+        - "GATEWAY_TIMEOUT"
+        - "HTTP_VERSION_NOT_SUPPORTED"
+        - "NETWORK_AUTHENTICATION_REQUIRED"
+      message:
+        type: "string"
+        example: "Error fetching incident: ad2c8f40-3e82-11e9-354e-b114829e37eb"
+        description: "Error description"
+        readOnly: true
+    description: "Object that describes a non valid response"
+  IPDataApi:
+    type: "object"
+    properties:
+      ip:
+        type: "string"
+        example: "1.1.1.1"
+        description: "The IP address for which reputation intelligence data is presented."
+        readOnly: true
+      origin:
+        description: "Details on the source of the attacking IP."
+        readOnly: true
+        $ref: "#/definitions/IPGeoData"
+      ASN:
+        description: "ASN details of the IP."
+        readOnly: true
+        $ref: "#/definitions/AsnData"
+      known_to_use:
+        type: "string"
+        example: "tor"
+        description: "The tools or mechanisms used to carry out the attacks, such\
+          \ as Tor, automated browser, or anonymous proxy."
+        readOnly: true
+      known_for:
+        type: "string"
+        example: "ddos, sqli"
+        description: "The attack type, such as DDoS or account takeover."
+        readOnly: true
+      risk_score:
+        example: "HIGH"
+        description: "riskScore"
+        readOnly: true
+        $ref: "#/definitions/RiskData"
+      requests:
+        type: "string"
+        example: "1260"
+        description: "The number of requests sent from this IP to Imperva customers\
+          \ during the 2 week time frame covered in this report."
+        readOnly: true
+      violations_over_time:
+        type: "object"
+        example: "Automated Attack : { 587081600000: 22,1587168000000: 9,1587254400000:\
+          \ 7},Backdoor/Troja: {1587081600000: 20,1587168000000: 18,1587254400000:\
+          \ 17}"
+        description: "Hits per attack type at the specified time stamp."
+        readOnly: true
+        additionalProperties:
+          type: "object"
+          additionalProperties:
+            type: "string"
+      violations:
+        type: "object"
+        example: "Backdoor/Trojan: 40%,Protocol Manipulation: 25%,Automated Attack:\
+          \ 35%"
+        description: "Attack type distribution."
+        readOnly: true
+        additionalProperties:
+          type: "string"
+      client_application:
+        type: "object"
+        example: "Suspicious: 50%, Malicious: 50%"
+        description: "Client application distribution."
+        readOnly: true
+        additionalProperties:
+          type: "string"
+      client_application_details:
+        type: "object"
+        example: "Suspicious: {Bot: 37%,Go HTTP library: 63%},Malicious: {WordPress\
+          \ Bruteforcer: 100%}"
+        description: "Details of the client applications used to attack."
+        readOnly: true
+        additionalProperties:
+          type: "object"
+          additionalProperties:
+            type: "string"
+      attacks_by_industries:
+        type: "object"
+        example: "Travel: 41%,Unclassified: 20%,Business: 20%,Financial Services:\
+          \ 19%"
+        description: "Distribution of the industries associated with the attacked\
+          \ sites."
+        readOnly: true
+        additionalProperties:
+          type: "string"
+  IPGeoData:
+    type: "object"
+    properties:
+      country:
+        type: "string"
+        example: "Israel"
+        description: "The country of origin of the attack by this IP address."
+        readOnly: true
+      city:
+        type: "string"
+        example: "Rehovot"
+        description: "The city of origin of the attack by this IP address."
+        readOnly: true
+  RiskData:
+    type: "object"
+    properties:
+      risk_score:
+        type: "string"
+        example: "HIGH"
+        description: "An assessment of the risk level posed by this IP, based on activity\
+          \ of this IP across the Imperva customer base over the past week (clean\
+          \ and malicious traffic).The calculation takes into account the number of\
+          \ attacks, the number of Imperva customer accounts that were attacked, and\
+          \ the severity of attacks by this IP. Possible values: CRITICAL, HIGH, MEDIUM,\
+          \ LOW. (CRITICAL: Risk score number of 75 or above. HIGH: Risk score number\
+          \ of 50-74. MEDIUM: Risk score number of 25-49. LOW: Risk score number below\
+          \ 25.)"
+        readOnly: true
+      risk_description:
+        type: "string"
+        description: "Additional details on the risk assessment."
+        readOnly: true
+      risk_score_number:
+        type: "string"
+        example: "77"
+        description: "risk score number between 0 and 100"
+        readOnly: true

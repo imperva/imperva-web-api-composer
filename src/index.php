@@ -288,19 +288,19 @@ $.extend($.gritter.options, {
 								</fieldset>
 								<fieldset id="incapqueryParams">
 									<legend>Query Parameters</legend>
-									<table class="tableColL"></table>
+									<table class="tableColL" id="incapqueryParams_tbl"></table>
 								</fieldset>
 								<fieldset id="incappathParams">
 									<legend>URL Path Parameters</legend>
-									<table class="tableColL"></table>
+									<table class="tableColL" id="incappathParams_tbl"></table>
 								</fieldset>
 								<fieldset id="incapbodyParams">
 									<legend>JSON Body Parameters</legend>
-									<table class="tableColL"></table>
+									<table class="tableColL" id="incapbodyParams_tbl"></table>
 								</fieldset>
 								<fieldset id="incapformDataParams">
 									<legend>Form Data Parameters</legend>
-									<table class="tableColL"></table>
+									<table class="tableColL" id="incapformDataParams_tbl"></table>
 								</fieldset>
 							</td>
 							<td valign="top">

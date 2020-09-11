@@ -1,0 +1,995 @@
+﻿{
+  "swagger": "2.0",
+  "info": {
+    "title": "Imperva API2 Performance Settings",
+    "description": "Imperva API2 Performance",
+    "version": "2.2.2",
+    "termsOfService": "https://www.imperva.com/legal/terms-of-use/",
+    "contact": {
+      "email": "support@imperva.com"
+    }
+  },
+  "externalDocs": {
+    "description": "Find out more about Imperva",
+    "url": "http://docs.imperva.com"
+  },
+  "host": "my.imperva.com",
+  "basePath": "/api/prov/v2",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "securityDefinitions": {
+    "api_id": {
+      "type": "apiKey",
+      "in": "query",
+      "name": "api_id"
+    },
+    "api_key": {
+      "type": "apiKey",
+      "in": "query",
+      "name": "api_key"
+    }
+  },
+  "security": [
+    {
+      "api_id": [],
+      "api_key": []
+    }
+  ],
+  "paths": {
+    "/sites/{siteId}/settings/cache": {
+      "get": {
+        "summary": "Get cache settings",
+        "description": "Get cache settings",
+        "parameters": [
+          {
+            "name": "siteId",
+            "in": "path",
+            "description": "Site id",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "sections",
+            "in": "query",
+            "description": "The sections of configurations to get, separated by comma. If not passed, all sections will be returned.",
+            "type": "string",
+            "enum": [
+              "mode",
+              "key",
+              "response",
+              "ttl",
+              "client_side"
+            ],
+            "uniqueItems": true,
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK. An array of cache settings is returned.",
+            "schema": {
+              "$ref": "#/definitions/CacheSettingsObject"
+            }
+          },
+          "401": {
+            "description": "Unauthorized siteId"
+          },
+          "406": {
+            "description": "Invalid Input"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "put": {
+        "summary": "Change cache settings",
+        "description": "Change cache settings",
+        "parameters": [
+          {
+            "name": "siteId",
+            "in": "path",
+            "description": "Site id",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "The cache settings to use",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CacheSettingsObject"
+            }
+          },
+          {
+            "name": "Force-Risky-Operation",
+            "in": "header",
+            "description": "Some operations, while allowed, are risky and may potentially expose your site to security risks. Doing these operations requires that you pass the header 'Force-Risky-Operation:true' with your request. For more information please refer to <a href=\"http://docs.imperva.com\">the documentation</a>.",
+            "required": false,
+            "type": "boolean"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK. The cache settings that were updated are returned.",
+            "schema": {
+              "$ref": "#/definitions/CacheSettingsObject"
+            }
+          },
+          "401": {
+            "description": "Unauthorized siteId"
+          },
+          "406": {
+            "description": "Invalid Input"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Restore default cache settings",
+        "description": "Restore default cache settings",
+        "parameters": [
+          {
+            "name": "siteId",
+            "in": "path",
+            "description": "Site id",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK. The cache settings restored to default"
+          },
+          "401": {
+            "description": "Unauthorized siteId"
+          },
+          "406": {
+            "description": "Invalid Input"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/sites/{siteId}/cache": {
+      "delete": {
+        "summary": "Purge a site's cache",
+        "parameters": [
+          {
+            "name": "siteId",
+            "in": "path",
+            "description": "Site id",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "url_pattern",
+            "in": "query",
+            "type": "string",
+            "required": false,
+            "description": "The url pattern of the resource to be purged from the cache.  For example:<br/> (1) Resource_name - resources that contain Resource_name will be purged,<br/> (2) ^Resource_name - resources that start with Resource_name will be purged, <br/> (3) Resource_name$ - resources that end with Resource_name will be purged"
+          },
+          {
+            "name": "tags",
+            "in": "query",
+            "type": "string",
+            "required": false,
+            "description": "A comma separated list of tag names to be purged"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized siteId"
+          },
+          "406": {
+            "description": "Invalid Input"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/sites/{siteId}/cache/xray": {
+      "get": {
+        "summary": "Refresh and get a site's XRAY access URL.",
+        "parameters": [
+          {
+            "name": "siteId",
+            "in": "path",
+            "description": "Site id",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK. The site's XRAY access URL is returned.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "401": {
+            "description": "Unauthorized siteId"
+          },
+          "406": {
+            "description": "Invalid Input"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/sites/{siteId}/settings/cache/rules": {
+      "post": {
+        "summary": "Create cache rules",
+        "description": "Create rules",
+        "parameters": [
+          {
+            "name": "siteId",
+            "in": "path",
+            "description": "Site id",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "rules",
+            "in": "body",
+            "description": "The rule to create.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CacheRule"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK. The created cache rule id is returned."
+          },
+          "401": {
+            "description": "Unauthorized siteId"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "406": {
+            "description": "Invalid Input"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "get": {
+        "summary": "List all cache rules for specific site",
+        "description": "List all cache rules for specific site",
+        "parameters": [
+          {
+            "name": "siteId",
+            "in": "path",
+            "description": "Site id",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK. All site cache rules are returned."
+          },
+          "401": {
+            "description": "Unauthorized siteId"
+          },
+          "404": {
+            "description": "Resource not found"
+          }
+        }
+      }
+    },
+    "/sites/{siteId}/settings/cache/rules/{ruleId}": {
+      "get": {
+        "summary": "List cache rule - must contain valid rule id",
+        "description": "List cache rule",
+        "parameters": [
+          {
+            "name": "siteId",
+            "in": "path",
+            "description": "Site id",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "ruleId",
+            "in": "path",
+            "description": "Rule id",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK. The requested rule is returned."
+          },
+          "401": {
+            "description": "Unauthorized siteId"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "406": {
+            "description": "Invalid Input"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update cache rule - partial update - must contain valid rule id",
+        "description": "Update rule, only fields that are passed will be updated.",
+        "parameters": [
+          {
+            "name": "siteId",
+            "in": "path",
+            "description": "Site id",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "ruleId",
+            "in": "path",
+            "description": "Rule id",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "rule",
+            "in": "body",
+            "description": "The rule to update",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CacheRule"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK."
+          },
+          "401": {
+            "description": "Unauthorized siteId"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "406": {
+            "description": "Invalid input"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete cache rule - must contain valid rule id",
+        "description": "Delete rule",
+        "parameters": [
+          {
+            "name": "siteId",
+            "in": "path",
+            "description": "Site id",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "ruleId",
+            "in": "path",
+            "description": "Rule id",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK."
+          },
+          "400": {
+            "description": "Resource not found"
+          },
+          "401": {
+            "description": "Unauthorized siteId"
+          },
+          "405": {
+            "description": "Rule can not be deleted"
+          },
+          "406": {
+            "description": "Invalid Input"
+          }
+        }
+      }
+    },
+    "/sites/{siteId}/settings/delivery": {
+      "get": {
+        "summary": "Get delivery settings",
+        "description": "Get delivery settings",
+        "parameters": [
+          {
+            "name": "siteId",
+            "in": "path",
+            "description": "Site id",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "sections",
+            "in": "query",
+            "description": "The sections of configurations to get, separated by comma. If not passed, all sections will be returned.",
+            "type": "string",
+            "enum": [
+              "compression",
+              "image_compression",
+              "network",
+              "redirection",
+              "custom_error_page"
+            ],
+            "uniqueItems": true,
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK. The rule is returned.",
+            "schema": {
+              "$ref": "#/definitions/DeliverySettingsObject"
+            }
+          },
+          "401": {
+            "description": "Unauthorized siteId"
+          },
+          "406": {
+            "description": "Invalid Input"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "put": {
+        "summary": "Change delivery settings",
+        "description": "Change delivery settings",
+        "parameters": [
+          {
+            "name": "siteId",
+            "in": "path",
+            "description": "Site id",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "The delivery settings to use",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeliverySettingsObject"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK. The updated rule is returned.",
+            "schema": {
+              "$ref": "#/definitions/DeliverySettingsObject"
+            }
+          },
+          "401": {
+            "description": "Unauthorized siteId"
+          },
+          "406": {
+            "description": "Invalid Input"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Restore default delivery settings",
+        "description": "Restore default delivery settings",
+        "parameters": [
+          {
+            "name": "siteId",
+            "in": "path",
+            "description": "Site id",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK. The delivery settings restored to default"
+          },
+          "401": {
+            "description": "Unauthorized siteId"
+          },
+          "406": {
+            "description": "Invalid Input"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/sites/{siteId}/dataCenters/resume": {
+      "post": {
+        "summary": "Resume Traffic to Active DCs",
+        "description": "Use this operation to resume traffic to your active data centers. When at least one active data center is back up, you have to manually reroute your traffic back to the active data center. Traffic does not revert automatically to your active data centers.",
+        "parameters": [
+          {
+            "name": "siteId",
+            "in": "path",
+            "description": "Site id",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK. The trffic resumed to active DC's"
+          },
+          "401": {
+            "description": "Unauthorized siteId"
+          },
+          "404": {
+            "description": "Resource not found"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "CacheRule": {
+      "type": "object",
+      "required": [
+        "name",
+        "action",
+        "enabled",
+        "filter"
+      ],
+      "properties": {
+        "rule_id": {
+          "type": "integer",
+          "description": "Rule id"
+        },
+        "name": {
+          "type": "string",
+          "description": "Rule name"
+        },
+        "action": {
+          "type": "string",
+          "enum": [
+            "HTTP_CACHE_MAKE_STATIC",
+            "HTTP_CACHE_CLIENT_CACHE_CTL",
+            "HTTP_CACHE_FORCE_UNCACHEABLE",
+            "HTTP_CACHE_ADD_TAG",
+            "HTTP_CACHE_DIFFERENTIATE_SSL",
+            "HTTP_CACHE_DIFFERENTIATE_BY_HEADER",
+            "HTTP_CACHE_DIFFERENTIATE_BY_COOKIE",
+            "HTTP_CACHE_DIFFERENTIATE_BY_GEO",
+            "HTTP_CACHE_IGNORE_PARAMS",
+            "HTTP_CACHE_ENRICH_CACHE_KEY",
+            "HTTP_CACHE_FORCE_VALIDATION",
+            "HTTP_CACHE_IGNORE_AUTH_HEADER"
+          ],
+          "description": " Define the action you want to take for every request that matches the rule. <br/> * HTTP_CACHE_MAKE_STATIC - Cache Resource. Always cache the resource. <br/> * HTTP_CACHE_CLIENT_CACHE_CTL - Cache Resource on Client. Cache the resource on the client. <br/> * HTTP_CACHE_FORCE_UNCACHEABLE - Don't Cache Resource. Never cache the resource. <br/> * HTTP_CACHE_ADD_TAG - Create Tag. Tag the resources that match the rule conditions. This enables you to subsequently purge those resources according to the tag name. <br/> * HTTP_CACHE_DIFFERENTIATE_SSL - Differentiate Cache Key by HTTP/HTTPS Scheme. A resource is cached separately depending on whether it is accessed over HTTP or HTTPS. <br/> * HTTP_CACHE_DIFFERENTIATE_BY_HEADER - Differentiate Cache Key by Header. <br/> * HTTP_CACHE_DIFFERENTIATE_BY_COOKIE - Differentiate Cache Key by Cookie. <br/> * HTTP_CACHE_DIFFERENTIATE_BY_GEO - Differentiate Cache Key by Geolocation. Resources are cached separately based on geolocation of the request. <br/> * HTTP_CACHE_IGNORE_PARAMS  - Ignore Parameters in Cache Key. If the parameters do not affect which resource is returned, you can choose to ignore them. <br/> * HTTP_CACHE_ENRICH_CACHE_KEY  - Enrich Cache Key. Add text to the cache key as a suffix. <br/> * HTTP_CACHE_FORCE_VALIDATION  - Force User Authentication. When this option is selected, credentials must be validated with the origin to confirm that the request comes from an authorized client. <br/> * HTTP_CACHE_IGNORE_AUTH_HEADER  - Cache Authenticated Resources. Selecting this option returns cached content if available without authenticating the client. <br/> "
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "'true' if the rule is enabled."
+        },
+        "filter": {
+          "type": "string",
+          "description": "The filter defines the conditions that trigger the rule action, if left empty, the rule is always run."
+        },
+        "ttl": {
+          "type": "integer",
+          "description": "TTL in seconds. Relevant for HTTP_CACHE_MAKE_STATIC and HTTP_CACHE_CLIENT_CACHE_CTL actions."
+        },
+        "ignored_params": {
+          "description": "Parameters to ignore. Relevant for HTTP_CACHE_IGNORE_PARAMS action. An array containing '*' means all parameters are ignored.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "text": {
+          "type": "string",
+          "description": "Tag name if action is HTTP_CACHE_ADD_TAG action, text to be added to the cache key as suffix if action is HTTP_CACHE_ENRICH_CACHE_KEY."
+        },
+        "differentiate_by_value": {
+          "type": "string",
+          "description": "Value to differentiate resources by. Relevant for HTTP_CACHE_DIFFERENTIATE_BY_HEADER, HTTP_CACHE_DIFFERENTIATE_BY_COOKIE and HTTP_CACHE_DIFFERENTIATE_BY_GEO actions"
+        }
+      },
+      "example": {
+        "name": "rule name",
+        "action": "HTTP_CACHE_FORCE_UNCACHEABLE",
+        "enabled": true,
+        "filter": "isMobile == Yes",
+        "ttl": 3600
+      }
+    },
+    "CacheSettingsObject": {
+      "type": "object",
+      "description": "The overall caching policy configuration for your website.",
+      "properties": {
+        "mode": {
+          "type": "object",
+          "required": [
+            "level"
+          ],
+          "properties": {
+            "level": {
+              "type": "string",
+              "enum": [
+                "disabled",
+                "standard",
+                "smart",
+                "all_resources"
+              ],
+              "description": " Caching level. <br/> * disable - disable caching, unless specified otherwise by a caching rule.  <br/> * standard - Cache according to standard HTTP headers.  <br/> * smart - Cache according to standard HTTP headers as well as profile dynamic pages to identify and cache static content that was not marked as static.  <br/> In addition to content that was marked by the site's developer / web server as static using standard HTTP headers, Imperva also profiles other resources to identify and cache static content that was not marked as such. <br/> * all_resources - Cache every resource on the web server for the specified amount of time. <br/> All site content is cached. "
+            },
+            "https": {
+              "type": "string",
+              "enum": [
+                "disabled",
+                "dont_include_html",
+                "include_html",
+                "include_all_resources"
+              ],
+              "description": " The resources that are cached over HTTPS, the general level applies. <br/> * disabled - No resources are cached over HTTPS. <br/> * dont_include_html - Only images, css files, js files, and resources defined with the 'Cache-Control: public' header may be cached over HTTPS. <br/> * include_html - Same as dont_include_html, also HTML files may be cached over HTTPS. <br/> * include_all_resources - All resources may be cached over HTTPS. <br/> "
+            },
+            "time": {
+              "description": "The time, in seconds, that you set for this option determines how often the cache is refreshed. Relevant for the 'include_html' and 'include_all_resources' levels only",
+              "type": "integer"
+            }
+          }
+        },
+        "key": {
+          "type": "object",
+          "properties": {
+            "unite_naked_full_cache": {
+              "description": "Use the Same Cache for Full and Naked Domains. For example, use the same cached resource for www.example.com/a and example.com/a.",
+              "type": "boolean"
+            },
+            "comply_vary": {
+              "description": "Comply with Vary. Cache resources in accordance with the Vary response header.",
+              "type": "boolean"
+            }
+          }
+        },
+        "response": {
+          "type": "object",
+          "properties": {
+            "stale_content": {
+              "description": "Serve stale content. When Imperva can't connect to the origin server, serve stale content instead of displaying an error to end users.",
+              "type": "object",
+              "required": [
+                "mode"
+              ],
+              "properties": {
+                "mode": {
+                  "type": "string",
+                  "enum": [
+                    "disabled",
+                    "adaptive",
+                    "custom"
+                  ],
+                  "description": " The working mode for serving stale content. <br/> * disabled - Disable serving of stale content. <br/> * adaptive - Stale content is served for a duration of 2 to 24 hours based on the time passed since the resource was last updated. <br/> * custom - Serve stale content for the specified amount of time. <br/> "
+                },
+                "time": {
+                  "type": "integer",
+                  "description": "The time, in seconds, to serve stale content for when working in 'custom' work mode"
+                }
+              }
+            },
+            "cache_shield": {
+              "description": "Adds an intermediate cache between other Imperva PoPs and your origin servers to protect your servers from redundant requests.",
+              "type": "boolean"
+            },
+            "cache_response_header": {
+              "type": "object",
+              "required": [
+                "mode"
+              ],
+              "properties": {
+                "mode": {
+                  "type": "string",
+                  "enum": [
+                    "disabled",
+                    "all",
+                    "custom"
+                  ],
+                  "description": " The working mode for caching response headers. <br/> * all -  Cache all headers in responses. <br/> * custom - Specify which response headers should be cached along with the resource. <br/> "
+                },
+                "headers": {
+                  "description": " An array of strings representing the response headers to be cached when working in 'custom' mode. If empty, no response headers are cached.<br/> For example: [Access-Control-Allow-Origin,Access-Control-Allow-Methods].  <br/> ",
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "tag_response_header": {
+              "type": "string",
+              "description": "Tag the response according to the value of this header. Specify which origin response header contains the cache tags in your resources."
+            },
+            "cache_empty_responses": {
+              "description": "Cache responses that don’t have a message body.",
+              "type": "boolean"
+            },
+            "cache_300x": {
+              "description": "When this option is checked Imperva will cache 301, 302, 303, 307, and 308 redirect response headers containing the target URI.",
+              "type": "boolean"
+            },
+            "cache_http_10_responses": {
+              "description": "Cache HTTP 1.0 type responses that don’t include the Content-Length header or chunking.",
+              "type": "boolean"
+            },
+            "cache_404": {
+              "type": "object",
+              "required": [
+                "enabled"
+              ],
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "time": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        },
+        "ttl": {
+          "type": "object",
+          "properties": {
+            "use_shortest_caching": {
+              "description": "Use shortest caching duration in case of conflicts. By default, the longest duration is used in case of conflict between caching rules or modes. When this option is checked, Imperva uses the shortest duration in case of conflict.",
+              "type": "boolean"
+            },
+            "prefer_last_modified": {
+              "description": "Prefer 'Last Modified' over eTag. When this option is checked, Imperva prefers using Last Modified values (if available) over eTag values (recommended on multi-server setups).",
+              "type": "boolean"
+            }
+          }
+        },
+        "client_side": {
+          "type": "object",
+          "properties": {
+            "enable_client_side_caching": {
+              "description": "Cache content on client browsers or applications. When not enabled, content is cached only on the Imperva proxies.",
+              "type": "boolean"
+            },
+            "comply_no_cache": {
+              "description": "Comply with No-Cache and Max-Age directives in client requests. By default, these cache directives are ignored. Resources are dynamically profiled and re-configured to optimize performance.",
+              "type": "boolean"
+            },
+            "send_age_header": {
+              "description": "Send Cache-Control: max-age and Age headers.",
+              "type": "boolean"
+            }
+          }
+        }
+      },
+      "example": {
+        "mode": {
+          "level": "standard",
+          "https": "include_html",
+          "time": 360
+        },
+        "key": {
+          "unite_naked_full_cache": true,
+          "comply_vary": false
+        },
+        "response": {
+          "stale_content": {
+            "mode": "adaptive"
+          },
+          "cache_shield": true,
+          "cache_response_header": {
+            "mode": "custom",
+            "headers": [
+              "Access-Control-Allow-Origin",
+              "Access-Control-Allow-Methods"
+            ]
+          },
+          "tag_response_header": "Some-Header-Name",
+          "cache_empty_responses": true,
+          "cache_300x": true,
+          "cache_http_10_responses": false
+        },
+        "ttl": {
+          "use_shortest_caching": true,
+          "prefer_last_modified": false
+        },
+        "client_side": {
+          "enable_client_side_caching": true,
+          "comply_no_cache": false,
+          "send_age_header": false
+        }
+      }
+    },
+    "DeliverySettingsObject": {
+      "description": "The overall delivery policy configuration for your website.",
+      "type": "object",
+      "properties": {
+        "compression": {
+          "description": "Compress files to shrink file size and reduce load time.",
+          "type": "object",
+          "properties": {
+            "file_compression": {
+              "description": "When this option is enabled, any textual resource, such as Javascript, CSS and HTML, is compressed using Gzip as it is being transferred, and then unzipped within the browser. All modern browsers support this feature.",
+              "type": "boolean"
+            },
+            "minify_js": {
+              "description": "Minify JavaScript. Minification removes characters that are not necessary for rendering the page, such as whitespace and comments. This makes the files smaller and therefore reduces their access time. Minification has no impact on the functionality of the Javascript, CSS, and HTML files.",
+              "type": "boolean"
+            },
+            "minify_css": {
+              "description": "<a href=\"https://www.imperva.com/learn/performance/minification/\">Content minification</a> can applied only to cached Javascript, CSS and HTML content.",
+              "type": "boolean"
+            },
+            "minify_static_html": {
+              "type": "boolean"
+            }
+          }
+        },
+        "image_compression": {
+          "description": "Image compression can be applied only to cached JPEG and PNG images. As such, this option is disabled when caching is disabled.",
+          "type": "object",
+          "properties": {
+            "compress_jpeg": {
+              "description": "Compress JPEG images. Compression reduces download time by reducing the file size.",
+              "type": "boolean"
+            },
+            "progressive_image_rendering": {
+              "description": "The image is rendered with progressively finer resolution, potentially causing a pixelated effect until the final image is rendered with no loss of quality. This option reduces page load times and allows images to gradually load after the page is rendered.",
+              "type": "boolean"
+            },
+            "aggressive_compression": {
+              "description": "A more aggressive method of compression is applied with the goal of minimizing the image file size, possibly impacting the final quality of the image displayed. Applies to JPEG compression only.",
+              "type": "boolean"
+            },
+            "compress_png": {
+              "description": "Compress PNG images. Compression reduces download time by reducing the file size. PNG compression removes only image meta-data with no impact on quality.",
+              "type": "boolean"
+            }
+          }
+        },
+        "network": {
+          "type": "object",
+          "properties": {
+            "tcp_pre_pooling": {
+              "description": "Maintain a set of idle TCP connections to the origin server to eliminate the latency associated with opening new connections or new requests (TCP handshake).",
+              "type": "boolean"
+            },
+            "origin_connection_reuse": {
+              "description": "TCP connections that are opened for a client request remain open for a short time to handle additional requests that may arrive.",
+              "type": "boolean"
+            },
+            "support_non_sni_clients": {
+              "description": "By default, non-SNI clients are supported. Disable this option to block non-SNI clients.",
+              "type": "boolean"
+            },
+            "enable_http2": {
+              "description": "Allows supporting browsers to take advantage of the performance enhancements provided by HTTP/2 for your website. Non-supporting browsers can connect via HTTP/1.0 or HTTP/1.1.",
+              "type": "boolean"
+            },
+            "http2_to_origin": {
+              "description": "Enables HTTP/2 for the connection between Imperva and your origin server. (HTTP/2 must also be supported by the origin server.)",
+              "type": "boolean"
+            },
+            "port": {
+              "type": "object",
+              "description": "To redirect incoming requests, rewrite the port number used to access the origin.",
+              "properties": {
+                "to": {
+                  "description": "The port number. If field is set to 80 (the default value), rewrite port will be removed.",
+                  "type": "string"
+                },
+                "from": {
+                  "description": "Read only field. Indicate the source port number for the non-SSL port.",
+                  "type": "string"
+                }
+              }
+            },
+            "ssl_port": {
+              "type": "object",
+              "description": "To redirect incoming requests, rewrite the SSL port number used to access the origin.",
+              "properties": {
+                "to": {
+                  "description": "The port number to rewrite default SSL port to. if field is set to 443 (the default value), rewrite SSL port will be removed.",
+                  "type": "string"
+                },
+                "from": {
+                  "description": "Read only field. Indicate the source port number for the SSL port.",
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "redirection": {
+          "type": "object",
+          "properties": {
+            "redirect_naked_to_full": {
+              "description": "Redirect all visitors to your site’s full domain (which includes www). This option is displayed only for a naked domain.",
+              "type": "boolean"
+            },
+            "redirect_http_to_https": {
+              "description": "Sites that require an HTTPS connection force all HTTP requests to be redirected to HTTPS. This option is displayed only for an SSL site.",
+              "type": "boolean"
+            }
+          }
+        },
+        "custom_error_page": {
+          "type": "object",
+          "properties": {
+            "error_page_template": {
+              "description": "The error page html template. $TITLE$ and $BODY$ placeholders are required.",
+              "type": "string"
+            }
+          }
+        }
+      },
+      "example": {
+        "compression": {
+          "file_compression": true,
+          "minify_js": true,
+          "minify_css": false,
+          "minify_static_html": true
+        },
+        "image_compression": {
+          "compress_jpeg": true,
+          "progressive_image_rendering": true,
+          "aggressive_compression": false,
+          "compress_png": true
+        },
+        "network": {
+          "tcp_pre_pooling": true,
+          "origin_connection_reuse": false,
+          "support_non_sni_clients": true,
+          "port": {
+            "to": "8080"
+          },
+          "ssl_port": {
+            "to": "9001"
+          }
+        },
+        "redirection": {
+          "redirect_naked_to_full": false,
+          "redirect_http_to_https": true
+        },
+        "custom_error_page": {
+          "error_page_template": "<html><body><h1>$TITLE$</h1><div>$BODY$</div></body></html>"
+        }
+      }
+    }
+  }
+}

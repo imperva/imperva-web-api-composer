@@ -21,6 +21,14 @@ ul#icons span.ui-icon {float: left; margin: 0 4px;}
     padding: 16px 16px 0px 0px;
 }
 
+.array_object { border: 1px solid #ccc; }
+.array_object textarea {
+	width: -webkit-calc(100% - 4px);
+    width:    -moz-calc(100% - 4px);
+    width:         calc(100% - 4px);
+}
+/* .array_object a.toggle_param_link { float: left; } */
+
 .wrap1, .wrap2, .wrap3 { display:inline-table; /* \*/display:block;/**/ }
 .wrap1 { float:left; background:url('../images/shadow/shadow.gif') right bottom no-repeat; }
 .wrap2 { background:url('../images/shadow/corner_bl.gif') left bottom no-repeat; }

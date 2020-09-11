@@ -288,11 +288,18 @@ function changeAction() {
 }
 
 function getNestedBodyParams(bodyParamsAry,parentParamPath,curParamDefinition){
+	var curSwagger = incapAPIDefinitions[$('#incapActions :selected').parent().attr('label')];
 	$.each(curParamDefinition.properties, function(bodyParamName,bodyParam) {
 		var curParamPath = (parentParamPath=='') ? bodyParamName : parentParamPath+'.'+bodyParamName;
 		if (bodyParam.properties!=undefined) {
 			bodyParamsAry = getNestedBodyParams(bodyParamsAry,curParamPath,bodyParam);
 		} else {
+			if (bodyParam.type=="array" && bodyParam.items["$ref"]!=undefined) {
+				var curParamDefinitionName = bodyParam.items['$ref'].split('/').pop();
+				if (curParamDefinition.properties!=undefined) {
+					bodyParamsAry = getNestedBodyParams(bodyParamsAry,curParamPath+"__",curSwagger.definition.definitions[curParamDefinitionName]);
+				}
+			}
 			bodyParam.name = curParamPath;
 			bodyParam.id_str = curParamPath.replaceAll(".","_");
 			bodyParamsAry.list[curParamPath] = bodyParam;
@@ -811,52 +818,81 @@ function renderParamsHTML(){
 		var divId = (paramType=="bodyParams" || paramType=="formDataParams") ? divId = "body" : divId = paramType.replace("Params","");;
 		$("#incap"+paramType+" table").html('');
 		if (methodObj[paramType]!=undefined) {
-			// if (methodObj[paramType].index.length>0 && paramType=="bodyParams"){
-			// 	var paramsAreAllComplex = true;
-			// 	$.each(methodObj[paramType].index, function(i,paramName) {
-			// 		if (methodObj[paramType].list[paramName].type!="object") isComplexObject=false;
-			// 	});
-			// }
-			// if (paramsAreAllComplex) {
-			// 	console.log(methodObj);
-			// 	var str = '<tr id="jsonBodytr" class="fieldwrapper"><td align="right"><label for="jsonBody">';
-			// 	str += '<span class="info" title="jsonBody"> </span> JSON Body: </label></td><td>';
-			// 	str += '<textarea class="'+paramType+'"  name="jsonBody" id="jsonBody" style="width:200px; ">{}</textarea>';
-			// 	str += '</td></tr>';
-			// 	$("#incap"+paramType+" table").append(str);
-			// } else {
 			$.each(methodObj[paramType].index, function(i,paramName) {
 				var param = methodObj[paramType].list[paramName];
 				if (param.name!='api_id' && param.name!='api_key' && param.name!='account_id') {
 					// var displayName = param.name.replace(/([A-Z])/g, ' $1').replace('ip','IP').replace('id','ID').replace('Db ','DB ').replace('-',' ').replace('ip','IP').replace('_',' ');
 					//displayName = displayName.substr(0,1).toUpperCase()+displayName.substr(1);
-					var str = '<tr id="'+param.id_str+'tr" class="fieldwrapper"><td align="right"><label for="'+param.name+'">';
-					if (param.description!=undefined) str += '<span class="info" title="'+param.description+'"> </span> '; 
-					str += param.name+': </label></td><td class="'+param.type+((param.items!=undefined && param.items.type!=undefined) ? "_"+param.items.type : '')+'">';
-					if (incapGetObjectActionMapping[param.name]!=undefined) {
-						if (paramType=='pathParams') str += '<a href="javascript:void(0)" class="ui-icon ui-icon-copy" id="'+param.id_str+'_btn" title="Copy to Request URL">copy</a>';
-						str += '<select name="'+param.name+'" class="'+paramType+'" id="'+param.id_str+'"><option value="">loading...</option></select>';
-					} else if (param.enum!=undefined) {
-						str += '<select name="'+param.name+'" class="'+paramType+'" id="'+param.id_str+'">';
-						if (param.required!=true) str += '<option value="">-- select --</option>';
-						$.each(param.enum, function(i,value) { str += '<option value="'+value+'">'+value+'</option>'; });
-						str += '</select>';
-					} else if (timestampParam[param.name]) {
-						str += '<input type="text" class="datepicker '+paramType+'" name="'+param.name+'" id="'+param.id_str+'" value="" placeholder="epoch timestamp" />';
-					} else if (param.type=="boolean") {
-						str += '<select name="'+param.name+'" class="'+paramType+'" id="'+param.id_str+'">';
-						str += '<option value="">-- select --</option><option value="true">true</option><option value="false">false</option>';
-						str += '</select>';
-					} else if (param.type=="object") {
-						str += '<textarea class="'+paramType+'"  name="'+param.name+'" id="'+param.id_str+'" style="width:200px; height: 50px;">'+param.jsonStr+'</textarea>';
-					} else {
-						str += '<input type="text" class="'+paramType+'" name="'+param.name+'" id="'+param.id_str+'" value="" placeholder="'+param.type+'" />';
+					if ($('#'+param.id_str).length==0) {
+						if (param.id_str.includes("___")) {
+							// Check for parent node, and 
+							var parentParamIndexAry = param.id_str.split("___");
+							for (var i=1; i<parentParamIndexAry.length; i++) {
+								var currentParamName = parentParamIndexAry[i-1];
+								var currentContainerId = parentParamIndexAry.slice(0,i).join("___");
+								var parentContainerId = parentParamIndexAry.slice(0,i-1).join("___");
+								// var curParamName = parentParamIndexAry[i];
+								if ($('.'+currentContainerId+"_tbltr").length==0) {
+									console.log("===================================");
+									console.log(param.id_str);
+									console.log("currentContainerId="+currentContainerId);
+									console.log("parentContainerId="+parentContainerId);
+									console.log("**** CREATE CONTAINER TABLE ****");
+									var str = '<tr id="'+currentContainerId+'tr" class="fieldwrapper '+currentContainerId+'tr"><td valign="top" align="right"><label for="some name">'+currentParamName+': </label></td>';
+									str += '<td class="array_object">';
+									str += '<textarea class="'+currentContainerId+'" name="'+currentContainerId+'" id="'+currentContainerId+'" placeholder="'+currentParamName+' object" style="width:200px; height: 50px;"></textarea>';
+									str += '<br /><a href="javascript:void(0);" id="'+currentContainerId+'_toggle" class="toggle_param_link">show parameters</a>';
+									str += '<tr id="'+currentContainerId+'_tbltr" class="'+currentContainerId+'_tbltr"><td colspan="2">';
+									str += '<table id="'+currentContainerId+'_tbl" class="toggle_param">';
+									str += '</table></td></tr>';
+									if (parentContainerId=='') {
+										$("#incap"+paramType+"_tbl").append(str);
+									} else {
+										$("#"+parentContainerId+"_tbl").append(str);
+									}
+								}
+							}
+							
+							// var parentParamId = parentParamIdAry.slice(0,parentParamIdAry.length-1).join("_");
+							// debugger
+							// var parentParam = methodObj[paramType].list[parentParamIdAry[0]];
+							// if ($('#'+parentParamIdAry[0]+"tr").length==0) {
+							// 	var str = '<tr id="'+parentParamId+'tr" class="fieldwrapper"><td align="right"><label for="'+parentParam.name+'">'+parentParam.name+': </label></td>';
+							// 	str += '<td class="array_object"><div id="">array</div>';
+							// 	str += '</td></tr>';
+							// }
+							// $("#incap"+paramType+" table").append(str);
+						} else {
+							if (param.items==undefined || (param.items!=undefined && param.items["$ref"]==undefined)) {
+								var str = '<tr id="'+param.id_str+'tr" class="fieldwrapper"><td align="right"><label for="'+param.name+'">';
+								if (param.description!=undefined) str += '<span class="info" title="'+param.description+'"> </span> '; 
+								str += param.name+': </label></td><td class="'+param.type+((param.items!=undefined && param.items.type!=undefined) ? "_"+param.items.type : '')+'">';
+								if (incapGetObjectActionMapping[param.name]!=undefined) {
+									if (paramType=='pathParams') str += '<a href="javascript:void(0)" class="ui-icon ui-icon-copy" id="'+param.id_str+'_btn" title="Copy to Request URL">copy</a>';
+									str += '<select name="'+param.name+'" class="'+paramType+'" id="'+param.id_str+'"><option value="">loading...</option></select>';
+								} else if (param.enum!=undefined) {
+									str += '<select name="'+param.name+'" class="'+paramType+'" id="'+param.id_str+'">';
+									if (param.required!=true) str += '<option value="">-- select --</option>';
+									$.each(param.enum, function(i,value) { str += '<option value="'+value+'">'+value+'</option>'; });
+									str += '</select>';
+								} else if (timestampParam[param.name]) {
+									str += '<input type="text" class="datepicker '+paramType+'" name="'+param.name+'" id="'+param.id_str+'" value="" placeholder="epoch timestamp" />';
+								} else if (param.type=="boolean") {
+									str += '<select name="'+param.name+'" class="'+paramType+'" id="'+param.id_str+'">';
+									str += '<option value="">-- select --</option><option value="true">true</option><option value="false">false</option>';
+									str += '</select>';
+								} else if (param.type=="object") {
+									str += '<textarea class="'+paramType+'"  name="'+param.name+'" id="'+param.id_str+'" style="width:200px; height: 50px;">'+param.jsonStr+'</textarea>';
+								} else {
+									str += '<input type="text" class="'+paramType+'" name="'+param.name+'" id="'+param.id_str+'" value="" placeholder="'+param.type+'" />';
+								}
+								str += '</td></tr>';
+								$("#incap"+paramType+" table").append(str);
+							}
+						}
 					}
-					str += '</td></tr>';
-					$("#incap"+paramType+" table").append(str);
 				}
 			});
-			// }
 		}
 		for (var i=0; i<methodObj[paramType].index.length; i++) {
 			var param = methodObj[paramType].list[methodObj[paramType].index[i]];
