@@ -80,7 +80,8 @@ function initIncap(){
 	$('#incapDeleteAllCredentials').click(function(){ incapDeleteAllCredentials(); });
 	$('#incapBulkImportCredentials').click(function(){ incapBulkImportCredentials(); });
 
-	$('#incap_configMaskSecretKey').click(function(){ updateRequestData(); });
+	$('#incap_configMaskSecretKey').click(function(){ $('#incapCurlExample').val(incap_transformToCURL()); });
+	$('#incapData').blur(function(){ $('#incapCurlExample').val(incap_transformToCURL()); });
 	$('#incapbodyParams input, #incapbodyParams textarea').blur(function(){ updateRequestDataFromJsonParams(); });
 	$('#incapbodyParams select, #incapAccountIDList').change(function(){ updateRequestDataFromJsonParams(); });
 	//$('#incapRequestUrl').keyup(function(){ checkForm(); });
@@ -188,14 +189,14 @@ function incap_transformToCURL(requestUrl=$('#incapRequestUrl').val(),auth=getUs
 		// $('#incapServer').val()+$('#incapActions').val(),reqObj,$('#incap_configMaskSecretKey').is(":checked")
 		var requestUrlAry = requestUrl.split("?");
 		var curRequestUrl = requestUrlAry.shift();
-		var headersStr = ' -H "Content-Type: application/json" ';
+		var headersStr = ' -H "Accept: application/json" -H "Content-Type: '+$('#incapContentType').val()+'" ';
 		var paramsAry = [];
 		if ($('#incapAuth').val()=='query') {
 			paramsAry.push("api_id="+auth.api_id);
 			paramsAry.push("api_key="+((maskSecretKey) ? starStr.substr(0,auth.api_key.length) : auth.api_key));
 		} else {
-			headersStr += ' -H "x-API-Key: '+((maskSecretKey) ? starStr.substr(0,auth.api_key.length) : auth.api_key)+'"';
-			headersStr += ' -H "x-API-Id: '+auth.api_id+'"';	
+			headersStr += ' -H "x-API-Key: '+((maskSecretKey) ? starStr.substr(0,auth.api_key.length) : auth.api_key)+'" ';
+			headersStr += ' -H "x-API-Id: '+auth.api_id+'" ';	
 		}
 		if (requestUrlAry.join().trim()!='') paramsAry = paramsAry.concat(requestUrlAry);
 		var method = $('#incapMethod').val();
