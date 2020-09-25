@@ -97,7 +97,7 @@ function initIncap(){
 	incapLoadAll();
 }
 // Main AJAX function to proxy API calls
-function makeIncapCall(apiUrl=$('#incapRequestUrl').val(),method,auth,callback,postDataObj={},input_id, contentType) {
+function makeIncapCall(apiUrl=$('#incapRequestUrl').val(),method,auth,callback,postDataObj,input_id, contentType) {
 	var curSwagger = incapAPIDefinitions[$('#incapActions :selected').parent().attr('label')];
 	if (contentType==undefined) contentType = ((curSwagger.definition.consumes!=undefined) ? curSwagger.definition.consumes[0] : "application/json");
 	if ((input_id==undefined) || auth==undefined || auth==null) {
