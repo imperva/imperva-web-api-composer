@@ -68,9 +68,8 @@ function initIncap(){
 	});	
 	$('#incapServer').val(incapDefConfig.server);
 	$('#incapActions').change(function(){ changeAction(); });
-	$('#incapMethod').change(function(){
-		renderParamsHTML();
-	});
+	$('#incapMethod').change(function(){ renderParamsHTML(); });
+	$('#incapAuth').change(function(){ $('#incapCurlExample').val(incap_transformToCURL()); });
 	$('#incap_migrationConfigType').change(function(){ renderMigrationToolbar_config(this); });
 	$('#incap_migrationActionType').change(function(){ renderMigrationToolbar_action(this); });
 
@@ -98,7 +97,7 @@ function initIncap(){
 	incapLoadAll();
 }
 // Main AJAX function to proxy API calls
-function makeIncapCall(apiUrl,method,auth,callback,postDataObj,input_id, contentType) {
+function makeIncapCall(apiUrl=$('#incapRequestUrl').val(),method,auth,callback,postDataObj={},input_id, contentType) {
 	var curSwagger = incapAPIDefinitions[$('#incapActions :selected').parent().attr('label')];
 	if (contentType==undefined) contentType = ((curSwagger.definition.consumes!=undefined) ? curSwagger.definition.consumes[0] : "application/json");
 	if ((input_id==undefined) || auth==undefined || auth==null) {
@@ -121,21 +120,22 @@ function makeIncapCall(apiUrl,method,auth,callback,postDataObj,input_id, content
 			if (contentType=="application/json"){
 				postDataObj = {"jsonData":$('#incapData').val()};
 			} else {
-				postDataObj = ($('#incapData').val()!='') ? JSON.parse($('#incapData').val()) : '';
+				postDataObj = {"postData":($('#incapData').val()!='') ? JSON.parse($('#incapData').val()) : ''};
 				// postDataObj = JSON.parse($('#incapData').val());
 			}
 		}
 	}
-	
-	if (apiUrl==undefined) {
-		apiUrl = $('#incapRequestUrl').val();
+	postDataObj["headerData"] = ["Content-Type: "+contentType,"Accept: application/json"]
+	var urlParamsAry = apiUrl.split("?");
+	var curRequestUrl = urlParamsAry.shift();
+	if ($('#incapAuth').val()=="query") {
+		urlParamsAry.push("api_id="+auth.api_id);
+		urlParamsAry.push("api_key="+auth.api_key);
+	} else {
+		postDataObj["headerData"].push("x-API-Key: "+auth["api_key"]);
+		postDataObj["headerData"].push("x-API-Id: "+auth["api_id"]);
 	}
-	var requestUrlAry = apiUrl.split("?");
-	var curRequestUrl = requestUrlAry.shift();
-	var paramsAry = ["api_id="+auth.api_id,"api_key="+auth.api_key];
-	if (requestUrlAry.join().trim()!='') paramsAry = paramsAry.concat(requestUrlAry);
-
-	var reqUrl = "ajax/incap_api_post.php?server="+curRequestUrl+"?"+encodeURIComponent(paramsAry.join("&"));
+	var reqUrl = "ajax/incap_api_post.php?server="+curRequestUrl+"?"+encodeURIComponent(urlParamsAry.join("&"));
 	reqUrl += "&contentType="+contentType;
 	reqUrl += "&method="+method;
 	
@@ -188,16 +188,24 @@ function incap_transformToCURL(requestUrl=$('#incapRequestUrl').val(),auth=getUs
 		// $('#incapServer').val()+$('#incapActions').val(),reqObj,$('#incap_configMaskSecretKey').is(":checked")
 		var requestUrlAry = requestUrl.split("?");
 		var curRequestUrl = requestUrlAry.shift();
-		var paramsAry = ["api_id="+auth.api_id,"api_key="+((maskSecretKey) ? starStr.substr(0,auth.api_key.length) : auth.api_key)];
+		var headersStr = ' -H "Content-Type: application/json" ';
+		var paramsAry = [];
+		if ($('#incapAuth').val()=='query') {
+			paramsAry.push("api_id="+auth.api_id);
+			paramsAry.push("api_key="+((maskSecretKey) ? starStr.substr(0,auth.api_key.length) : auth.api_key));
+		} else {
+			headersStr += ' -H "x-API-Key: '+((maskSecretKey) ? starStr.substr(0,auth.api_key.length) : auth.api_key)+'"';
+			headersStr += ' -H "x-API-Id: '+auth.api_id+'"';	
+		}
 		if (requestUrlAry.join().trim()!='') paramsAry = paramsAry.concat(requestUrlAry);
 		var method = $('#incapMethod').val();
 		
 		// Check for content type and format
 		var reqData = $('#incapData').val();
 		if ($('#incapContentType').val()=='application/json') {
-			curlStr = "curl -k -X "+method.toUpperCase()+" '"+curRequestUrl+"?"+paramsAry.join("&")+"'"+(($('#incapData').val().replace("{}",'')!='') ? " --data-raw '"+reqData+"'" : '');
+			curlStr = "curl -k -X "+method.toUpperCase()+headersStr+"'"+curRequestUrl+"?"+paramsAry.join("&")+"'"+(($('#incapData').val().replace("{}",'')!='') ? " --data-raw '"+reqData+"'" : '');
 		} else {
-			curlStr = "curl -k -X "+method.toUpperCase()+" '"+curRequestUrl+"?"+paramsAry.join("&")+"'";			
+			curlStr = "curl -k -X "+method.toUpperCase()+headersStr+"'"+curRequestUrl+"?"+paramsAry.join("&")+"'";
 			if ($('#incapData').val()!='{}' && $('#incapData').val()!='') {
 				$.each(JSON.parse($('#incapData').val()),function(paramName,paramValue){
 					curlStr += " --data-urlencode '"+paramName+"="+paramValue+"'";
@@ -232,6 +240,18 @@ function checkIncapForm(){
 	} else {
 		$('#incapRequestUrl').removeClass('errors');
 	}
+	$.each($('#incapbodyParams .bodyParams.parent'), function(i,input) {
+		var inputObj = $('#'+input.id)
+		if (inputObj.prop("required") && inputObj.val()=='') {
+			inputObj.addClass('errors');
+			isok = false;
+		} else if (!IsJsonString(input.value) && inputObj.val()!='') {
+			inputObj.addClass('errors');
+			isok = false;
+		} else {
+			inputObj.removeClass('errors');
+		}
+	});
 	return isok;
 }
 
@@ -263,14 +283,13 @@ function changeAction() {
 			methodObj.pathParams = {index:[],list:[]};
 			methodObj.formDataParams = {index:[],list:[]};
 			$.each(methodObj.parameters, function(i,param) {
-				if (param.in=="body") {
+				if (param.in=="body") { // Body params always have a schema
 					if (param.schema!=undefined) {
 						var curParamDefinitionName = param.schema.items!=undefined ? param.schema.items['$ref'].split('/').pop() : param.schema['$ref'].split('/').pop();
 						curParamDefinition = curSwagger.definition.definitions[curParamDefinitionName];
 						if (curParamDefinition.properties!=undefined) {
 							methodObj.bodyParams = getNestedBodyParams(methodObj.bodyParams,'',curParamDefinition);
 						}
-						// param = getNestedParamProperties(curSwagger.definition.definitions[curParamDefinition]);
 					} 
 				} else {
 					param.id_str = param.name;
@@ -288,7 +307,12 @@ function changeAction() {
 }
 
 function getNestedBodyParams(bodyParamsAry,parentParamPath,curParamDefinition){
+	var requiredParams = {};
+	if (curParamDefinition.required!=undefined) { 
+		for (i in curParamDefinition.required) { requiredParams[(parentParamPath=='') ? curParamDefinition.required[i] : parentParamPath+'.'+curParamDefinition.required[i]]=true; } 
+	}
 	var curSwagger = incapAPIDefinitions[$('#incapActions :selected').parent().attr('label')];
+	// console.log(curParamDefinition);
 	$.each(curParamDefinition.properties, function(bodyParamName,bodyParam) {
 		var curParamPath = (parentParamPath=='') ? bodyParamName : parentParamPath+'.'+bodyParamName;
 		if (bodyParam.properties!=undefined) {
@@ -296,12 +320,16 @@ function getNestedBodyParams(bodyParamsAry,parentParamPath,curParamDefinition){
 		} else {
 			if (bodyParam.type=="array" && bodyParam.items["$ref"]!=undefined) {
 				var curParamDefinitionName = bodyParam.items['$ref'].split('/').pop();
-				if (curParamDefinition.properties!=undefined) {
-					bodyParamsAry = getNestedBodyParams(bodyParamsAry,curParamPath+"__",curSwagger.definition.definitions[curParamDefinitionName]);
-				}
+				// if (curParamDefinition.properties!=undefined) {
+				bodyParamsAry = getNestedBodyParams(bodyParamsAry,curParamPath+"__",curSwagger.definition.definitions[curParamDefinitionName]);
+				// }
+			} else if (bodyParam["$ref"]!=undefined) {
+				var curParamDefinitionName = bodyParam['$ref'].split('/').pop();
+				bodyParamsAry = getNestedBodyParams(bodyParamsAry,curParamPath+"__",curSwagger.definition.definitions[curParamDefinitionName]);
 			}
 			bodyParam.name = curParamPath;
 			bodyParam.id_str = curParamPath.replaceAll(".","_");
+			bodyParam.required = (requiredParams[bodyParam.name]==true) ? true : false;
 			bodyParamsAry.list[curParamPath] = bodyParam;
 			bodyParamsAry.index.push(curParamPath);
 		}
@@ -321,101 +349,97 @@ function setNestedBodyParams(curObject,curPathAry,param){
 		if (curObject[parentName]==undefined) curObject[parentName] = {};
 		curObject[parentName] = setNestedBodyParams(curObject[parentName],curPathAry,param);
 	} else {
-		var input = $('#'+param.name.replaceAll(".","_"))
-		var val = input.val();
-		if (timestampParam[input.attr("id")]) {
-			val = new Date(input.val()).valueOf();
-		} else {
-			switch (input.parent().attr("class")) {
-				case "array_string":
-					val = val.replaceAll("[","").replaceAll("]","").replaceAll('"',"").replaceAll("'","").split(",");
-					break;
-				case "array_integer":
-					valAry = [];
-					$.each(val.replaceAll("[","").replaceAll("]","").replaceAll('"',"").replaceAll("'","").split(","), function(i,paramVal) {
-						valAry.push((!isNaN(parseInt(val,10))) ? parseInt(paramVal,10) : parseInt(paramVal,10));
-					});
-					val = valAry;
-					break;
-				case "integer":
-					if (timestampParam[param.name]) {
-						val = (!isNaN(parseInt(val,10))) ? parseInt(val,10) : "NaN";
-					} else {
-						val = (!isNaN(parseInt(val,10))) ? parseInt(val,10) : "NaN";
-					}
-					break;
-				case "boolean":
-					val = (val=='true') ? true : false;
-					break;
-			}
-		}
-		curObject[curPathAry[0]] = val;
+		var paramName = ((param.id.includes("___")) ? param.id.split("___").pop() : param.id);
+		var val = parseParamValue($('#'+param.id));
+		if (val!=null) curObject[paramName] = val;
 	}
 	return curObject;
 }
 
-function updateRequestDataFromJsonParams(){
-	if ($('#incapbodyParams .bodyParams').length>0) {
-		var reqObj = {}
-		$.each($('#incapbodyParams .bodyParams'), function(i,param) {
-			// alert(param.name+"=="+$('#'+param.name).val());
-			if ($('#'+param.name.replaceAll(".","_")).val()!='') reqObj = setNestedBodyParams(reqObj,param.name.split("."),param)
+function addObjectToParent(input){
+	var parentId = input.id.replace("_add","");
+	if (IsJsonString($('#'+parentId).val())){
+		var curObject = {};
+		// console.log("parentId="+parentId);
+		$.each($('#incapbodyParams #'+parentId+"_tbl").find("input, select, textarea"), function(i,param) {
+			if (!param.id.substr(parentId.length+3).includes("___") && param.value!=''){
+				var paramName = ((param.id.includes("___")) ? param.id.split("___").pop() : param.id);
+				var val = parseParamValue($('#'+param.id));
+				if (val!=null) curObject[paramName] = val;
+			}
 		});
+		if ($('#'+parentId).parent().prop("class")=='object') {
+			$('#'+parentId).val(JSON.stringify(curObject));
+		} else {
+			var parentParamAry = JSON.parse($('#'+parentId).val());
+			parentParamAry.push(curObject);
+			$('#'+parentId).val(JSON.stringify(parentParamAry));
+		}
+	} else {
+		$.gritter.add({ title: 'ERROR', text: "Malformed parameter: '"+$('#'+parentId).attr("title")+"' is not valid '"+$('#'+parentId).parent().prop("class")+"' syntax"});
+	}
+}
+
+function parseParamValue(input){
+	var val = input.val();
+	if (timestampParam[input.attr("id")]) {
+		val = new Date(input.val()).valueOf();
+	} else {
+		// console.log(param.id+" class="+input.parent().attr("class"));			
+		switch (input.parent().attr("class")) {
+			case "object":
+				val = (IsJsonString(val) ? JSON.parse(val) : null)
+				break;
+			case "array_object":
+				val = (IsJsonString(val) ? JSON.parse(val) : null)
+				break;
+			case "array_string":
+				val = val.replaceAll("[","").replaceAll("]","").replaceAll('"',"").replaceAll("'","").split(",");
+				break;
+			case "array_integer":
+				valAry = [];
+				$.each(val.replaceAll("[","").replaceAll("]","").replaceAll('"',"").replaceAll("'","").split(","), function(i,paramVal) {
+					valAry.push((!isNaN(parseInt(val,10))) ? parseInt(paramVal,10) : parseInt(paramVal,10));
+				});
+				val = valAry;
+				break;
+			case "integer":
+				if (timestampParam[input.attr("name")]) {
+					val = (!isNaN(parseInt(val,10))) ? parseInt(val,10) : "NaN";
+				} else {
+					val = (!isNaN(parseInt(val,10))) ? parseInt(val,10) : "NaN";
+				}
+				break;
+			case "boolean":
+				val = (val=='true') ? true : false;
+				break;
+			case "parent":
+				val = JSON.parse(val);
+				break;
+			}
+	}
+	return val;
+}
+
+function updateRequestDataFromJsonParams(){
+	if (checkIncapForm() && $('#incapbodyParams .bodyParams').length>0) {
+		var reqObj = {}
+		$.each($('#incapbodyParams .bodyParams.parent1'), function(i,param) {
+			if ($('#'+param.id).val()!='') {
+				if (reqObj[param.id]==undefined) reqObj[param.id] = (($('#'+param.id).parent().attr("class")=="object") ? {} : [] )
+				reqObj[param.id] = JSON.parse(param.value);
+			}
+		});
+		$.each($('#incapbodyParams .bodyParams.param'), function(i,param) {
+			if ($('#'+param.id).val()!='' && !param.id.includes("___")) reqObj = setNestedBodyParams(reqObj,param.name.split("."),param);
+		});
+		// $.each($('#incapbodyParams .bodyParams.parent'), function(i,param) {
+		// 	reqObj = setNestedBodyParams(reqObj,param.name.split("."),param)
+		// });
+
 		$('#incapData').val(JSON.stringify(reqObj));
 	}
 	$('#incapCurlExample').val(incap_transformToCURL());
-	
-	// toggleDcId();
-	// var reqObj = getUserAuthObj($('#incapAccountsList').val());
-	// delete reqObj.account_id;
-
-	// if (incapAPIDefinitions[$('#incapActions :selected').parent().attr('label')][$("#incapActions").val()] != undefined) {
-	// 	$.each(incapAPIDefinitions[$('#incapActions :selected').parent().attr('label')][$("#incapActions").val()], function(i,paramName) {
-	// 		if (incapJsonParamMapping[paramName]!=undefined) {
-	// 			if (paramName=='account_id') {
-	// 				reqObj['account_id'] = $('#incapAccountIDList').val();
-	// 			} else {
-	// 				var param = incapJsonParamMapping[paramName];
-	// 				if (incapJsonParamMapping[paramName].values!=undefined && $('#'+paramName).val()!=null) {
-	// 					if (typeof($('#'+paramName).val())=='object') {
-	// 						reqObj[paramName] = $('#'+paramName).val().join();
-	// 						//reqObj[paramName] = JSON.stringify($('#'+paramName).val());
-	// 					} else if ($('#'+paramName).val().trim()!='') {
-	// 						//if (paramName=='api_id' || paramName=='api_key' || paramName=='account_id') reqObj[paramName] = $('#'+paramName).val();
-	// 						if (param.type=='list') {
-	// 							reqObj[paramName] = $('#'+paramName).val();
-	// 							//reqObj[paramName] = param.values.substr(1,(param.values.length-2)).split(',');
-	// 						} else if (param.type=='obj') {
-	// 							reqObj[paramName] = JSON.parse($('#'+paramName).val());
-	// 						} else if (param.type=='int') {
-	// 							reqObj[paramName] = parseInt($('#'+paramName).val(),10);
-	// 						} else if (param.type=='boolean') {
-	// 							var boolVal = false; if ($('#'+paramName).val()=='true') boolVal = true;
-	// 							reqObj[paramName] = boolVal;
-	// 						} else {
-	// 							reqObj[paramName] = $('#'+paramName).val();
-	// 						}
-	// 					}
-	// 				}
-	// 			}
-	// 		}
-	// 	});
-	// }
-	// var dupReqObj = jQuery.extend(true, {}, reqObj);
-	// if (dupReqObj.api_key!=undefined && $('#incap_configMaskSecretKey').is(":checked")) dupReqObj.api_key = starStr.substr(0,dupReqObj.api_key.length);
-	
-	
-	// $('#incapData').val(JSON.stringify(dupReqObj));
-	// $('#incapJSONparams input').unbind().blur(function(){ updateJSON(); });
-	// $('#incapJSONparams textarea').unbind().blur(function(){ updateJSON(); });
-	// $('#incapJSONparams select').unbind().change(function(){ updateJSON(); });
-	//if ($('#incapActions').val()=='/api/prov/v1/sites/incapRules/add' || $('#incapActions').val()=='/api/prov/v1/sites/incapRules/edit') {
-		//$('#action').unbind().change(function(){ toggleDcId(); updateJSON(); });
-	//}
-	// $.each(incapGetObjectActionMapping, function(input_id,inputObj) {
-	// 	if ($('#'+input_id).length==1) $('#'+input_id).unbind().change(function(){ loadParamChildValues(this.id); updateJSON(); });
-	// });
-	// $('#incapCurlExample').val(incap_transformToCURL($('#incapServer').val()+$('#incapActions').val(),reqObj,$('#incap_configMaskSecretKey').is(":checked")));
 }
 
 function updateRequestDataFromFormDataParams(){
@@ -814,6 +838,7 @@ function renderParamsHTML(){
 	var currentAction = $("#incapActions").val().substr(curSwagger.definition.basePath.length);
 	var methodObj = jQuery.extend(true, {}, curSwagger.definition.paths[currentAction][$(incap_method_sel).val()]);
 	$('#incapData').val('');
+	// console.log(methodObj);
 	$.each(["bodyParams","pathParams","queryParams","formDataParams"], function(i,paramType) {
 		var divId = (paramType=="bodyParams" || paramType=="formDataParams") ? divId = "body" : divId = paramType.replace("Params","");;
 		$("#incap"+paramType+" table").html('');
@@ -829,28 +854,72 @@ function renderParamsHTML(){
 							var parentParamIndexAry = param.id_str.split("___");
 							for (var i=1; i<parentParamIndexAry.length; i++) {
 								var currentParamName = parentParamIndexAry[i-1];
+								var childContainerId = parentParamIndexAry.slice(i).join("___");
 								var currentContainerId = parentParamIndexAry.slice(0,i).join("___");
+								var currentContainerParam = methodObj[paramType].list[parentParamIndexAry.slice(0,i).join("__.")];
 								var parentContainerId = parentParamIndexAry.slice(0,i-1).join("___");
 								// var curParamName = parentParamIndexAry[i];
+								// Parse ID str, check for parent TR, if not present create it
 								if ($('.'+currentContainerId+"_tbltr").length==0) {
-									console.log("===================================");
-									console.log(param.id_str);
-									console.log("currentContainerId="+currentContainerId);
-									console.log("parentContainerId="+parentContainerId);
-									console.log("**** CREATE CONTAINER TABLE ****");
-									var str = '<tr id="'+currentContainerId+'tr" class="fieldwrapper '+currentContainerId+'tr"><td valign="top" align="right"><label for="some name">'+currentParamName+': </label></td>';
-									str += '<td class="array_object">';
-									str += '<textarea class="'+currentContainerId+'" name="'+currentContainerId+'" id="'+currentContainerId+'" placeholder="'+currentParamName+' object" style="width:200px; height: 50px;"></textarea>';
-									str += '<br /><a href="javascript:void(0);" id="'+currentContainerId+'_toggle" class="toggle_param_link">show parameters</a>';
-									str += '<tr id="'+currentContainerId+'_tbltr" class="'+currentContainerId+'_tbltr"><td colspan="2">';
-									str += '<table id="'+currentContainerId+'_tbl" class="toggle_param">';
-									str += '</table></td></tr>';
-									if (parentContainerId=='') {
-										$("#incap"+paramType+"_tbl").append(str);
-									} else {
-										$("#"+parentContainerId+"_tbl").append(str);
-									}
+									var level = (currentContainerId.split("___").length);
+									// console.log("===================================");
+									
+									// if (childContainerId.includes("___")) {
+										// console.log("**** CREATE PARENT CONTAINER TABLE ****");
+										// console.log(param);
+										var required = (param.required==true) ? ' required ': '';
+										var paramDataType = ((currentContainerParam.type!=undefined) ? currentContainerParam.type : 'object');
+										var str = '<tr id="'+currentContainerId+'_tbltr" class="fieldwrapper '+currentContainerId+'_tbltr">';
+										str += '<td valign="top" align="right" width><label title="'+currentContainerId+'" for="">';
+										str += ((currentContainerParam.description!=undefined) ? '<span class="info" title="'+currentContainerParam.description+'"> </span> ' : '');
+										str += ((currentContainerParam.required==true) ? '<span title="Required field" class="required">*</span> ' : '');
+										str += currentParamName+': </label></td>';
+										str += '<td align="left" class="'+((paramDataType=='object') ? paramDataType : paramDataType+'_object')+'">';
+										str += '<textarea title="'+currentParamName+'" class="'+currentContainerId+' bodyParams parent parent'+level+' type_'+paramDataType+'" name="'+currentContainerId+'" id="'+currentContainerId+'" placeholder="'+paramDataType+'"'+required+'>';
+										str += ((paramDataType=='object') ? '{}' : '[]')+'</textarea>';
+										str += '<br clear="all" /><a href="javascript:void(0);" id="'+currentContainerId+'_toggle" class="toggle_param_link param_link">edit object</a>';
+										// str += '<tr id="'+currentContainerId+'_tbltr" class="'+currentContainerId+'_tbltr"><td colspan="2">';
+										str += '<fieldset id="'+currentContainerId+'_fieldset" class="nested_param"><legend>'+currentParamName+' Parameters</legend>';
+										str += '<table id="'+currentContainerId+'_tbl" class="toggle_param param_tbl_level'+level+'"></table><br clear="all" />';
+										str += '<a href="javascript:void(0);" id="'+currentContainerId+'_cancel" class="cancel_param_link param_link">Cancel</a>';
+										str += '<a href="javascript:void(0);" id="'+currentContainerId+'_add" class="add_param_link param_link">Add</a>';
+										str += '</fieldset>';
+										str += '</td></tr>';
+										// if(param.name.includes("countries"))  console.log("=================== before render ===================");
+										// if(param.name.includes("countries")) debugger
+										if (parentContainerId=='') {
+											// if(param.name.includes("countries")) debugger
+											// if(param.name.includes("countries"))  console.log("countries parentContainerId==''");
+											$("#incap"+paramType+"_tbl").append(str);
+										} else {
+											// if(param.name.includes("countries")) debugger
+											// if(param.name.includes("countries"))  console.log("countries parentContainerId=='' else");
+											$("#"+parentContainerId+"_tbl").append(str);
+										}
+									// }
 								}
+								// if(param.name.includes("countries")) {
+								// 	console.log(param);
+								// 	console.log(param.id_str);
+								// 	console.log("currentContainerId="+currentContainerId);
+								// 	console.log("parentContainerId="+parentContainerId);
+								// 	console.log("childContainerId="+childContainerId);
+								// 	console.log(currentContainerParam);
+								// 	console.log("level="+level);
+								// 	debugger
+								// }
+								if (param.id_str.includes("___")) {
+									if (currentContainerId+"___"+param.id_str.split("___").pop()==param.id_str) {
+										$("#"+currentContainerId+"_tbl").append(renderParamHTML(param,paramType));
+									}
+								} else {
+									$("#"+currentContainerId+"_tbl").append(renderParamHTML(param,paramType));
+								}
+								//  else {
+								// 	if(param.name.includes("countries")) debugger
+								// 	$("#"+currentContainerId+"_tbl").append(renderParamHTML(param,paramType));
+								// }
+
 							}
 							
 							// var parentParamId = parentParamIdAry.slice(0,parentParamIdAry.length-1).join("_");
@@ -864,30 +933,7 @@ function renderParamsHTML(){
 							// $("#incap"+paramType+" table").append(str);
 						} else {
 							if (param.items==undefined || (param.items!=undefined && param.items["$ref"]==undefined)) {
-								var str = '<tr id="'+param.id_str+'tr" class="fieldwrapper"><td align="right"><label for="'+param.name+'">';
-								if (param.description!=undefined) str += '<span class="info" title="'+param.description+'"> </span> '; 
-								str += param.name+': </label></td><td class="'+param.type+((param.items!=undefined && param.items.type!=undefined) ? "_"+param.items.type : '')+'">';
-								if (incapGetObjectActionMapping[param.name]!=undefined) {
-									if (paramType=='pathParams') str += '<a href="javascript:void(0)" class="ui-icon ui-icon-copy" id="'+param.id_str+'_btn" title="Copy to Request URL">copy</a>';
-									str += '<select name="'+param.name+'" class="'+paramType+'" id="'+param.id_str+'"><option value="">loading...</option></select>';
-								} else if (param.enum!=undefined) {
-									str += '<select name="'+param.name+'" class="'+paramType+'" id="'+param.id_str+'">';
-									if (param.required!=true) str += '<option value="">-- select --</option>';
-									$.each(param.enum, function(i,value) { str += '<option value="'+value+'">'+value+'</option>'; });
-									str += '</select>';
-								} else if (timestampParam[param.name]) {
-									str += '<input type="text" class="datepicker '+paramType+'" name="'+param.name+'" id="'+param.id_str+'" value="" placeholder="epoch timestamp" />';
-								} else if (param.type=="boolean") {
-									str += '<select name="'+param.name+'" class="'+paramType+'" id="'+param.id_str+'">';
-									str += '<option value="">-- select --</option><option value="true">true</option><option value="false">false</option>';
-									str += '</select>';
-								} else if (param.type=="object") {
-									str += '<textarea class="'+paramType+'"  name="'+param.name+'" id="'+param.id_str+'" style="width:200px; height: 50px;">'+param.jsonStr+'</textarea>';
-								} else {
-									str += '<input type="text" class="'+paramType+'" name="'+param.name+'" id="'+param.id_str+'" value="" placeholder="'+param.type+'" />';
-								}
-								str += '</td></tr>';
-								$("#incap"+paramType+" table").append(str);
+								$("#incap"+paramType+"_tbl").append(renderParamHTML(param,paramType));
 							}
 						}
 					}
@@ -910,19 +956,64 @@ function renderParamsHTML(){
 	});	
 
 	// toggleDcId();
+	$('.param_link').button();
+	$('.toggle_param_link, .cancel_param_link').button().unbind("click").click(function(){ toggleShowNestedParams(this.id.replace("_toggle","").replace("_cancel","")); })
 	$('#incappathParams .ui-icon-copy').unbind("click").click(function(){ incapCopyPathParam(this); })
 	$('#incapqueryParams input, #incapqueryParams textarea').unbind().blur(function(){ incapUpdateReqURL(); });
 	$('#incapqueryParams select').unbind().change(function(){ incapUpdateReqURL(); });
-	$('#incapbodyParams input, #incapbodyParams textarea').unbind().blur(function(){ updateRequestDataFromJsonParams(); });
+	$('#incapbodyParams input, #incapbodyParams textarea.parent1').unbind().blur(function(){ if (checkIncapForm()) updateRequestDataFromJsonParams(); });
+	$('#incapbodyParams textarea.parent:not(.parent1)').unbind().blur(function(){ if (checkIncapForm()); });
+	
 	$('#incapbodyParams select').unbind().change(function(){ updateRequestDataFromJsonParams(); });
 	$('#incapformDataParams input, #incapformDataParams textarea').unbind().blur(function(){ updateRequestDataFromFormDataParams(); });
 	$('#incapformDataParams select').unbind().change(function(){ updateRequestDataFromFormDataParams(); });	
+	$('.add_param_link').unbind().click(function(){ addObjectToParent(this); });	
 
 	incapUpdateReqURL();
 	// $(".datepicker").parent().click(function(){ $(".datepicker").trigger('blur'); });
 	$(".datepicker").datetimepicker();
 	updateRequestDataFromJsonParams();
 	updateRequestDataFromFormDataParams();
+}
+
+function renderParamHTML(param,paramType){
+	var paramLevel = (param.id_str.includes("___") ? 'child' : 'param');
+	var str = '<tr id="'+param.id_str+'tr" class="fieldwrapper"><td align="right"><label for="'+param.name+'">';
+	if (param.description!=undefined) str += '<span class="info" title="'+param.description+'"> </span> '; 
+	var required = (param.required==true) ? ' required ': '';
+	str += ((param.required==true) ? '<span title="Required field" class="required">*</span> ' : '') + ((param.id_str.includes("___")) ? param.id_str.split("___").pop() : param.name )+': </label></td>';
+	str += '<td class="'+param.type+((param.items!=undefined && param.items.type!=undefined) ? "_"+param.items.type : '')+'">';
+	if (incapGetObjectActionMapping[param.name]!=undefined) {
+		if (paramType=='pathParams') str += '<a href="javascript:void(0)" class="ui-icon ui-icon-copy" id="'+param.id_str+'_btn" title="Copy to Request URL">copy</a>';
+		str += '<select name="'+param.name+'" class="'+paramType+' '+paramLevel+'" id="'+param.id_str+'"'+required+'><option value="">loading...</option></select>';
+	} else if (param.enum!=undefined) {
+		str += '<select name="'+param.name+'" class="'+paramType+' '+paramLevel+'" id="'+param.id_str+'"'+required+'>';
+		if (param.required!=true) str += '<option value="">-- select --</option>';
+		$.each(param.enum, function(i,value) { str += '<option value="'+value+'">'+value+'</option>'; });
+		str += '</select>';
+	} else if (timestampParam[param.name]) {
+		str += '<input type="text" class="datepicker '+paramType+' '+paramLevel+'" name="'+param.name+'" id="'+param.id_str+'" value="" placeholder="epoch timestamp"'+required+' />';
+	} else if (param.type=="boolean") {
+		str += '<select name="'+param.name+'" class="'+paramType+' '+paramLevel+'" id="'+param.id_str+'"'+required+'>';
+		str += ((param.required) ? '' : '<option value="">-- select --</option>') +'<option value="true">true</option><option value="false">false</option>';
+		str += '</select>';
+	} else if (param.type=="object") {
+		str += '<textarea class="'+paramType+' '+paramLevel+'"  name="'+param.name+'" id="'+param.id_str+'" style="width:200px; height: 50px;"'+required+'>'+param.jsonStr+'</textarea>';
+	} else {
+		str += '<input type="text" class="'+paramType+' '+paramLevel+'" name="'+param.name+'" id="'+param.id_str+'" value="" placeholder="'+param.type+'"'+required+' />';
+	}
+	str += '</td></tr>';
+	return str;
+}
+
+function toggleShowNestedParams(id){
+	if ($('#'+id+'_fieldset').css('display')=='none') {
+		$('#'+id+'_fieldset').show();
+		$('#'+id+'_toggle').hide();
+	} else {
+		$('#'+id+'_fieldset').hide();
+		$('#'+id+'_toggle').show();
+	}
 }
 
 function incapCopyPathParam(input){
@@ -989,12 +1080,12 @@ function renderParamListValues(response,input_id) {
 		// console.log(paramActionObjIndex);
 		$.each(paramActionObjIndex, function(i,paramActionIdStr) {	
 			var subGroupObj = paramActionObjAry[paramActionIdStr];
-			$("#"+input_id).append('<option value="">-- select --</option><option value="'+subGroupObj[paramActionObj.id]+'">'+subGroupObj[paramActionObj.displayText]+' ('+subGroupObj[paramActionObj.id]+')</option>');
+			$("#"+input_id).append('<option value="'+subGroupObj[paramActionObj.id]+'">'+subGroupObj[paramActionObj.displayText]+' ('+subGroupObj[paramActionObj.id]+')</option>');
 		});	
 	} else if (paramActionObj.objectName!=undefined) {
-		$("#"+input_id).append('<option value="">-- select --</option><option value="'+response[paramActionObj.objectName][paramActionObj.id]+'">'+response[paramActionObj.objectName][paramActionObj.displayText]+' ('+response[paramActionObj.objectName][paramActionObj.id]+')</option>');
+		$("#"+input_id).append('<option value="'+response[paramActionObj.objectName][paramActionObj.id]+'">'+response[paramActionObj.objectName][paramActionObj.displayText]+' ('+response[paramActionObj.objectName][paramActionObj.id]+')</option>');
 	} else {
-		$("#"+input_id).append('<option value="">-- select --</option><option value="'+response[paramActionObj.id]+'">'+response[paramActionObj.displayText]+' ('+response[paramActionObj.id]+')</option>');
+		$("#"+input_id).append('<option value="'+response[paramActionObj.id]+'">'+response[paramActionObj.displayText]+' ('+response[paramActionObj.id]+')</option>');
 	}
 	if (paramActionObj.children!=undefined && paramActionObj.children!=length!=0) {
 		loadParamChildValues(input_id);

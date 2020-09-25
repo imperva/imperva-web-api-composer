@@ -13,6 +13,10 @@ incapAPIDefinitions = {
 		"endpoint":"https://docs-be.imperva.com/bundle/cloud-application-security/attach/cloud-waf-api.yaml",
 		"definition":{}
 	},
+	"Account Take Over":{
+		"endpoint":"https://docs-be.imperva.com/bundle/account-takeover/attach/cloud-ato-api.yaml",
+		"definition":{}
+	},
 	"API Security":{
 		"endpoint":"https://docs-be.imperva.com/bundle/api-security/attach/api-security-swagger.yaml",
 		"definition":{}
@@ -40,6 +44,10 @@ incapAPIDefinitions = {
 	"Role Management":{
 		"endpoint":"https://docs-be.imperva.com/bundle/cloud-application-security/attach/role-management-api.yaml",
 		"definition":{}
+	},
+	"Cloud Data Security":{
+		"endpoint":"https://docs-be.imperva.com/bundle/cloud-data-security/attach/b17.yaml",
+		"definition":{}
 	}
 }
 
@@ -47,6 +55,7 @@ incapAPIKeyMap = {
 	"cwaf_api_v1":{ "displayName":"Cloud WAF API (v1)" },
 	"cwaf_api_v2":{ "displayName":"Cloud WAF API (v2)" },
 	"api_security":{ "displayName":"API Security" },
+	"ato":{ "displayName":"Account Take Over" },
 	"attack_analytics":{ "displayName":"Attack Analytics" },
 	"audit_trail":{ "displayName":"Audit Trail" },
 	"policy_management":{ "displayName":"Policy Management" },

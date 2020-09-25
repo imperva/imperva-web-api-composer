@@ -58,8 +58,8 @@ $.extend($.gritter.options, {
 			<div id="mainNav" class="ui-widget-content content">
 				<ul>
 					<li><a id="SecureSphereAPIBtn" href="#SecureSphereAPI">SecureSphere API Client</a></li>
-					<li><a id="IncapsulaAPIBtn" href="#IncapsulaAPI">Incapsula API Client</a></li>
-					<li><a id="incapsitesBtn" href="#incapsites">Incapsula Sites</a></li>
+					<li><a id="IncapsulaAPIBtn" href="#IncapsulaAPI">Cloud API Client</a></li>
+					<li><a id="incapsitesBtn" href="#incapsites">Cloud Sites</a></li>
 					<li><a id="migrationToolsBtn" href="#migrationTools">Migration Tools</a></li>
 					<li><a id="settingsBtn" href="#settings">Settings</a></li>
 				</ul>
@@ -266,10 +266,21 @@ $.extend($.gritter.options, {
 										</tr>
 										<tr>
 										   <td align="right">
+											 <label for="incapAuth">Auth</label>
+										   </td>
+										   <td>
+												<select id="incapAuth">
+													<option selected="selected" value="headers">headers (x-API-Id, x-API-Key)</option>
+													<option value="query">query params (?api_id, api_key)</option>
+												</select>
+										   </td>
+										</tr>
+										<tr>
+										   <td align="right">
 											 <label for="contentType">Content-Type</label>
 										   </td>
 										   <td>
-												<select id="incapContentType">
+												<select id="incapContentType" disabled="true">
 													<option selected="selected" value="application/json">application/json</option>
 													<option value="application/x-www-form-urlencoded">application/x-www-form-urlencoded</option>
 													<!--option>application/csv</option-->

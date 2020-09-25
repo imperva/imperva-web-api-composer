@@ -67,6 +67,15 @@ var SSapiParamMapping = {
 			}
 		}
 	},
+	"dataSetName":{
+		"getAPIurlMapping":{
+			"default":{
+				"url":"/v1/conf/dataSets",
+				// "nestedItemName":"name",
+				"nestedItemLevel":0
+			}
+		}
+	},
 	"db-mappings":{
 		"name":"db-mappings",
 		"type":"array",

@@ -1,0 +1,4164 @@
+{
+	"swagger": "2.0",
+	"info": {
+		"version": "1.0.0",
+		"title": "B17 API"
+	},
+	"host": "api.imperva.com",
+	"basePath": "/b17",
+	"tags": [
+		{
+			"name": "alarm"
+		},
+		{
+			"name": "alerts"
+		},
+		{
+			"name": "asset-classification"
+		},
+		{
+			"name": "asset"
+		},
+		{
+			"name": "billing"
+		},
+		{
+			"name": "cloud-account"
+		},
+		{
+			"name": "dashboard"
+		},
+		{
+			"name": "event-statistics"
+		},
+		{
+			"name": "followed-action"
+		},
+		{
+			"name": "global-user-settings"
+		},
+		{
+			"name": "policies"
+		},
+		{
+			"name": "reference-list"
+		},
+		{
+			"name": "report"
+		},
+		{
+			"name": "report-schedule"
+		},
+		{
+			"name": "security-event"
+		},
+		{
+			"name": "system-state"
+		},
+		{
+			"name": "tag"
+		}
+	],
+	"schemes": [
+		"http"
+	],
+	"paths": {
+		"/alarms/{id}": {
+			"get": {
+				"tags": [
+					"alarm"
+				],
+				"summary": "Get alarm by Id",
+				"description": "",
+				"operationId": "getAlarm",
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "caid",
+						"in": "query",
+						"description": "Unique account id",
+						"required": true,
+						"type": "integer",
+						"format": "int64"
+					},
+					{
+						"name": "id",
+						"in": "path",
+						"description": "Alarm id",
+						"required": true,
+						"type": "string"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Legal response",
+						"schema": {
+							"$ref": "#/definitions/AlarmApiDto"
+						}
+					},
+					"404": {
+						"description": "The requested alarm was not found",
+						"schema": {
+							"type": "string"
+						}
+					},
+					"500": {
+						"description": "Internal Error while fetching alarms",
+						"schema": {
+							"type": "string"
+						}
+					}
+				}
+			},
+			"put": {
+				"tags": [
+					"alarm"
+				],
+				"summary": "Update alarm",
+				"description": "",
+				"operationId": "updateAlarm",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"in": "body",
+						"name": "body",
+						"required": false,
+						"schema": {
+							"$ref": "#/definitions/AlarmApiDto"
+						}
+					},
+					{
+						"name": "caid",
+						"in": "query",
+						"description": "Unique account id",
+						"required": true,
+						"type": "integer",
+						"format": "int64"
+					},
+					{
+						"name": "id",
+						"in": "path",
+						"description": "Alarm id",
+						"required": true,
+						"type": "string"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Legal response",
+						"schema": {
+							"$ref": "#/definitions/AlarmApiDto"
+						}
+					},
+					"404": {
+						"description": "The requested alarm was not found",
+						"schema": {
+							"type": "string"
+						}
+					},
+					"500": {
+						"description": "Internal Error while fetching alarms",
+						"schema": {
+							"type": "string"
+						}
+					}
+				}
+			}
+		},
+		"/alarms": {
+			"get": {
+				"tags": [
+					"alarm"
+				],
+				"summary": "Get all alarms",
+				"description": "",
+				"operationId": "getAllAlarmsList",
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "caid",
+						"in": "query",
+						"description": "Unique account id",
+						"required": true,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Legal response",
+						"schema": {
+							"type": "array",
+							"items": {
+								"$ref": "#/definitions/AlarmApiDto"
+							}
+						}
+					},
+					"500": {
+						"description": "Error while fetching alarms",
+						"schema": {
+							"type": "string"
+						}
+					}
+				}
+			}
+		},
+		"/security/alerts": {
+			"get": {
+				"tags": [
+					"alerts"
+				],
+				"summary": "Get all alerts",
+				"description": "",
+				"operationId": "getAllAlerts",
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "caid",
+						"in": "query",
+						"description": "Unique Imperva account id",
+						"required": true,
+						"type": "integer",
+						"format": "int64"
+					},
+					{
+						"name": "page",
+						"in": "query",
+						"required": false,
+						"type": "integer",
+						"default": 1,
+						"format": "int32"
+					},
+					{
+						"name": "pageSize",
+						"in": "query",
+						"required": false,
+						"type": "integer",
+						"default": 200,
+						"format": "int32"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "successful operation",
+						"schema": {
+							"$ref": "#/definitions/AlertPagingApiDto"
+						}
+					}
+				}
+			}
+		},
+		"/security/alerts/count": {
+			"get": {
+				"tags": [
+					"alerts"
+				],
+				"summary": "Get alerts count",
+				"description": "",
+				"operationId": "getAlertsCount",
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "caid",
+						"in": "query",
+						"description": "Unique Imperva account id",
+						"required": true,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "successful operation",
+						"schema": {
+							"type": "integer",
+							"format": "int32"
+						}
+					}
+				}
+			}
+		},
+		"/security/alerts/purge": {
+			"post": {
+				"tags": [
+					"alerts"
+				],
+				"summary": "Purge all alerts",
+				"description": "",
+				"operationId": "purgeAllAlerts",
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "caid",
+						"in": "query",
+						"description": "Unique Imperva account id",
+						"required": true,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"default": {
+						"description": "successful operation"
+					}
+				}
+			}
+		},
+		"/security/alerts/list": {
+			"get": {
+				"tags": [
+					"alerts"
+				],
+				"summary": "Get all alerts",
+				"description": "",
+				"operationId": "getAllAlertsList",
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "caid",
+						"in": "query",
+						"description": "Unique Imperva account id",
+						"required": true,
+						"type": "integer",
+						"format": "int64"
+					},
+					{
+						"name": "page",
+						"in": "query",
+						"required": false,
+						"type": "integer",
+						"format": "int32"
+					},
+					{
+						"name": "pageSize",
+						"in": "query",
+						"required": false,
+						"type": "integer",
+						"format": "int32"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "successful operation",
+						"schema": {
+							"$ref": "#/definitions/AlertPagingApiDto"
+						}
+					}
+				}
+			}
+		},
+		"/assets/classification/{assetId}/classificationStatus": {
+			"get": {
+				"tags": [
+					"asset-classification"
+				],
+				"summary": "Get Asset classification status",
+				"description": "",
+				"operationId": "getAssetClassificationStatus",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "assetId",
+						"in": "path",
+						"description": "Unique asset id",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"name": "caid",
+						"in": "query",
+						"description": "Unique Imperva account id",
+						"required": true,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "successful operation",
+						"schema": {
+							"type": "string"
+						}
+					}
+				}
+			}
+		},
+		"/assets/classification/{assetId}/filters": {
+			"get": {
+				"tags": [
+					"asset-classification"
+				],
+				"summary": "Get Asset column filter groups",
+				"description": "",
+				"operationId": "getAssetColumnFilterGroups",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "assetId",
+						"in": "path",
+						"description": "Unique asset id",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"name": "caid",
+						"in": "query",
+						"description": "Unique Imperva account id",
+						"required": true,
+						"type": "integer",
+						"format": "int64"
+					},
+					{
+						"name": "sensitivityLevel",
+						"in": "query",
+						"description": "Sensitivity level filter",
+						"required": false,
+						"type": "string"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "successful operation",
+						"schema": {
+							"type": "string"
+						}
+					}
+				}
+			}
+		},
+		"/assets/classification/{assetId}": {
+			"get": {
+				"tags": [
+					"asset-classification"
+				],
+				"summary": "Get Asset classifications",
+				"description": "",
+				"operationId": "getAllAssetClassifications",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "assetId",
+						"in": "path",
+						"description": "Unique asset id",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"name": "caid",
+						"in": "query",
+						"description": "Unique Imperva account id",
+						"required": true,
+						"type": "integer",
+						"format": "int64"
+					},
+					{
+						"name": "sensitivityLevel",
+						"in": "query",
+						"description": "Sensitivity level filter",
+						"required": false,
+						"type": "string"
+					},
+					{
+						"name": "tbl",
+						"in": "query",
+						"description": "Table name filter",
+						"required": false,
+						"type": "string"
+					},
+					{
+						"name": "col",
+						"in": "query",
+						"description": "Column name filter",
+						"required": false,
+						"type": "string"
+					},
+					{
+						"name": "cat",
+						"in": "query",
+						"description": "Category filter",
+						"required": false,
+						"type": "string"
+					},
+					{
+						"name": "page",
+						"in": "query",
+						"description": "Number of displayed page",
+						"required": false,
+						"type": "integer",
+						"format": "int32"
+					},
+					{
+						"name": "sizePerPage",
+						"in": "query",
+						"description": "Number of displayed columns on every page",
+						"required": false,
+						"type": "integer",
+						"format": "int32"
+					},
+					{
+						"name": "sortFieldPath",
+						"in": "query",
+						"description": "Schema/Table/Column/Category/Sensitivity level for sorting",
+						"required": false,
+						"type": "string"
+					},
+					{
+						"name": "sortOrder",
+						"in": "query",
+						"description": "Sort order",
+						"required": false,
+						"type": "string"
+					},
+					{
+						"name": "searchTerm",
+						"in": "query",
+						"description": "Table/Column/Category name filter",
+						"required": false,
+						"type": "string"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "successful operation",
+						"schema": {
+							"$ref": "#/definitions/AssetColumnResultApiDto"
+						}
+					}
+				}
+			},
+			"put": {
+				"tags": [
+					"asset-classification"
+				],
+				"summary": "Update Asset column classification status",
+				"description": "",
+				"operationId": "updateAssetColumnClassificationStatus",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"in": "body",
+						"name": "body",
+						"required": false,
+						"schema": {
+							"type": "array",
+							"items": {
+								"$ref": "#/definitions/AssetColumnApiDto"
+							}
+						}
+					},
+					{
+						"name": "assetId",
+						"in": "path",
+						"description": "Unique asset id",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"name": "caid",
+						"in": "query",
+						"description": "Unique Imperva account id",
+						"required": true,
+						"type": "integer",
+						"format": "int64"
+					},
+					{
+						"name": "sensitivityStatus",
+						"in": "query",
+						"description": "Sensitivity level filter",
+						"required": false,
+						"type": "string"
+					}
+				],
+				"responses": {
+					"default": {
+						"description": "successful operation"
+					}
+				}
+			}
+		},
+		"/assets/classification/{assetId}/count": {
+			"get": {
+				"tags": [
+					"asset-classification"
+				],
+				"summary": "Get Asset classification counts",
+				"description": "",
+				"operationId": "getAssetClassificationCounts",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "assetId",
+						"in": "path",
+						"description": "Unique asset id",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"name": "caid",
+						"in": "query",
+						"description": "Unique Imperva account id",
+						"required": true,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "successful operation",
+						"schema": {
+							"$ref": "#/definitions/AssetClassificationDetailsApiDto"
+						}
+					}
+				}
+			}
+		},
+		"/assets/{assetId}": {
+			"get": {
+				"tags": [
+					"asset"
+				],
+				"summary": "Get asset by id",
+				"description": "",
+				"operationId": "getAsset",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "assetId",
+						"in": "path",
+						"description": "Unique asset id",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"name": "caid",
+						"in": "query",
+						"description": "Unique Imperva account id",
+						"required": true,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "successful operation",
+						"schema": {
+							"$ref": "#/definitions/AssetApiDto"
+						}
+					}
+				}
+			},
+			"put": {
+				"tags": [
+					"asset"
+				],
+				"summary": "Update Asset",
+				"description": "",
+				"operationId": "updateAsset",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"in": "body",
+						"name": "body",
+						"required": false,
+						"schema": {
+							"$ref": "#/definitions/AssetApiDto"
+						}
+					},
+					{
+						"name": "assetId",
+						"in": "path",
+						"description": "Unique asset id",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"name": "caid",
+						"in": "query",
+						"description": "Unique Imperva account id",
+						"required": true,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"default": {
+						"description": "successful operation"
+					}
+				}
+			},
+			"delete": {
+				"tags": [
+					"asset"
+				],
+				"summary": "Purge Asset",
+				"description": "",
+				"operationId": "purgeAsset",
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "assetId",
+						"in": "path",
+						"description": "Unique asset id",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"name": "caid",
+						"in": "query",
+						"description": "Unique Imperva account id",
+						"required": true,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"default": {
+						"description": "successful operation"
+					}
+				}
+			}
+		},
+		"/assets/entitled-package-info": {
+			"get": {
+				"tags": [
+					"asset"
+				],
+				"summary": "Get global user settings",
+				"description": "",
+				"operationId": "getEntitledPackageInfo",
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "caid",
+						"in": "query",
+						"required": false,
+						"type": "integer",
+						"format": "int64"
+					},
+					{
+						"name": "jwt",
+						"in": "header",
+						"required": false,
+						"type": "string"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "successful operation",
+						"schema": {
+							"$ref": "#/definitions/EntitledPackageInfoApiDto"
+						}
+					}
+				}
+			}
+		},
+		"/assets": {
+			"get": {
+				"tags": [
+					"asset"
+				],
+				"summary": "Get all Assets",
+				"description": "",
+				"operationId": "getAllAssetsList",
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "caid",
+						"in": "query",
+						"description": "Unique Imperva account id",
+						"required": true,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "successful operation",
+						"schema": {
+							"type": "array",
+							"items": {
+								"$ref": "#/definitions/AssetApiDto"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/billing/billable-assets/counter": {
+			"get": {
+				"tags": [
+					"billing"
+				],
+				"summary": "Get billable assets",
+				"description": "",
+				"operationId": "getBillableAssets",
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "caid",
+						"in": "query",
+						"required": false,
+						"type": "integer",
+						"format": "int64"
+					},
+					{
+						"name": "startTime",
+						"in": "query",
+						"required": false,
+						"type": "integer",
+						"format": "int64"
+					},
+					{
+						"name": "endTime",
+						"in": "query",
+						"required": false,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "successful operation",
+						"schema": {
+							"$ref": "#/definitions/BillableAssetsResult"
+						}
+					}
+				}
+			}
+		},
+		"/cloud-accounts": {
+			"get": {
+				"tags": [
+					"cloud-account"
+				],
+				"summary": "Get all accounts",
+				"description": "",
+				"operationId": "getAllAccountsList",
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "caid",
+						"in": "query",
+						"description": "Unique Imperva account id",
+						"required": true,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "successful operation",
+						"schema": {
+							"type": "array",
+							"items": {
+								"$ref": "#/definitions/CloudAccountApiDto"
+							}
+						}
+					}
+				}
+			},
+			"post": {
+				"tags": [
+					"cloud-account"
+				],
+				"summary": "Create Cloud Account",
+				"description": "",
+				"operationId": "createCloudAccount",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"in": "body",
+						"name": "body",
+						"required": false,
+						"schema": {
+							"$ref": "#/definitions/CloudAccountApiDto"
+						}
+					},
+					{
+						"name": "caid",
+						"in": "query",
+						"description": "Unique Imperva account id",
+						"required": true,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "successful operation",
+						"schema": {
+							"$ref": "#/definitions/CloudAccountApiDto"
+						}
+					}
+				}
+			}
+		},
+		"/cloud-accounts/{cloudAccountId}": {
+			"get": {
+				"tags": [
+					"cloud-account"
+				],
+				"summary": "Get cloud account by id",
+				"description": "",
+				"operationId": "getCloudAccount",
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "cloudAccountId",
+						"in": "path",
+						"description": "Unique Cloud Account id",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"name": "caid",
+						"in": "query",
+						"description": "Unique Imperva account id",
+						"required": true,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "successful operation",
+						"schema": {
+							"$ref": "#/definitions/CloudAccountApiDto"
+						}
+					}
+				}
+			},
+			"put": {
+				"tags": [
+					"cloud-account"
+				],
+				"summary": "Update Cloud Account",
+				"description": "",
+				"operationId": "updateCloudAccount",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"in": "body",
+						"name": "body",
+						"required": false,
+						"schema": {
+							"$ref": "#/definitions/CloudAccountApiDto"
+						}
+					},
+					{
+						"name": "cloudAccountId",
+						"in": "path",
+						"description": "Unique cloud account id",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"name": "caid",
+						"in": "query",
+						"description": "Unique Imperva account id",
+						"required": true,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"default": {
+						"description": "successful operation"
+					}
+				}
+			},
+			"delete": {
+				"tags": [
+					"cloud-account"
+				],
+				"summary": "Delete Cloud Account",
+				"description": "",
+				"operationId": "deleteCloudAccount",
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "cloudAccountId",
+						"in": "path",
+						"description": "Unique cloud account id",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"name": "caid",
+						"in": "query",
+						"description": "Unique Imperva account id",
+						"required": true,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"default": {
+						"description": "successful operation"
+					}
+				}
+			}
+		},
+		"/cloud-accounts/onboarding": {
+			"post": {
+				"tags": [
+					"cloud-account"
+				],
+				"summary": "Create On Boarding Cloud Account",
+				"description": "",
+				"operationId": "createOnBoardingCloudAccount",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"in": "body",
+						"name": "body",
+						"required": false,
+						"schema": {
+							"$ref": "#/definitions/CloudAccountApiDto"
+						}
+					},
+					{
+						"name": "caid",
+						"in": "query",
+						"description": "Unique Imperva account id",
+						"required": true,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "successful operation",
+						"schema": {
+							"$ref": "#/definitions/CloudFormationApiDto"
+						}
+					}
+				}
+			}
+		},
+		"/cloud-accounts/onboarding-status": {
+			"get": {
+				"tags": [
+					"cloud-account"
+				],
+				"summary": "Get cloud formation status",
+				"description": "",
+				"operationId": "getCloudFormationStatus",
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "sessionId",
+						"in": "query",
+						"description": "Session id at cloud formation that was returned at create on-boarding cloud account request",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"name": "caid",
+						"in": "query",
+						"description": "Unique Imperva account id",
+						"required": true,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "successful operation",
+						"schema": {
+							"$ref": "#/definitions/CloudFormationStatusApiDto"
+						}
+					}
+				}
+			}
+		},
+		"/cloud-accounts/test-credentials": {
+			"post": {
+				"tags": [
+					"cloud-account"
+				],
+				"summary": "Test Cloud Account credentials",
+				"description": "",
+				"operationId": "runTestCloudAccountCredentials",
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"in": "body",
+						"name": "body",
+						"required": false,
+						"schema": {
+							"$ref": "#/definitions/TestCredentialsInfo"
+						}
+					},
+					{
+						"name": "caid",
+						"in": "query",
+						"description": "Unique Imperva account id",
+						"required": true,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "successful operation",
+						"schema": {
+							"$ref": "#/definitions/ClientOperationResult"
+						}
+					}
+				}
+			}
+		},
+		"/cloud-accounts/test-audit-storage": {
+			"post": {
+				"tags": [
+					"cloud-account"
+				],
+				"summary": "Run test audit storage",
+				"description": "",
+				"operationId": "runTestAuditStorage",
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"in": "body",
+						"name": "body",
+						"required": false,
+						"schema": {
+							"$ref": "#/definitions/TestAuditStorageInfo"
+						}
+					},
+					{
+						"name": "caid",
+						"in": "query",
+						"description": "Unique Imperva account id",
+						"required": true,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "successful operation",
+						"schema": {
+							"$ref": "#/definitions/ClientOperationResult"
+						}
+					}
+				}
+			}
+		},
+		"/cloud-accounts/trigger-discovery": {
+			"post": {
+				"tags": [
+					"cloud-account"
+				],
+				"summary": "Trigger discovery",
+				"description": "",
+				"operationId": "triggerDiscovery",
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "cloudAccountId",
+						"in": "query",
+						"required": false,
+						"type": "string"
+					},
+					{
+						"name": "caid",
+						"in": "query",
+						"required": false,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"default": {
+						"description": "successful operation"
+					}
+				}
+			}
+		},
+		"/dashboard-contents/counter": {
+			"get": {
+				"tags": [
+					"dashboard"
+				],
+				"summary": "Get dashboard counters",
+				"description": "",
+				"operationId": "getDashboardCounters",
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "caid",
+						"in": "query",
+						"required": false,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "successful operation",
+						"schema": {
+							"$ref": "#/definitions/DashboardCounters"
+						}
+					}
+				}
+			}
+		},
+		"/dashboard-contents/incidents-statistics": {
+			"get": {
+				"tags": [
+					"dashboard"
+				],
+				"summary": "Get incidents statistics for account",
+				"description": "",
+				"operationId": "getIncidentsStatisticsForAccount",
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "caid",
+						"in": "query",
+						"required": false,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "successful operation",
+						"schema": {
+							"type": "array",
+							"items": {
+								"$ref": "#/definitions/WatermillStatistics"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/event-statistics": {
+			"get": {
+				"tags": [
+					"event-statistics"
+				],
+				"summary": "Get Asset event statistics for account",
+				"description": "",
+				"operationId": "getAssetEventStatisticsForAccount",
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "assetType",
+						"in": "query",
+						"required": false,
+						"type": "string"
+					},
+					{
+						"name": "caid",
+						"in": "query",
+						"required": false,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "successful operation",
+						"schema": {
+							"type": "array",
+							"items": {
+								"$ref": "#/definitions/WatermillStatistics"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/event-statistics/{assetId}": {
+			"get": {
+				"tags": [
+					"event-statistics"
+				],
+				"summary": "Get Asset event statistics by asset id",
+				"description": "",
+				"operationId": "getAssetEventStatisticsById",
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "assetId",
+						"in": "path",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"name": "caid",
+						"in": "query",
+						"required": false,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "successful operation",
+						"schema": {
+							"type": "array",
+							"items": {
+								"$ref": "#/definitions/WatermillStatistics"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/followed-actions/{followedActionUuid}": {
+			"get": {
+				"tags": [
+					"followed-action"
+				],
+				"summary": "Get followed action",
+				"description": "",
+				"operationId": "getFollowedAction",
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "followedActionUuid",
+						"in": "path",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"name": "caid",
+						"in": "query",
+						"description": "Unique Imperva account id",
+						"required": true,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "successful operation",
+						"schema": {
+							"$ref": "#/definitions/FollowedActionApiDto"
+						}
+					}
+				}
+			},
+			"put": {
+				"tags": [
+					"followed-action"
+				],
+				"summary": "Update followed action",
+				"description": "",
+				"operationId": "updateFollowedAction",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"in": "body",
+						"name": "body",
+						"required": false,
+						"schema": {
+							"$ref": "#/definitions/FollowedActionApiDto"
+						}
+					},
+					{
+						"name": "followedActionUuid",
+						"in": "path",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"name": "caid",
+						"in": "query",
+						"description": "Unique Imperva account id",
+						"required": true,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "successful operation",
+						"schema": {
+							"$ref": "#/definitions/FollowedActionApiDto"
+						}
+					}
+				}
+			},
+			"delete": {
+				"tags": [
+					"followed-action"
+				],
+				"summary": "Delete Cloud Account",
+				"description": "",
+				"operationId": "deleteFollowedAction",
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "followedActionUuid",
+						"in": "path",
+						"description": "Unique followed action id",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"name": "caid",
+						"in": "query",
+						"description": "Unique Imperva account id",
+						"required": true,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"default": {
+						"description": "successful operation"
+					}
+				}
+			}
+		},
+		"/followed-actions": {
+			"get": {
+				"tags": [
+					"followed-action"
+				],
+				"summary": "Get all followed actions",
+				"description": "",
+				"operationId": "getAllFollowedActionS",
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "caid",
+						"in": "query",
+						"description": "Unique Imperva account id",
+						"required": true,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "successful operation",
+						"schema": {
+							"type": "array",
+							"items": {
+								"$ref": "#/definitions/FollowedActionApiDto"
+							}
+						}
+					}
+				}
+			},
+			"post": {
+				"tags": [
+					"followed-action"
+				],
+				"summary": "Create new followedAction",
+				"description": "",
+				"operationId": "createFollowedAction",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"in": "body",
+						"name": "body",
+						"required": false,
+						"schema": {
+							"$ref": "#/definitions/FollowedActionApiDto"
+						}
+					},
+					{
+						"name": "caid",
+						"in": "query",
+						"description": "Unique Imperva account id",
+						"required": true,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"default": {
+						"description": "successful operation"
+					}
+				}
+			}
+		},
+		"/global-user-settings": {
+			"get": {
+				"tags": [
+					"global-user-settings"
+				],
+				"summary": "Get global user settings",
+				"description": "",
+				"operationId": "getGlobalUserSettings",
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "caid",
+						"in": "query",
+						"required": false,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "successful operation",
+						"schema": {
+							"$ref": "#/definitions/GlobalUserSettingsApiDto"
+						}
+					}
+				}
+			},
+			"post": {
+				"tags": [
+					"global-user-settings"
+				],
+				"summary": "Create global user settings",
+				"description": "",
+				"operationId": "createGlobalUserSettings",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"in": "body",
+						"name": "body",
+						"required": false,
+						"schema": {
+							"$ref": "#/definitions/GlobalUserSettingsApiDto"
+						}
+					},
+					{
+						"name": "caid",
+						"in": "query",
+						"required": false,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "successful operation",
+						"schema": {
+							"type": "string"
+						}
+					}
+				}
+			}
+		},
+		"/global-user-settings/{id}": {
+			"put": {
+				"tags": [
+					"global-user-settings"
+				],
+				"summary": "Update global user settings",
+				"description": "",
+				"operationId": "updateGlobalUserSettings",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"in": "body",
+						"name": "body",
+						"required": false,
+						"schema": {
+							"$ref": "#/definitions/GlobalUserSettingsApiDto"
+						}
+					},
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"name": "caid",
+						"in": "query",
+						"required": false,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"default": {
+						"description": "successful operation"
+					}
+				}
+			}
+		},
+		"/security/policies/{policyId}": {
+			"get": {
+				"tags": [
+					"policies"
+				],
+				"summary": "Get policy by id",
+				"description": "",
+				"operationId": "getPolicy",
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "policyId",
+						"in": "path",
+						"description": "Unique Policy id",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"name": "caid",
+						"in": "query",
+						"description": "Unique Imperva account id",
+						"required": true,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "successful operation",
+						"schema": {
+							"$ref": "#/definitions/PolicyApiDto"
+						}
+					}
+				}
+			},
+			"post": {
+				"tags": [
+					"policies"
+				],
+				"summary": "Set policy enabled",
+				"description": "",
+				"operationId": "setPolicyEnabled",
+				"parameters": [
+					{
+						"name": "policyId",
+						"in": "path",
+						"description": "Unique Policy id",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"name": "enabled",
+						"in": "query",
+						"description": "Unique Imperva account id",
+						"required": true,
+						"type": "boolean"
+					},
+					{
+						"name": "caid",
+						"in": "query",
+						"description": "Unique Imperva account id",
+						"required": true,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"default": {
+						"description": "successful operation"
+					}
+				}
+			},
+			"put": {
+				"tags": [
+					"policies"
+				],
+				"summary": "Update policy",
+				"description": "",
+				"operationId": "updatePolicy",
+				"consumes": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"in": "body",
+						"name": "body",
+						"required": false,
+						"schema": {
+							"$ref": "#/definitions/PolicyApiDto"
+						}
+					},
+					{
+						"name": "policyId",
+						"in": "path",
+						"description": "Unique Policy id",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"name": "caid",
+						"in": "query",
+						"description": "Unique Imperva account id",
+						"required": true,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"default": {
+						"description": "successful operation"
+					}
+				}
+			},
+			"delete": {
+				"tags": [
+					"policies"
+				],
+				"summary": "Delete policy",
+				"description": "",
+				"operationId": "deletePolicy",
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "policyId",
+						"in": "path",
+						"description": "Unique Policy id",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"name": "caid",
+						"in": "query",
+						"description": "Unique Imperva account id",
+						"required": true,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"default": {
+						"description": "successful operation"
+					}
+				}
+			}
+		},
+		"/security/policies/templates": {
+			"get": {
+				"tags": [
+					"policies"
+				],
+				"summary": "Get all policy templates",
+				"description": "",
+				"operationId": "getAllPolicyTemplates",
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "caid",
+						"in": "query",
+						"description": "Unique Imperva account id",
+						"required": true,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "successful operation",
+						"schema": {
+							"type": "array",
+							"items": {
+								"$ref": "#/definitions/PolicyTemplateApiDto"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/security/policies": {
+			"get": {
+				"tags": [
+					"policies"
+				],
+				"summary": "Get all policies",
+				"description": "",
+				"operationId": "getAllPolicies",
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "caid",
+						"in": "query",
+						"description": "Unique Imperva account id",
+						"required": true,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "successful operation",
+						"schema": {
+							"type": "array",
+							"items": {
+								"$ref": "#/definitions/PolicyApiDto"
+							}
+						}
+					}
+				}
+			},
+			"post": {
+				"tags": [
+					"policies"
+				],
+				"summary": "Create new policy",
+				"description": "",
+				"operationId": "createPolicy",
+				"consumes": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"in": "body",
+						"name": "body",
+						"required": false,
+						"schema": {
+							"$ref": "#/definitions/PolicyApiDto"
+						}
+					},
+					{
+						"name": "caid",
+						"in": "query",
+						"description": "Unique Imperva account id",
+						"required": true,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"default": {
+						"description": "successful operation"
+					}
+				}
+			}
+		},
+		"/reference-list": {
+			"get": {
+				"tags": [
+					"reference-list"
+				],
+				"summary": "Get all Reference Lists",
+				"description": "",
+				"operationId": "getAllReferenceLists",
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "caid",
+						"in": "query",
+						"required": false,
+						"type": "integer",
+						"format": "int64"
+					},
+					{
+						"name": "category",
+						"in": "query",
+						"required": false,
+						"type": "string"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "successful operation",
+						"schema": {
+							"type": "array",
+							"items": {
+								"$ref": "#/definitions/ReferenceListDto"
+							}
+						}
+					}
+				}
+			},
+			"post": {
+				"tags": [
+					"reference-list"
+				],
+				"summary": "Create Reference List",
+				"description": "",
+				"operationId": "createReferenceList",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"in": "body",
+						"name": "body",
+						"required": false,
+						"schema": {
+							"$ref": "#/definitions/ReferenceListApiDto"
+						}
+					},
+					{
+						"name": "caid",
+						"in": "query",
+						"required": false,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"default": {
+						"description": "successful operation"
+					}
+				}
+			}
+		},
+		"/reference-list/{listId}": {
+			"get": {
+				"tags": [
+					"reference-list"
+				],
+				"summary": "Get reference list",
+				"description": "",
+				"operationId": "getReferenceList",
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "listId",
+						"in": "path",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"name": "caid",
+						"in": "query",
+						"required": false,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "successful operation",
+						"schema": {
+							"$ref": "#/definitions/ReferenceListDto"
+						}
+					}
+				}
+			},
+			"put": {
+				"tags": [
+					"reference-list"
+				],
+				"summary": "Update reference list",
+				"description": "",
+				"operationId": "updateReferenceList",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"in": "body",
+						"name": "body",
+						"required": false,
+						"schema": {
+							"$ref": "#/definitions/ReferenceListDto"
+						}
+					},
+					{
+						"name": "listId",
+						"in": "path",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"name": "caid",
+						"in": "query",
+						"required": false,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "successful operation",
+						"schema": {
+							"$ref": "#/definitions/ReferenceListDto"
+						}
+					}
+				}
+			}
+		},
+		"/reports": {
+			"get": {
+				"tags": [
+					"report"
+				],
+				"summary": "Get all reports",
+				"description": "",
+				"operationId": "getAllReports",
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "caid",
+						"in": "query",
+						"description": "Unique Imperva account id",
+						"required": true,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "successful operation",
+						"schema": {
+							"type": "array",
+							"items": {
+								"$ref": "#/definitions/ReportLiteApiDto"
+							}
+						}
+					}
+				}
+			},
+			"post": {
+				"tags": [
+					"report"
+				],
+				"summary": "Create report",
+				"description": "",
+				"operationId": "createReport",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"in": "body",
+						"name": "body",
+						"required": false,
+						"schema": {
+							"$ref": "#/definitions/ReportApiDto"
+						}
+					},
+					{
+						"name": "caid",
+						"in": "query",
+						"description": "Unique Imperva account id",
+						"required": true,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "successful operation",
+						"schema": {
+							"$ref": "#/definitions/ReportApiDto"
+						}
+					}
+				}
+			}
+		},
+		"/reports/run/{reportId}": {
+			"post": {
+				"tags": [
+					"report"
+				],
+				"summary": "Run report by id",
+				"description": "",
+				"operationId": "runReport",
+				"consumes": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"in": "body",
+						"name": "body",
+						"required": false,
+						"schema": {
+							"$ref": "#/definitions/PeriodApiDto"
+						}
+					},
+					{
+						"name": "reportId",
+						"in": "path",
+						"description": "Unique Report id",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"name": "caid",
+						"in": "query",
+						"description": "Unique Imperva account id",
+						"required": true,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"default": {
+						"description": "successful operation"
+					}
+				}
+			}
+		},
+		"/reports/{reportId}": {
+			"get": {
+				"tags": [
+					"report"
+				],
+				"summary": "Get report by id",
+				"description": "",
+				"operationId": "getReport",
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "reportId",
+						"in": "path",
+						"description": "Unique Report id",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"name": "caid",
+						"in": "query",
+						"description": "Unique Imperva account id",
+						"required": true,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "successful operation",
+						"schema": {
+							"$ref": "#/definitions/ReportApiDto"
+						}
+					}
+				}
+			},
+			"delete": {
+				"tags": [
+					"report"
+				],
+				"operationId": "deleteReport",
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "reportId",
+						"in": "path",
+						"description": "Unique Report id",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"name": "caid",
+						"in": "query",
+						"description": "Unique Imperva account id",
+						"required": true,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"default": {
+						"description": "successful operation"
+					}
+				}
+			}
+		},
+		"/reports/metadata": {
+			"get": {
+				"tags": [
+					"report"
+				],
+				"summary": "Get report metadata list",
+				"description": "",
+				"operationId": "getReportMetadataList",
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "caid",
+						"in": "query",
+						"description": "Unique Imperva account id",
+						"required": true,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "successful operation",
+						"schema": {
+							"type": "array",
+							"items": {
+								"$ref": "#/definitions/ReportMetadataApiDto"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/reports/{id}": {
+			"put": {
+				"tags": [
+					"report"
+				],
+				"summary": "Update report",
+				"description": "",
+				"operationId": "updateReport",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"in": "body",
+						"name": "body",
+						"required": false,
+						"schema": {
+							"$ref": "#/definitions/ReportApiDto"
+						}
+					},
+					{
+						"name": "caid",
+						"in": "query",
+						"description": "Unique Imperva account id",
+						"required": true,
+						"type": "integer",
+						"format": "int64"
+					},
+					{
+						"name": "id",
+						"in": "path",
+						"description": "Report id",
+						"required": true,
+						"type": "string"
+					}
+				],
+				"responses": {
+					"default": {
+						"description": "successful operation"
+					}
+				}
+			}
+		},
+		"/reports/{reportId}/schedule": {
+			"get": {
+				"tags": [
+					"report-schedule"
+				],
+				"summary": "Get report schedule by report id",
+				"description": "",
+				"operationId": "getReportSchedule",
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "reportId",
+						"in": "path",
+						"description": "Unique Report id",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"name": "caid",
+						"in": "query",
+						"description": "Unique Imperva account id",
+						"required": true,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "successful operation",
+						"schema": {
+							"$ref": "#/definitions/ReportScheduleApiDto"
+						}
+					}
+				}
+			},
+			"post": {
+				"tags": [
+					"report-schedule"
+				],
+				"summary": "Create report schedule for report id",
+				"description": "",
+				"operationId": "createReportSchedule",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"in": "body",
+						"name": "body",
+						"required": false,
+						"schema": {
+							"$ref": "#/definitions/ReportScheduleApiDto"
+						}
+					},
+					{
+						"name": "reportId",
+						"in": "path",
+						"description": "Unique Report id",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"name": "caid",
+						"in": "query",
+						"description": "Unique Imperva account id",
+						"required": true,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "successful operation",
+						"schema": {
+							"$ref": "#/definitions/ReportScheduleApiDto"
+						}
+					}
+				}
+			},
+			"put": {
+				"tags": [
+					"report-schedule"
+				],
+				"summary": "Update report schedule",
+				"description": "",
+				"operationId": "updateReportSchedule",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"in": "body",
+						"name": "body",
+						"required": false,
+						"schema": {
+							"$ref": "#/definitions/ReportScheduleApiDto"
+						}
+					},
+					{
+						"name": "reportId",
+						"in": "path",
+						"description": "Report id",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"name": "caid",
+						"in": "query",
+						"description": "Unique Imperva account id",
+						"required": true,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"default": {
+						"description": "successful operation"
+					}
+				}
+			},
+			"delete": {
+				"tags": [
+					"report-schedule"
+				],
+				"operationId": "deleteReportSchedule",
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "reportId",
+						"in": "path",
+						"description": "Unique Report id",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"name": "caid",
+						"in": "query",
+						"description": "Unique Imperva account id",
+						"required": true,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"default": {
+						"description": "successful operation"
+					}
+				}
+			}
+		},
+		"/security-events": {
+			"get": {
+				"tags": [
+					"security-event"
+				],
+				"summary": "Get all Security Incidents",
+				"description": "",
+				"operationId": "getAllSecurityIncidents",
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "caid",
+						"in": "query",
+						"required": false,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "successful operation",
+						"schema": {
+							"type": "array",
+							"items": {
+								"$ref": "#/definitions/SecurityIncidentLite"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/security-events/{incidentId}/comment": {
+			"post": {
+				"tags": [
+					"security-event"
+				],
+				"summary": "Add comment to Security Incident",
+				"description": "",
+				"operationId": "addCommentToSecurityIncident",
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"in": "body",
+						"name": "body",
+						"required": false,
+						"schema": {
+							"$ref": "#/definitions/IncidentComment"
+						}
+					},
+					{
+						"name": "incidentId",
+						"in": "path",
+						"required": true,
+						"type": "integer",
+						"format": "int64"
+					},
+					{
+						"name": "caid",
+						"in": "query",
+						"required": false,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"default": {
+						"description": "successful operation"
+					}
+				}
+			}
+		},
+		"/security-events/{incidentId}": {
+			"get": {
+				"tags": [
+					"security-event"
+				],
+				"summary": "Get security incident",
+				"description": "",
+				"operationId": "getSecurityIncident",
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "incidentId",
+						"in": "path",
+						"required": true,
+						"type": "integer",
+						"format": "int64"
+					},
+					{
+						"name": "caid",
+						"in": "query",
+						"required": false,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "successful operation",
+						"schema": {
+							"$ref": "#/definitions/SecurityIncident"
+						}
+					}
+				}
+			},
+			"put": {
+				"tags": [
+					"security-event"
+				],
+				"summary": "Set Security Incident acknowledge",
+				"description": "",
+				"operationId": "setSecurityIncidentAcknowledge",
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "incidentId",
+						"in": "path",
+						"required": true,
+						"type": "integer",
+						"format": "int64"
+					},
+					{
+						"name": "ack",
+						"in": "query",
+						"required": false,
+						"type": "boolean"
+					},
+					{
+						"name": "caid",
+						"in": "query",
+						"required": false,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"default": {
+						"description": "successful operation"
+					}
+				}
+			}
+		},
+		"/system-states/initialization-status": {
+			"get": {
+				"tags": [
+					"system-state"
+				],
+				"summary": "Get initialization status",
+				"description": "",
+				"operationId": "getInitializationStatus",
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "caid",
+						"in": "query",
+						"required": false,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "successful operation",
+						"schema": {
+							"type": "string",
+							"enum": [
+								"EMPTY",
+								"FULL"
+							]
+						}
+					}
+				}
+			}
+		},
+		"/system-states/initialization-regions": {
+			"get": {
+				"tags": [
+					"system-state"
+				],
+				"summary": "Get initialization region",
+				"description": "",
+				"operationId": "getInitializationRegions",
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "caid",
+						"in": "query",
+						"required": false,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "successful operation",
+						"schema": {
+							"type": "array",
+							"items": {
+								"$ref": "#/definitions/GlobalRegionApiDto"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/tags": {
+			"get": {
+				"tags": [
+					"tag"
+				],
+				"summary": "Get all tags for caid",
+				"description": "",
+				"operationId": "getAllTagSuggestions",
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "caid",
+						"in": "query",
+						"description": "Unique Imperva account id",
+						"required": true,
+						"type": "integer",
+						"format": "int64"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "successful operation",
+						"schema": {
+							"type": "array",
+							"items": {
+								"$ref": "#/definitions/TagApiDto"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/tags/{entityId}": {
+			"post": {
+				"tags": [
+					"tag"
+				],
+				"summary": "Apply tags to entity",
+				"description": "",
+				"operationId": "updateTags",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"in": "body",
+						"name": "body",
+						"description": "wrapper for the tag entity request",
+						"required": false,
+						"schema": {
+							"$ref": "#/definitions/TagEntityRequestApiDto"
+						}
+					},
+					{
+						"name": "caid",
+						"in": "query",
+						"description": "Unique Imperva account id",
+						"required": true,
+						"type": "integer",
+						"format": "int64"
+					},
+					{
+						"name": "entityId",
+						"in": "path",
+						"description": "Unique entity id",
+						"required": true,
+						"type": "string"
+					}
+				],
+				"responses": {
+					"default": {
+						"description": "successful operation"
+					}
+				}
+			}
+		}
+	},
+	"definitions": {
+		"AlarmApiDto": {
+			"type": "object",
+			"properties": {
+				"uuid": {
+					"type": "string",
+					"example": "ad2c8f40-3e82-11e9-354e-b114829e37eb",
+					"description": "Unique alarm identifier",
+					"readOnly": true
+				},
+				"shortDescription": {
+					"type": "string",
+					"example": "No Audit",
+					"description": "Short description of alarm",
+					"readOnly": true
+				},
+				"fullDescription": {
+					"type": "string",
+					"example": "Native audit log was turned off",
+					"description": "Full description of alarm",
+					"readOnly": true
+				},
+				"recommendations": {
+					"type": "string",
+					"example": "Turn on native audit log",
+					"description": "Recommendations",
+					"readOnly": true
+				},
+				"elementType": {
+					"type": "string",
+					"description": "Type of alarmed element",
+					"readOnly": true,
+					"enum": [
+						"AWS_CLOUD_ACCOUNT",
+						"AWS_DB_ASSET"
+					]
+				},
+				"elementUuid": {
+					"type": "string",
+					"example": "ad2c8f40-3e82-11e9-354e-b114829e37eb",
+					"description": "Unique identifier of alarmed element",
+					"readOnly": true
+				},
+				"elementName": {
+					"type": "string",
+					"example": "DB Asset 123",
+					"description": "Name of alarmed element",
+					"readOnly": true
+				},
+				"openTimestamp": {
+					"type": "integer",
+					"format": "int64",
+					"example": 1548073343000,
+					"description": "Creation timestamp",
+					"readOnly": true
+				},
+				"isAcknowledged": {
+					"type": "boolean",
+					"example": true,
+					"description": "Is alarm acknowledged"
+				},
+				"ackTimestamp": {
+					"type": "integer",
+					"format": "int64",
+					"example": 1548073343000,
+					"description": "Acknowledge timestamp"
+				},
+				"ackUser": {
+					"type": "string",
+					"example": "User1",
+					"description": "Acknowledging user"
+				},
+				"notes": {
+					"type": "array",
+					"example": "['The alarm can be safely ignored for this asset']",
+					"description": "List of associated notes [AlarmNoteApiDto](#AlarmNoteApiDto)",
+					"items": {
+						"$ref": "#/definitions/AlarmNoteApiDto"
+					}
+				}
+			}
+		},
+		"AlarmNoteApiDto": {
+			"type": "object",
+			"properties": {
+				"uuid": {
+					"type": "string",
+					"example": "ad2c8f40-3e82-11e9-354e-b114829e37eb",
+					"description": "Unique identifier of the note",
+					"readOnly": true
+				},
+				"timestamp": {
+					"type": "integer",
+					"format": "int64",
+					"example": 1548073343000,
+					"description": "Note creation timestamp",
+					"readOnly": true
+				},
+				"user": {
+					"type": "string",
+					"example": "User1",
+					"description": "Note author",
+					"readOnly": true
+				},
+				"note": {
+					"type": "string",
+					"example": "The alarm can be safely ignored for this asset",
+					"description": "Note",
+					"readOnly": true
+				}
+			}
+		},
+		"AlertApiDto": {
+			"type": "object",
+			"properties": {
+				"uuid": {
+					"type": "string"
+				},
+				"policyType": {
+					"type": "string"
+				},
+				"policyUuid": {
+					"type": "string"
+				},
+				"assetName": {
+					"type": "string"
+				},
+				"osUser": {
+					"type": "string"
+				},
+				"dbUser": {
+					"type": "string"
+				},
+				"srcHost": {
+					"type": "string"
+				},
+				"srcIp": {
+					"type": "string"
+				},
+				"severity": {
+					"type": "string",
+					"enum": [
+						"CRITICAL",
+						"MAJOR",
+						"MINOR"
+					]
+				},
+				"tables": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				},
+				"schemas": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				},
+				"query": {
+					"type": "string"
+				},
+				"operations": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				},
+				"errorCode": {
+					"type": "integer",
+					"format": "int32"
+				},
+				"errorMessage": {
+					"type": "string"
+				},
+				"created": {
+					"type": "string",
+					"format": "date-time"
+				},
+				"policyName": {
+					"type": "string"
+				},
+				"policyTypeFriendlyName": {
+					"type": "string"
+				},
+				"assetUuid": {
+					"type": "string"
+				}
+			}
+		},
+		"AlertPagingApiDto": {
+			"type": "object",
+			"properties": {
+				"alerts": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/AlertApiDto"
+					}
+				},
+				"totalSize": {
+					"type": "integer",
+					"format": "int32"
+				},
+				"currentPageSize": {
+					"type": "integer",
+					"format": "int32"
+				}
+			}
+		},
+		"AssetColumnApiDto": {
+			"type": "object",
+			"properties": {
+				"id": {
+					"type": "integer",
+					"format": "int64"
+				},
+				"assetId": {
+					"type": "string"
+				},
+				"schemaName": {
+					"type": "string"
+				},
+				"entityName": {
+					"type": "string"
+				},
+				"columnName": {
+					"type": "string"
+				},
+				"classificationCategory": {
+					"type": "string"
+				},
+				"sensitivityLevel": {
+					"type": "string",
+					"enum": [
+						"SENSITIVE",
+						"POSSIBLY_SENSITIVE",
+						"NOT_SENSITIVE",
+						"UNCLASSIFIED"
+					]
+				}
+			}
+		},
+		"AssetColumnResultApiDto": {
+			"type": "object",
+			"properties": {
+				"data": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/AssetColumnApiDto"
+					}
+				},
+				"numAllRecords": {
+					"type": "integer",
+					"format": "int64"
+				},
+				"numDisplayedRecords": {
+					"type": "integer",
+					"format": "int64"
+				}
+			}
+		},
+		"AssetClassificationDetailsApiDto": {
+			"type": "object",
+			"properties": {
+				"assetId": {
+					"type": "string"
+				},
+				"totalNumOfItems": {
+					"type": "integer",
+					"format": "int64"
+				},
+				"totalNumOfNonSensitive": {
+					"type": "integer",
+					"format": "int64"
+				},
+				"totalNumOfSensitive": {
+					"type": "integer",
+					"format": "int64"
+				},
+				"totalNumOfPotentialSensitive": {
+					"type": "integer",
+					"format": "int64"
+				},
+				"totalNumOfUnclassified": {
+					"type": "integer",
+					"format": "int64"
+				},
+				"sensitivityType": {
+					"type": "string",
+					"enum": [
+						"SENSITIVE",
+						"POSSIBLY_SENSITIVE",
+						"NOT_SENSITIVE",
+						"UNCLASSIFIED"
+					]
+				}
+			}
+		},
+		"AssetApiDto": {
+			"type": "object",
+			"properties": {
+				"id": {
+					"type": "string"
+				},
+				"cloudAccountId": {
+					"type": "string"
+				},
+				"instanceName": {
+					"type": "string"
+				},
+				"dbms": {
+					"type": "string"
+				},
+				"instanceStatus": {
+					"type": "string"
+				},
+				"region": {
+					"type": "string"
+				},
+				"classificationDetails": {
+					"$ref": "#/definitions/AssetClassificationDetailsApiDto"
+				},
+				"deleted": {
+					"type": "boolean"
+				},
+				"encryptionEnabled": {
+					"type": "boolean"
+				},
+				"instanceType": {
+					"type": "string"
+				},
+				"engineVersion": {
+					"type": "string"
+				},
+				"availabilityZone": {
+					"type": "string"
+				},
+				"nativeAuditStatus": {
+					"type": "string",
+					"enum": [
+						"ENABLED",
+						"DISABLED",
+						"PARTIAL",
+						"UNKNOWN"
+					]
+				},
+				"vpc": {
+					"type": "string"
+				},
+				"version": {
+					"type": "integer",
+					"format": "int64"
+				},
+				"monitored": {
+					"type": "boolean"
+				}
+			}
+		},
+		"EntitledPackageInfoApiDto": {
+			"type": "object",
+			"properties": {
+				"licenseType": {
+					"type": "string",
+					"enum": [
+						"EVALUATION",
+						"PURCHASED"
+					]
+				},
+				"quantity": {
+					"type": "integer",
+					"format": "int64"
+				},
+				"impervaParentAccountId": {
+					"type": "string"
+				}
+			}
+		},
+		"BillableAssetsResult": {
+			"type": "object",
+			"properties": {
+				"caid": {
+					"type": "integer",
+					"format": "int64"
+				},
+				"startTime": {
+					"type": "integer",
+					"format": "int64"
+				},
+				"endTime": {
+					"type": "integer",
+					"format": "int64"
+				},
+				"numOfTotalAssets": {
+					"type": "integer",
+					"format": "int64"
+				},
+				"numOfLargeAssets": {
+					"type": "integer",
+					"format": "int64"
+				}
+			}
+		},
+		"CloudAccountApiDto": {
+			"type": "object",
+			"properties": {
+				"id": {
+					"type": "string"
+				},
+				"name": {
+					"type": "string"
+				},
+				"cloudType": {
+					"type": "string",
+					"enum": [
+						"AWS"
+					]
+				},
+				"accessKey": {
+					"type": "string"
+				},
+				"secretKey": {
+					"type": "string"
+				},
+				"authMethod": {
+					"type": "string",
+					"enum": [
+						"KEYS",
+						"ROLE"
+					]
+				},
+				"roleArn": {
+					"type": "string"
+				},
+				"roleExternalId": {
+					"type": "string"
+				},
+				"s3BucketName": {
+					"type": "string"
+				},
+				"s3RegionName": {
+					"type": "string"
+				},
+				"researchLevelEnabled": {
+					"type": "boolean"
+				},
+				"awsAccountId": {
+					"type": "string"
+				},
+				"version": {
+					"type": "integer",
+					"format": "int64"
+				}
+			}
+		},
+		"CloudFormationApiDto": {
+			"type": "object",
+			"properties": {
+				"awsAccountId": {
+					"type": "string"
+				},
+				"sessionId": {
+					"type": "string"
+				},
+				"awsUrl": {
+					"type": "string"
+				}
+			}
+		},
+		"CloudFormationStatusApiDto": {
+			"type": "object",
+			"properties": {
+				"status": {
+					"type": "string"
+				},
+				"message": {
+					"type": "string"
+				},
+				"cloudAccountApiDto": {
+					"$ref": "#/definitions/CloudAccountApiDto"
+				}
+			}
+		},
+		"ClientOperationResult": {
+			"type": "object",
+			"properties": {
+				"status": {
+					"type": "string"
+				},
+				"message": {
+					"type": "string"
+				}
+			}
+		},
+		"Bytes": {
+			"type": "object",
+			"properties": {
+				"empty": {
+					"type": "boolean"
+				}
+			}
+		},
+		"TestCredentialsInfo": {
+			"type": "object",
+			"properties": {
+				"editedCloudAccountId": {
+					"type": "string"
+				},
+				"name": {
+					"type": "string"
+				},
+				"roleArn": {
+					"type": "string"
+				},
+				"roleExternalId": {
+					"type": "string"
+				},
+				"encryptedRoleArn": {
+					"$ref": "#/definitions/Bytes"
+				},
+				"encryptedRoleExternalId": {
+					"$ref": "#/definitions/Bytes"
+				}
+			}
+		},
+		"TestAuditStorageInfo": {
+			"type": "object",
+			"properties": {
+				"editedCloudAccountId": {
+					"type": "string"
+				},
+				"roleArn": {
+					"type": "string"
+				},
+				"roleExternalId": {
+					"type": "string"
+				},
+				"bucketName": {
+					"type": "string"
+				},
+				"bucketRegion": {
+					"type": "string"
+				},
+				"encryptedRoleArn": {
+					"$ref": "#/definitions/Bytes"
+				},
+				"encryptedRoleExternalId": {
+					"$ref": "#/definitions/Bytes"
+				}
+			}
+		},
+		"AssetsDashboardCounters": {
+			"type": "object",
+			"properties": {
+				"totalAssetsCount": {
+					"type": "integer",
+					"format": "int32"
+				},
+				"monitoredAssetsCount": {
+					"type": "integer",
+					"format": "int32"
+				}
+			}
+		},
+		"ClassificationDashboardCounters": {
+			"type": "object",
+			"properties": {
+				"sensitiveAssetsCount": {
+					"type": "integer",
+					"format": "int32"
+				},
+				"potentialSensitiveAssetsCount": {
+					"type": "integer",
+					"format": "int32"
+				},
+				"nonSensitiveAssetsCount": {
+					"type": "integer",
+					"format": "int32"
+				},
+				"unClassifiedAssetsCount": {
+					"type": "integer",
+					"format": "int32"
+				},
+				"sensitiveNotMonitoredAssetsCount": {
+					"type": "integer",
+					"format": "int32"
+				}
+			}
+		},
+		"DashboardCounters": {
+			"type": "object",
+			"properties": {
+				"assetsCounters": {
+					"$ref": "#/definitions/AssetsDashboardCounters"
+				},
+				"securityIncidentsCounters": {
+					"$ref": "#/definitions/SecurityIncidentsDashboardCounters"
+				},
+				"classificationCounters": {
+					"$ref": "#/definitions/ClassificationDashboardCounters"
+				},
+				"alarmsCount": {
+					"type": "integer",
+					"format": "int32"
+				}
+			}
+		},
+		"SecurityIncidentsDashboardCounters": {
+			"type": "object",
+			"properties": {
+				"criticalSeverity": {
+					"type": "integer",
+					"format": "int64"
+				},
+				"majorSeverity": {
+					"type": "integer",
+					"format": "int64"
+				},
+				"minorSeverity": {
+					"type": "integer",
+					"format": "int64"
+				}
+			}
+		},
+		"WatermillStatistics": {
+			"type": "object",
+			"properties": {
+				"sampleTimestamp": {
+					"type": "integer",
+					"format": "int64"
+				},
+				"eventCount": {
+					"type": "integer",
+					"format": "int64"
+				}
+			}
+		},
+		"FollowedActionApiDto": {
+			"type": "object",
+			"properties": {
+				"uuid": {
+					"type": "string"
+				},
+				"actionType": {
+					"type": "string"
+				},
+				"name": {
+					"type": "string"
+				},
+				"destination": {
+					"type": "string"
+				},
+				"description": {
+					"type": "string"
+				},
+				"version": {
+					"type": "integer",
+					"format": "int64"
+				}
+			}
+		},
+		"GlobalUserSettingsApiDto": {
+			"type": "object",
+			"properties": {
+				"id": {
+					"type": "string"
+				},
+				"impervaAccountId": {
+					"type": "integer",
+					"format": "int64"
+				},
+				"servicesEnabled": {
+					"type": "boolean"
+				},
+				"version": {
+					"type": "integer",
+					"format": "int64"
+				}
+			}
+		},
+		"ActionInfoApiDto": {
+			"type": "object",
+			"properties": {
+				"followedActionUuid": {
+					"type": "string"
+				},
+				"type": {
+					"type": "string"
+				}
+			}
+		},
+		"ConditionApiDto": {
+			"type": "object",
+			"properties": {
+				"fieldName": {
+					"type": "string"
+				},
+				"values": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				},
+				"operation": {
+					"type": "string"
+				},
+				"uuid": {
+					"type": "string"
+				},
+				"label": {
+					"type": "string"
+				},
+				"placeholder": {
+					"type": "string"
+				}
+			}
+		},
+		"PolicyApiDto": {
+			"type": "object",
+			"properties": {
+				"uuid": {
+					"type": "string"
+				},
+				"name": {
+					"type": "string"
+				},
+				"type": {
+					"type": "string"
+				},
+				"policyTypeDescription": {
+					"type": "string"
+				},
+				"userDescription": {
+					"type": "string"
+				},
+				"isEnabled": {
+					"type": "boolean"
+				},
+				"friendlyName": {
+					"type": "string"
+				},
+				"conditions": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/ConditionApiDto"
+					}
+				},
+				"lastHitTime": {
+					"type": "string",
+					"format": "date-time"
+				},
+				"created": {
+					"type": "string",
+					"format": "date-time"
+				},
+				"version": {
+					"type": "integer",
+					"format": "int64"
+				},
+				"severity": {
+					"type": "string"
+				},
+				"updated": {
+					"type": "string",
+					"format": "date-time"
+				},
+				"followedActions": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/ActionInfoApiDto"
+					}
+				},
+				"appliedAssets": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				},
+				"isExcludeAppliedAssets": {
+					"type": "boolean"
+				}
+			}
+		},
+		"PolicyActionTemplateApiDto": {
+			"type": "object",
+			"properties": {
+				"actionType": {
+					"type": "string"
+				},
+				"actionTypeFriendlyName": {
+					"type": "string"
+				}
+			}
+		},
+		"PolicyConditionTemplateApiDto": {
+			"type": "object",
+			"properties": {
+				"fieldName": {
+					"type": "string"
+				},
+				"fieldType": {
+					"type": "string"
+				},
+				"label": {
+					"type": "string"
+				},
+				"placeholder": {
+					"type": "string"
+				},
+				"supportedOperations": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/PolicySupportedOperationTemplateApiDto"
+					}
+				},
+				"dataTypes": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				},
+				"inputMethod": {
+					"type": "string"
+				}
+			}
+		},
+		"PolicySupportedOperationTemplateApiDto": {
+			"type": "object",
+			"properties": {
+				"name": {
+					"type": "string"
+				},
+				"friendlyName": {
+					"type": "string"
+				}
+			}
+		},
+		"PolicyTemplateApiDto": {
+			"type": "object",
+			"properties": {
+				"type": {
+					"type": "string"
+				},
+				"friendlyName": {
+					"type": "string"
+				},
+				"description": {
+					"type": "string"
+				},
+				"severities": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				},
+				"conditions": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/PolicyConditionTemplateApiDto"
+					}
+				},
+				"actions": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/PolicyActionTemplateApiDto"
+					}
+				}
+			}
+		},
+		"ReferenceListDto": {
+			"type": "object",
+			"properties": {
+				"uuid": {
+					"type": "string"
+				},
+				"impervaAccountId": {
+					"type": "integer",
+					"format": "int64"
+				},
+				"name": {
+					"type": "string"
+				},
+				"description": {
+					"type": "string"
+				},
+				"category": {
+					"type": "string"
+				},
+				"isGlobal": {
+					"type": "boolean"
+				},
+				"isDeleted": {
+					"type": "boolean"
+				},
+				"version": {
+					"type": "integer",
+					"format": "int64"
+				},
+				"referenceListValues": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				}
+			}
+		},
+		"ReferenceListApiDto": {
+			"type": "object",
+			"properties": {
+				"uuid": {
+					"type": "string"
+				},
+				"impervaAccountId": {
+					"type": "integer",
+					"format": "int64"
+				},
+				"name": {
+					"type": "string"
+				},
+				"description": {
+					"type": "string"
+				},
+				"category": {
+					"type": "string"
+				},
+				"referenceListValues": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				},
+				"global": {
+					"type": "boolean"
+				},
+				"deleted": {
+					"type": "boolean"
+				}
+			}
+		},
+		"ReportLiteApiDto": {
+			"type": "object",
+			"properties": {
+				"id": {
+					"type": "string"
+				},
+				"name": {
+					"type": "string"
+				},
+				"description": {
+					"type": "string"
+				},
+				"lastStatus": {
+					"type": "string",
+					"enum": [
+						"NA",
+						"FAILED",
+						"SUCCEEDED",
+						"RUNNING",
+						"PARTIAL_SUCCEEDED",
+						"CANCELED"
+					]
+				},
+				"lastRun": {
+					"type": "string",
+					"format": "date-time"
+				},
+				"tags": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/TagApiDto"
+					}
+				},
+				"reportSchedule": {
+					"$ref": "#/definitions/ReportScheduleApiDto"
+				},
+				"type": {
+					"type": "string"
+				}
+			}
+		},
+		"ReportScheduleApiDto": {
+			"type": "object",
+			"properties": {
+				"id": {
+					"type": "integer",
+					"format": "int64"
+				},
+				"reportId": {
+					"type": "string"
+				},
+				"recurrence": {
+					"type": "string",
+					"enum": [
+						"DAILY",
+						"WEEKLY"
+					]
+				},
+				"dayOfWeek": {
+					"type": "string",
+					"enum": [
+						"NONE",
+						"SUNDAY",
+						"MONDAY",
+						"TUESDAY",
+						"WEDNESDAY",
+						"THURSDAY",
+						"FRIDAY",
+						"SATURDAY"
+					]
+				},
+				"timeOfDay": {
+					"type": "integer",
+					"format": "int32"
+				}
+			}
+		},
+		"TagApiDto": {
+			"type": "object",
+			"properties": {
+				"id": {
+					"type": "string"
+				},
+				"text": {
+					"type": "string"
+				}
+			}
+		},
+		"PeriodApiDto": {
+			"type": "object",
+			"properties": {
+				"quantity": {
+					"type": "integer",
+					"format": "int32"
+				},
+				"timeUnit": {
+					"type": "string",
+					"enum": [
+						"DAYS"
+					]
+				}
+			}
+		},
+		"ReportApiDto": {
+			"type": "object",
+			"properties": {
+				"id": {
+					"type": "string"
+				},
+				"name": {
+					"type": "string"
+				},
+				"description": {
+					"type": "string"
+				},
+				"query": {
+					"type": "string"
+				},
+				"tags": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/TagApiDto"
+					}
+				},
+				"nextRunTime": {
+					"type": "string",
+					"format": "date-time"
+				},
+				"lastRunTime": {
+					"type": "string",
+					"format": "date-time"
+				},
+				"lastStatus": {
+					"type": "string",
+					"enum": [
+						"NA",
+						"FAILED",
+						"SUCCEEDED",
+						"RUNNING",
+						"PARTIAL_SUCCEEDED",
+						"CANCELED"
+					]
+				},
+				"reportHistories": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/ReportHistoryApiDto"
+					}
+				},
+				"reportMetadataId": {
+					"type": "integer",
+					"format": "int64"
+				},
+				"type": {
+					"type": "string"
+				},
+				"queryParametersMap": {
+					"type": "object",
+					"additionalProperties": {
+						"type": "string"
+					}
+				},
+				"reportSchedule": {
+					"$ref": "#/definitions/ReportScheduleApiDto"
+				}
+			}
+		},
+		"ReportHistoryApiDto": {
+			"type": "object",
+			"properties": {
+				"id": {
+					"type": "integer",
+					"format": "int64"
+				},
+				"executionTimestamp": {
+					"type": "string",
+					"format": "date-time"
+				},
+				"resultUrl": {
+					"type": "string"
+				},
+				"status": {
+					"type": "string",
+					"enum": [
+						"NA",
+						"FAILED",
+						"SUCCEEDED",
+						"RUNNING",
+						"PARTIAL_SUCCEEDED",
+						"CANCELED"
+					]
+				},
+				"additionalInfo": {
+					"type": "string"
+				},
+				"timeRangeStart": {
+					"type": "string",
+					"format": "date-time"
+				},
+				"timeRangeEnd": {
+					"type": "string",
+					"format": "date-time"
+				},
+				"customerExecutionHistoryId": {
+					"type": "integer",
+					"format": "int64"
+				},
+				"accumulateStatus": {
+					"type": "string",
+					"enum": [
+						"NA",
+						"FAILED",
+						"SUCCEEDED",
+						"RUNNING",
+						"PARTIAL_SUCCEEDED",
+						"CANCELED"
+					]
+				},
+				"cloudAccountName": {
+					"type": "string"
+				}
+			}
+		},
+		"ReportMetadataApiDto": {
+			"type": "object",
+			"properties": {
+				"id": {
+					"type": "integer",
+					"format": "int64"
+				},
+				"type": {
+					"type": "string"
+				},
+				"query": {
+					"type": "string"
+				},
+				"description": {
+					"type": "string"
+				}
+			}
+		},
+		"IncidentComment": {
+			"type": "object",
+			"properties": {
+				"userName": {
+					"type": "string"
+				},
+				"commentTime": {
+					"type": "integer",
+					"format": "int64"
+				},
+				"commentType": {
+					"type": "string"
+				},
+				"commentText": {
+					"type": "string"
+				}
+			}
+		},
+		"SecurityIncidentLite": {
+			"type": "object",
+			"properties": {
+				"impervaAccountId": {
+					"type": "integer",
+					"format": "int64"
+				},
+				"incidentId": {
+					"type": "integer",
+					"format": "int64"
+				},
+				"createTime": {
+					"type": "integer",
+					"format": "int64"
+				},
+				"incidentTime": {
+					"type": "integer",
+					"format": "int64"
+				},
+				"sourceIpAddress": {
+					"type": "string"
+				},
+				"sourceHostName": {
+					"type": "string"
+				},
+				"destinationIpAddress": {
+					"type": "string"
+				},
+				"destinationHostName": {
+					"type": "string"
+				},
+				"severity": {
+					"type": "string"
+				},
+				"score": {
+					"type": "integer",
+					"format": "int32"
+				},
+				"sourceApplication": {
+					"type": "string"
+				},
+				"osUser": {
+					"type": "string"
+				},
+				"subType": {
+					"type": "string"
+				},
+				"subTypeKey": {
+					"type": "string"
+				},
+				"description": {
+					"type": "string"
+				},
+				"commentList": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/IncidentComment"
+					}
+				},
+				"dbName": {
+					"type": "string"
+				},
+				"dbUser": {
+					"type": "string"
+				},
+				"dbType": {
+					"type": "string"
+				},
+				"cloudAccountName": {
+					"type": "string"
+				},
+				"acknowledged": {
+					"type": "boolean"
+				}
+			}
+		},
+		"AdditionailInfo": {
+			"type": "object"
+		},
+		"SecurityIncident": {
+			"type": "object",
+			"properties": {
+				"securityIncidentLite": {
+					"$ref": "#/definitions/SecurityIncidentLite"
+				},
+				"additionalInfo": {
+					"$ref": "#/definitions/AdditionailInfo"
+				}
+			}
+		},
+		"GlobalRegionApiDto": {
+			"type": "object",
+			"properties": {
+				"name": {
+					"type": "string"
+				},
+				"awsRegions": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				}
+			}
+		},
+		"TagEntityRequestApiDto": {
+			"type": "object",
+			"properties": {
+				"currentTags": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/TagApiDto"
+					}
+				},
+				"newTags": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/TagApiDto"
+					}
+				},
+				"entityName": {
+					"type": "string"
+				}
+			}
+		}
+	}
+}

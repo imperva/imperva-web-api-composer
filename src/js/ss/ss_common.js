@@ -290,7 +290,7 @@ function SSchangeAction() {
 				}
 			});
 		});
-		$("#SecureSphereAPI #SSmethod option:not([disabled]):first").attr('selected', 'selected');
+		$("#SecureSphereAPI #SSmethod").val($("#SecureSphereAPI #SSmethod option:not([disabled]):first").val());
 		var curMethodObj = SSSwagger.paths[$("#SecureSphereAPI #SSActions").val()][$(ss_method_sel).val()];
 		if (curMethodObj.queryParams!=undefined) {
 			if (curMethodObj.queryParams.index.length>0) $('#SecureSphereAPI #SSrequestUrl').val($('#SecureSphereAPI #SSrequestUrl').val()+"?");
@@ -553,23 +553,20 @@ function setCurrentParamIndex(obj){
 
 function SSrenderURLParams(data){
 	var tmpAry = {"list":[]};
-	try { 
-		if (SSapiParamMapping[SScurUrlParamsAry[SScurUrlParamsIndex].name].getAPIurlMapping.default!=undefined){
-			if (SSapiParamMapping[SScurUrlParamsAry[SScurUrlParamsIndex].name].getAPIurlMapping.default.nestedItemName!=undefined) {
-				var nestedMappingObj = SSapiParamMapping[SScurUrlParamsAry[SScurUrlParamsIndex].name].getAPIurlMapping.default;
-				$.each(data,function(i, ary){
-					if (nestedMappingObj.nestedItemLevel==0) { 
-						tmpAry.list.push(ary[SSapiParamMapping[SScurUrlParamsAry[SScurUrlParamsIndex].name].getAPIurlMapping.default.nestedItemName]); 
-					} else if (nestedMappingObj.nestedItemLevel==1 && ary.length!=0) { 
-						$.each(ary,function(i, obj){ 
-							tmpAry.list.push(obj[SSapiParamMapping[SScurUrlParamsAry[SScurUrlParamsIndex].name].getAPIurlMapping.default.nestedItemName]); 
-						}); 
-					} 
-				});
-				data = tmpAry;
+	if (SSapiParamMapping[SScurUrlParamsAry[SScurUrlParamsIndex].name].getAPIurlMapping.default!=undefined){
+		var nestedMappingObj = SSapiParamMapping[SScurUrlParamsAry[SScurUrlParamsIndex].name].getAPIurlMapping.default;
+		$.each(data,function(i, ary){
+			var nestedItemName = SSapiParamMapping[SScurUrlParamsAry[SScurUrlParamsIndex].name].getAPIurlMapping.default.nestedItemName;
+			if (nestedMappingObj.nestedItemLevel==0) { 
+				tmpAry.list.push((nestedItemName!=undefined) ? ary[SSapiParamMapping[SScurUrlParamsAry[SScurUrlParamsIndex].name].getAPIurlMapping.default.nestedItemName] : ary); 
+			} else if (nestedMappingObj.nestedItemLevel==1 && ary.length!=0) { 
+				$.each(ary,function(i, obj){ 
+					tmpAry.list.push((nestedItemName!=undefined) ? obj[SSapiParamMapping[SScurUrlParamsAry[SScurUrlParamsIndex].name].getAPIurlMapping.default.nestedItemName] : obj); 
+				}); 
 			} 
-		}
-	} catch(err) {}	
+		});
+		data = tmpAry;
+	}
 	populateSelect(SScurUrlParamsAry[SScurUrlParamsIndex].name,data);
 	$("#SecureSphereAPI #"+SScurUrlParamsAry[SScurUrlParamsIndex].name).unbind().change(function(){ SSgetURLParams(this); });
 	if (SScurUrlParamsAry[SScurUrlParamsIndex].name=='policyName') {

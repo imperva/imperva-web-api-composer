@@ -41,6 +41,6 @@ if ($method=='POST' || $method=='PUT') {
 $response = curl_exec($ch);
 error_log($logDate." - SS API Response: ".$response);
 curl_close($ch);
-print($response);
+print(($response!='') ? $response : '{}');
 
 ?>
