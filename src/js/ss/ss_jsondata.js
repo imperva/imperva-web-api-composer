@@ -369,7 +369,9 @@ var SSapiParamMapping = {
 	"siteName":{
 		"getAPIurlMapping":{
 			"default":{
-				"url":"/v1/conf/sites"
+				"url":"/v1/conf/sites",
+				"nestedItemName":"sites",
+				"nestedItemLevel":0
 			}
 		}
 	},

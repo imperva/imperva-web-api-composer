@@ -254,8 +254,8 @@ $.extend($.gritter.options, {
 										  <td align="right" style="border: 1px solid red;"><label for="incapMethod">Method: </label></td>
 										  <td>
 											<select id="incapMethod">
-												<option value="post">POST</option>
 												<option value="get">GET</option>
+												<option value="post">POST</option>
 												<option value="put">PUT</option>
 												<option value="delete">DELETE</option>
 												<option value="patch">PATCH</option>
@@ -270,8 +270,8 @@ $.extend($.gritter.options, {
 										   </td>
 										   <td>
 												<select id="incapAuth">
-													<option selected="selected" value="headers">headers (x-API-Id, x-API-Key)</option>
-													<option value="query">query params (?api_id, api_key)</option>
+													<option value="headers">headers (x-API-Id, x-API-Key)</option>
+													<option selected="selected" value="query">query params (?api_id, api_key)</option>
 												</select>
 										   </td>
 										</tr>

@@ -93,3 +93,7 @@ function IsJsonString(str) {
     }
     return true;
 }
+
+function filterStr(str){
+	return str.replaceAll("<a href=","").replaceAll("</a>","").replaceAll("<","").replaceAll(">","").replaceAll("'","").replaceAll('"',"");
+}

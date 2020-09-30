@@ -20,6 +20,7 @@ function renderSiteGroupSites(){
         INCAP_USERS = JSON.parse(localStorage.getItem('INCAP_USERS'));
         if ($("#incap_site_group_account_list").val()!='') {
             var auth = INCAP_USERS[$("#incap_site_group_account_list").val()];
+            auth.method = "query";
             var postDataObj = {
                 "page_size":$('#incap_site_group_page_size').val(),
                 "page_num":$('#incap_site_group_page_num').val(),
@@ -31,7 +32,7 @@ function renderSiteGroupSites(){
             $('#incap_site_groups_list').attr('disabled','disabled');
             $('#incap_site_group_account_list').attr('disabled','disabled');
             $.gritter.add({ title: 'Status', text: "Loading sites for api_id:"+auth.api_id});
-            makeIncapCall(getSwHost("cwaf_api_v1")+'/api/prov/v1/sites/list', 'POST', auth, postDataObj, renderSiteGroupSitesResponse, 'set',"application/x-www-form-urlencoded");
+            makeIncapCall(getSwHost("Cloud WAF API (v1)")+'/api/prov/v1/sites/list', 'POST', auth, {"postData":postDataObj}, renderSiteGroupSitesResponse, 'set',"application/x-www-form-urlencoded");
         }
     }
 }
@@ -207,7 +208,7 @@ function loadSiteGroupDataCenters(){
     if (incap_selSites.index[incap_selSites.curIndex]!=undefined){
         var siteObj = incap_selSites.members[incap_selSites.index[incap_selSites.curIndex]];
         postDataObj = { "site_id":siteObj.site_id }
-        makeIncapCall(getSwHost("cwaf_api_v1")+'/api/prov/v1/sites/dataCenters/list', null, postDataObj, 'POST',loadSiteGroupDataCentersResponse,'set',"application/x-www-form-urlencoded");
+        makeIncapCall(getSwHost("Cloud WAF API (v1)")+'/api/prov/v1/sites/dataCenters/list', null, {"postData":postDataObj}, 'POST',loadSiteGroupDataCentersResponse,'set',"application/x-www-form-urlencoded");
     } else {
         INCAP_SITE_GROUPS[$('#incap_site_group_name').val().trim()] = incap_selSites; 
         localStorage.setItem('INCAP_SITE_GROUPS',JSON.stringify(INCAP_SITE_GROUPS));

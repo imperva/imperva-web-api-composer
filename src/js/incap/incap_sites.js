@@ -29,13 +29,14 @@ function loadSites(){
 	if ($('#incapSitesAccountsList').val()!='') {
 		$('#sitesContent').html('loading...');
 		var auth = getUserAuthObj($('#incapSitesAccountsList').val());
+		auth.method = "query";
 		var postParams = {
 			"account_id": $('#incapSitesAccountIDList').val(),
 			"page_size": $('#incapSitesPageSize').val(),
 			"page_num": $('#incapSitesPageNum').val()
 		}
 		$.gritter.add({ title: 'Status', text: 'Loading page '+postParams.page_num+' (page size: '+postParams.page_size+') on account_id: '+postParams.account_id});
-		makeIncapCall(getSwHost("cwaf_api_v1")+'/api/prov/v1/sites/list','POST',auth,loadSitesResponse,postParams,'set',"application/x-www-form-urlencoded");
+		makeIncapCall(getSwHost("Cloud WAF API (v1)")+'/api/prov/v1/sites/list','POST',auth,loadSitesResponse,{"postData":postParams},'set',"application/x-www-form-urlencoded");
 	}
 }
 
@@ -133,10 +134,11 @@ function loadSitesResponse(response){
 		str += '<div id="'+divId+'"></div></fieldset>';
 		//$.gritter.add({ title: 'Status', text: "Loading rules for site:"+site.site_id});
 		var auth = getUserAuthObj($('#incapSitesAccountsList').val());
+		auth.method = "query";
 		postParams = {
 			"site_id": site.site_id 
 		}
-		makeIncapCall(getSwHost("cwaf_api_v1")+'/api/prov/v1/sites/incapRules/list','POST',auth,loadRulesResponse,postParams,divId,"application/x-www-form-urlencoded");
+		makeIncapCall(getSwHost("Cloud WAF API (v1)")+'/api/prov/v1/sites/incapRules/list','POST',auth,loadRulesResponse,{"postData":postParams},divId,"application/x-www-form-urlencoded");
 	});
 	$('#sitesContent').html(str);
 	$('.saveACLWAFRule').unbind().click(function(){ incapSaveACLWAFRuleTemplate(this.id); });
@@ -261,10 +263,11 @@ function incapDeletePolicyFromSite(cur_id) {
 	if (confirm('Are you sure you want delete the policy "'+rule_name+'" ('+idAry[1]+') from this tool?')) {
 		$('#'+cur_id).parent().parent().remove();
 		var auth = getUserAuthObj(idAry[0]);
+		auth.method = "query";
 		var postParams = {
 			"rule_id": idAry[1]
 		}
-		makeIncapCall(getSwHost("cwaf_api_v1")+'/api/prov/v1/sites/incapRules/delete','POST',auth,incapDeletePolicyFromSiteResponse,postParams,'set',"application/x-www-form-urlencoded");
+		makeIncapCall(getSwHost("Cloud WAF API (v1)")+'/api/prov/v1/sites/incapRules/delete','POST',auth,incapDeletePolicyFromSiteResponse,{"postData":postParams},'set',"application/x-www-form-urlencoded");
 	}
 }
 
@@ -320,6 +323,7 @@ function incapDeleteACLWAFRuleFromSite(obj) {
 			if (curDeleteACLObj.exceptions[curDeleteACLObj.curExceptionIndex]!=undefined) {
 				var auth = getUserAuthObj(curDeleteACLObj.api_id);
 				delete auth.account_id;
+				auth.method = "query";
 				var postParams = {
 					"site_id": curDeleteACLObj.site_id,
 					"rule_id": curDeleteACLObj.id,
@@ -331,17 +335,18 @@ function incapDeleteACLWAFRuleFromSite(obj) {
 				// console.log('hasMoreExceptions='+hasMoreExceptions);
 				// console.log('makeIncapCall(/api/prov/v1/sites/configure/whitelists)');
 				// console.log(postDataObj);
-				makeIncapCall(getSwHost("cwaf_api_v1")+'/api/prov/v1/sites/configure/whitelists','POST',auth,incapDeleteACLWAFRuleFromSiteResponse,postParams,'set',"application/x-www-form-urlencoded");
+				makeIncapCall(getSwHost("Cloud WAF API (v1)")+'/api/prov/v1/sites/configure/whitelists','POST',auth,incapDeleteACLWAFRuleFromSiteResponse,{"postData":postParams},'set',"application/x-www-form-urlencoded");
 			}
 		}
 		if (hasMoreExceptions==false) {
 			// console.log("okToDelete=="+okToDelete+" | hasMoreExceptions=="+hasMoreExceptions);
 			// console.log('hasMoreExceptions='+hasMoreExceptions);
 			var auth = getUserAuthObj(curDeleteACLObj.api_id);
+			auth.method = "query";
 			var curDefRuleObj = defaultRuleConfigMapping[curDeleteACLObj.id];
 			curDefRuleObj.site_id = curDeleteACLObj.site_id;
 			curDefRuleObj.rule_id=curDeleteACLObj.id;
-			makeIncapCall(getSwHost("cwaf_api_v1")+incapCopyObjectURLMappings[curDeleteACLObj.id].action,'POST',auth,incapDeleteACLWAFRuleFromSiteResponse,curDefRuleObj,'set',"application/x-www-form-urlencoded");
+			makeIncapCall(getSwHost("Cloud WAF API (v1)")+incapCopyObjectURLMappings[curDeleteACLObj.id].action,'POST',auth,incapDeleteACLWAFRuleFromSiteResponse,{"postData":curDefRuleObj},'set',"application/x-www-form-urlencoded");
 			curDeleteACLObj.isComplete = true;
 		}
 	} else {

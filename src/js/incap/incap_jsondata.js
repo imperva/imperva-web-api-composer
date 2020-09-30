@@ -65,106 +65,328 @@ incapAPIKeyMap = {
 }
 
 var incapGetObjectActionMapping = {
-	// must map all params here as a list below as follows:
-	// "site_id":{"name":"site_id","type":"list","values":[]},
-	"site_id":{
-		"definition":"Cloud WAF API (v1)",
-		"isParent":true,
-		"action":"/api/prov/v1/sites/list",
-		"listName":"sites", // objectName, listName
-		"id":"site_id",
-		"displayText":"domain",
-		"children":["dc_id"]
-	},
-	"dc_id":{
-		"definition":"Cloud WAF API (v1)",
-		"action":"/api/prov/v1/sites/dataCenters/list",
-		"listName":"DCs", // objectName, listName
-		"id":"id",
-		"displayText":"name",
-		"parents":["site_id"]
-	},
-	"siteId":{
-		"definition":"Cloud WAF API (v1)",
-		"isParent":true,
-		"action":"/api/prov/v1/sites/list",
-		"listName":"sites", // objectName, listName
-		"id":"site_id",
-		"displayText":"domain",
-		"children":["apiId","ruleId"]
+	// Example Param Structure:
+	// "paramNameHere"
+	//   "default or /api/action":{
+	/********** specify action and responose attributes to parse and populate from api  ************/
+	//    "action":"/api-security/api/{siteId}",
+	// 	  "definition":"Cloud WAF API (v1)", // see incapAPIDefinitions
+	// 	  "method":"POST",
+	// 	  "listName":"resultList", // objectName, listName
+	// 	  "id":"sub_account_id",
+	// 	  "displayText":"sub_account_name"
+	//	  "addedLookupParams":[
+	//	    {"id":"incapAccountIDList","in":"body","renameLookupParam":"account_id"},
+	//		{"id":"page_size","in":"body","value":"100"},
+	//		{"id":"page_num","in":"body","value":"0"}
+	//	  ]
+	/********** OR copy_from_select_id to copy contents from existing select (like sub accounts) **************/
+	// 	  "copy_from_select_id":"incapAccountIDList", 
+	
+	// 	  "isParent":true, // if top level param
+	//    "parents":[
+	// 	     {"id":"siteId","in":"path"}  // path/body/query
+	//    ],
+	//    "children":["endpointId"]  // child dependant dynamic params
+	//   }
+	// }
+
+	"accountId":{
+		"default":{
+			"definition":"Cloud WAF API (v1)",
+			"isParent":true,
+			"copy_from_select_id":"incapAccountIDList",
+			"method":"POST",
+			"listName":"resultList", // objectName, listName
+			"id":"sub_account_id",
+			"displayText":"sub_account_name"
+		}
 	},
 	"apiId":{
-		"definition":"API Security",
-		"isParent":true,
-		"action":"/api-security",
-		"listName":"value", // objectName, listName
-		"id":"id",
-		"displayText":"siteName",
-		"parents":["siteId"]
-	},
-	"endpointId":{
-		"definition":"API Security",
-		"action":"/api-security/endpoint/{apiId}",
-		"listName":"value", // objectName, listName
-		"id":"id",
-		"displayText":"path",
-		"parents":["apiId"]
-	},
-	"ruleId":{
-		"definition":"Performance Settings",
-		"action":"/api/prov/v2/sites/{siteId}/settings/cache/rules",
-		"listName":"value", // objectName, listName
-		"id":"id",
-		"displayText":"path",
-		"parents":["siteId"]
-	},
-	"incidentId":{
-		"definition":"Attack Analytics",
-		"action":"/analytics/v1/incidents",
-		"id":"id",
-		"displayText":"main_sentence"
+		"/api-security/api/{siteId}/{apiId}":{
+			"definition":"API Security",
+			"action":"/api-security/api/{siteId}",
+			"method":"GET",
+			"listName":"value", // objectName, listName
+			"id":"id",
+			"displayText":"siteName",
+			"parents":[
+				{"id":"siteId","in":"path"}
+			]
+		},
+		"/api-security/endpoint/{apiId}":{
+			"definition":"API Security",
+			"isParent":true,
+			"action":"/api-security/api",
+			"method":"GET",
+			"listName":"value", // objectName, listName
+			"id":"id",
+			"displayText":"siteName"
+		},
+		"/api-security/endpoint/{apiId}/{endpointId}":{
+			"definition":"API Security",
+			"isParent":true,
+			"action":"/api-security/api",
+			"method":"GET",
+			"listName":"value", // objectName, listName
+			"id":"id",
+			"displayText":"siteName",
+			"children":["endpointId"]
+		},
 	},
 	"assetId":{
-		"definition":"Policy Management",
-		"action":"/policies/v2/policies",
-		"listName":"value", // objectName, listName
-		"id":"id",
-		"displayText":"name"
+		"default":{
+			"definition":"Policy Management",
+			"action":"/policies/v2/policies",
+			"method":"GET",
+			"listName":"value", // objectName, listName
+			"id":"id",
+			"displayText":"name"
+		}
 	},
 	"assetType":{
-		"definition":"Policy Management",
-		"action":"/policies/v2/policies",
-		"listName":"value", // objectName, listName
-		"id":"id",
-		"displayText":"name"
-	},
-	"policyId":{
-		"definition":"Policy Management",
-		"isParent":true,
-		"action":"/policies/v2/policies",
-		"listName":"value", // objectName, listName
-		"id":"id",
-		"displayText":"name"
-	},
-	"accountId":{
-		"definition":"Cloud WAF API (v1)",
-		"isParent":true,
-		"action":"/api/prov/v1/account",
-		// "objectName":"account", // objectName, listName
-		"id":"account_id",
-		"displayText":"account_name"
+		"default":{
+			"definition":"Policy Management",
+			"action":"/policies/v2/policies",
+			"method":"GET",
+			"listName":"value", // objectName, listName
+			"id":"id",
+			"displayText":"name"
+		}
 	},
 	"caid":{
-		"definition":"Cloud WAF API (v1)",
-		"isParent":true,
-		"action":"/api/prov/v1/account",
-		// "objectName":"account", // objectName, listName
-		"id":"account_id",
-		"displayText":"account_name"
+		"default":{
+			"definition":"Cloud WAF API (v1)",
+			"isParent":true,
+			"copy_from_select_id":"incapAccountIDList",
+			"id":"account_id",
+			"displayText":"account_name",
+			"children":["incidentId"]
+		}
+	},
+	"dc_id":{
+		"/api/prov/v1/sites/incapRules/add":{
+			"definition":"Cloud WAF API (v1)",
+			"action":"/api/prov/v1/sites/dataCenters/list",
+			"method":"POST",
+			"listName":"DCs", // objectName, listName
+			"id":"id",
+			"displayText":"name",
+			"parents":[
+				{"id":"site_id","in":"body"}
+			],
+			"addedLookupParams":[
+				{"id":"incapAccountIDList","in":"body","renameLookupParam":"account_id"},
+				{"id":"page_size","in":"body","value":"100"},
+				{"id":"page_num","in":"body","value":"0"}
+			]
+		},
+		"/api/prov/v2/sites/{siteId}/rules":{
+			"definition":"Cloud WAF API (v1)",
+			"action":"/api/prov/v1/sites/dataCenters/list",
+			"method":"POST",
+			"listName":"DCs", // objectName, listName
+			"id":"id",
+			"displayText":"name",
+			"parents":[
+				{"id":"siteId","in":"body","renameLookupParam":"site_id"}
+			],
+			"addedLookupParams":[
+				{"id":"incapAccountIDList","in":"body","renameLookupParam":"account_id"},
+				{"id":"page_size","in":"body","value":"100"},
+				{"id":"page_num","in":"body","value":"0"}
+			]
+		},
+		"/api/prov/v2/sites/{siteId}/rules/{ruleId}":{
+			"definition":"Cloud WAF API (v1)",
+			"action":"/api/prov/v1/sites/dataCenters/list",
+			"method":"POST",
+			"listName":"DCs", // objectName, listName
+			"id":"id",
+			"displayText":"name",
+			"parents":[
+				{"id":"siteId","in":"body","renameLookupParam":"site_id"}
+			],
+			"addedLookupParams":[
+				{"id":"incapAccountIDList","in":"body","renameLookupParam":"account_id"},
+				{"id":"page_size","in":"body","value":"100"},
+				{"id":"page_num","in":"body","value":"0"}
+			]
+		}
+	},
+	"defaultPolicyConfig___accountId":{
+		"default":{
+			"definition":"Cloud WAF API (v1)",
+			"action":"/api/prov/v1/account",
+			"method":"POST",
+			// "objectName":"account", // objectName, listName
+			"id":"account_id",
+			"displayText":"account_name"
+		}
+	},
+	"endpointId":{
+		"default":{
+			"definition":"API Security",
+			"action":"/api-security/endpoint/{apiId}",
+			"method":"GET",
+			"listName":"value", // objectName, listName
+			"id":"id",
+			"displayText":["method","path"],
+			"parents":[
+				{"id":"apiId","in":"path"}
+			]
+		}
+	},
+	"extSiteId":{
+		"default":{
+			"definition":"Cloud WAF API (v1)",
+			"isParent":true,
+			"action":"/api/prov/v1/sites/list",
+			"method":"POST",
+			"listName":"sites", // objectName, listName
+			"id":"site_id",
+			"displayText":"domain",
+		}
+	},
+	"incidentId":{
+		"default":{
+			"definition":"Attack Analytics",
+			"action":"/analytics/v1/incidents",
+			"method":"GET",
+			"id":"id",
+			"displayText":"main_sentence",
+			"parents":[
+				{"id":"caid","in":"query"} // in: path, body, query
+			]
+		}
+	},
+	"policyId":{
+		"default":{
+			"definition":"Policy Management",
+			"isParent":true,
+			"method":"GET",
+			"action":"/policies/v2/policies",
+			"listName":"value", // objectName, listName
+			"id":"id",
+			"displayText":"name"
+		}
+	},
+	"ruleId":{
+		"/api/prov/v2/sites/{siteId}/rules/{ruleId}":{
+			"definition":"Performance Settings",
+			"action":"/api/prov/v2/sites/{siteId}/settings/cache/rules",
+			"method":"GET",
+			"listName":"value", // objectName, listName
+			"id":"id",
+			"displayText":"path",
+			"parents":[
+				{"id":"siteId","in":"path"} // in: path, body, query
+			]
+		},
+		"/api/prov/v2/sites/{siteId}/rules/{ruleId}":{
+			"definition":"Performance Settings",
+			"action":"/api/prov/v2/sites/{siteId}/settings/cache/rules",
+			"method":"GET",
+			"listName":"value", // objectName, listName
+			"id":"id",
+			"displayText":"path",
+			"parents":[
+				{"id":"siteId","in":"body"} // in: path, body, query
+			]
+		},
+		"/api/prov/v2/sites/{siteId}/settings/cache/rules/{ruleId}":{
+			"definition":"Performance Settings",
+			"action":"/api/prov/v2/sites/{siteId}/settings/cache/rules",
+			"method":"GET",
+			// "listName":"value", // objectName, listName
+			"id":"rule_id",
+			"displayText":"name",
+			"parents":[
+				{"id":"siteId","in":"path"} // in: path, body, query
+			]			
+		}
+	},
+	"roleId":{
+		"default":{
+			"definition":"Role Management",
+			"isParent":true,
+			"action":"/user-management/v1/roles",
+			"method":"GET",
+			// "listName":"value", // objectName, listName
+			"id":"roleId",
+			"displayText":"roleName",
+			"parents":[
+				{"id":"accountId","in":"query"} // in: path, body, query
+			],
+			"addedLookupParams":[
+				{"id":"incapAccountIDList","in":"query","renameLookupParam":"accountId"}
+			]
+		}
+	},
+	"roleIds":{
+		"default":{
+			"definition":"Role Management",
+			"isParent":true,
+			"action":"/user-management/v1/roles",
+			"method":"GET",
+			// "listName":"value", // objectName, listName
+			"id":"roleId",
+			"displayText":"roleName",
+			"multiselect":true,
+			"parents":[
+				{"id":"accountId","in":"query"} // in: path, body, query
+			],
+			"addedLookupParams":[
+				{"id":"incapAccountIDList","in":"query","renameLookupParam":"accountId"}
+			]
+		}
+	},
+	"site_id":{
+		"default":{
+			"definition":"Cloud WAF API (v1)",
+			"isParent":true,
+			"action":"/api/prov/v1/sites/list",
+			"method":"POST",
+			"listName":"sites", // objectName, listName
+			"id":"site_id",
+			"displayText":"domain",
+			"children":["dc_id"]
+		}
+	},
+	"siteId":{
+		"default":{
+			"definition":"Cloud WAF API (v1)",
+			"isParent":true,
+			"action":"/api/prov/v1/sites/list",
+			"method":"POST",
+			"listName":"sites", // objectName, listName
+			"id":"site_id",
+			"displayText":"domain",
+			"children":["apiId","ruleId","dc_id"]
+		}
+	},
+	"sourcePolicyId":{
+		"default":{
+			"definition":"Policy Management",
+			"isParent":true,
+			"method":"GET",
+			"action":"/policies/v2/policies",
+			"listName":"value", // objectName, listName
+			"id":"id",
+			"displayText":"name"
+		}
+	},
+	"subAccountId":{
+		"default":{
+			"definition":"Cloud WAF API (v1)",
+			"isParent":true,
+			"copy_from_select_id":"incapAccountIDList",
+			"id":"account_id",
+			"displayText":"account_name",
+			"children":["incidentId"]
+		}
 	}
-	
-	
-	
+
 	/*,
 	"rule_id":{"action":"/sites/dataCenters/list","listName":"DCs","id":"id","displayText":"name"},
 	"config_id":{"name":"config_id","type":"string","values":""},
@@ -175,12 +397,19 @@ var incapGetObjectActionMapping = {
 	"ref_id":{"name":"ref_id","type":"string","values":""},*/
 }
 
+var subAccountActionMappingByPlan = {
+	"enterprise":"/api/prov/v1/accounts/listSubAccounts",
+	"not_enterprise":"/api/prov/v1/accounts/list"
+}
+
 var timestampParam = {
 	"duration":true,
 	"from_timestamp":true,
 	"to_timestamp":true,
 	"start":true,
-	"end":true
+	"end":true,
+	"startTime":true,
+	"endTime":true
 }
 
 var incapCopyObjectURLMappings = {
