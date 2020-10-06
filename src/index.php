@@ -104,8 +104,8 @@ $.extend($.gritter.options, {
 										  <td align="right" style="border: 1px solid red;"><label for="SSmethod">Method: </label></td>
 										  <td>
 											<select id="SSmethod">
-												<option value="post">POST</option>
 												<option value="get">GET</option>
+												<option value="post">POST</option>
 												<option value="put">PUT</option>
 												<option value="delete">DELETE</option>
 												<option value="options">OPTIONS</option>
