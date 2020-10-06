@@ -136,12 +136,14 @@ var incapGetObjectActionMapping = {
 	},
 	"assetId":{
 		"default":{
-			"definition":"Policy Management",
-			"action":"/policies/v2/policies",
-			"method":"GET",
-			"listName":"value", // objectName, listName
-			"id":"id",
-			"displayText":"name"
+			"definition":"Cloud WAF API (v1)",
+			"isParent":true,
+			"action":"/api/prov/v1/sites/list",
+			"method":"POST",
+			"listName":"sites", // objectName, listName
+			"id":"site_id",
+			"displayText":"domain",
+			"children":["policyId"]
 		}
 	},
 	"assetType":{
@@ -261,7 +263,49 @@ var incapGetObjectActionMapping = {
 		}
 	},
 	"policyId":{
-		"default":{
+		"/policies/v2/accounts/policies/{policyId}":{
+			"definition":"Policy Management",
+			"isParent":true,
+			"method":"GET",
+			"action":"/policies/v2/policies",
+			"listName":"value", // objectName, listName
+			"id":"id",
+			"displayText":"name"
+		},
+		"/policies/v2/accounts/{subAccountId}/policies/{policyId}":{
+			"definition":"Policy Management",
+			"isParent":true,
+			"method":"GET",
+			"action":"/policies/v2/policies",
+			"listName":"value", // objectName, listName
+			"id":"id",
+			"displayText":"name",
+			"parents":[
+				{"id":"subAccountId","in":"path"} // in: path, body, query
+			]
+		},
+		"/policies/v2/assets/policies/{policyId}":{
+			"definition":"Policy Management",
+			"isParent":true,
+			"method":"GET",
+			"action":"/policies/v2/policies",
+			"listName":"value", // objectName, listName
+			"id":"id",
+			"displayText":"name"
+		},
+		"/policies/v2/assets/WEBSITE/{assetId}/policies/{policyId}":{
+			"definition":"Policy Management",
+			"isParent":true,
+			"method":"GET",
+			"action":"/policies/v2/assets/WEBSITE/{assetId}/policies",
+			"listName":"value", // objectName, listName
+			"id":"id",
+			"displayText":"name",
+			"parents":[
+				{"id":"assetId","in":"path"} // in: path, body, query
+			]
+		},
+		"/policies/v2/policies/{policyId}":{
 			"definition":"Policy Management",
 			"isParent":true,
 			"method":"GET",

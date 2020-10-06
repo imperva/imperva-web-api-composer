@@ -88,7 +88,6 @@ function loadSitesResponse(response){
 			});
 			str += '</tr></tbody></table>';
 		}
-		var divId = 'site_'+site.site_id+'_rules_tbl';
 		if (site.security !== undefined) {
 			if (site.security.acls !== undefined) {
 				if (site.security.acls.rules !== undefined) {
@@ -131,14 +130,13 @@ function loadSitesResponse(response){
 				}
 			}
 		}		
-		str += '<div id="'+divId+'"></div></fieldset>';
+		var divId = 'site_'+site.site_id;
+		str += '<div id="'+divId+'_rules_tbl"></div><div id="'+divId+'_policies_tbl"></div></fieldset>';
 		//$.gritter.add({ title: 'Status', text: "Loading rules for site:"+site.site_id});
 		var auth = getUserAuthObj($('#incapSitesAccountsList').val());
 		auth.method = "query";
-		postParams = {
-			"site_id": site.site_id 
-		}
-		makeIncapCall(getSwHost("Cloud WAF API (v1)")+'/api/prov/v1/sites/incapRules/list','POST',auth,loadRulesResponse,{"postData":postParams},divId,"application/x-www-form-urlencoded");
+		makeIncapCall(getSwHost("Cloud WAF API (v1)")+'/api/prov/v1/sites/incapRules/list','POST',auth,loadRulesResponse,{"postData":{ "site_id": site.site_id }},divId+"_rules_tbl","application/x-www-form-urlencoded");
+		makeIncapCall(getSwHost("Policy Management")+'/policies/v2/assets/WEBSITE/'+site.site_id+'/policies?extended=true','GET',auth,loadPoliciesResponse,{"postData":{ "site_id": site.site_id }},divId+"_policies_tbl","application/json");
 	});
 	$('#sitesContent').html(str);
 	$('.saveACLWAFRule').unbind().click(function(){ incapSaveACLWAFRuleTemplate(this.id); });
@@ -149,6 +147,7 @@ function loadSitesResponse(response){
 	});
 	if (str=='') $('#sitesContent').html('<p>No sites found...</p>');
 }
+
 function loadRulesResponse(response,input_id) {
 	var confAry = input_id.split('_');
 	if (curSites.sites[confAry[1]]!=undefined) {
@@ -219,6 +218,38 @@ function loadRulesResponse(response,input_id) {
 		$('.saveRule').unbind().click(function(){ incapSavePolicyTemplate(this.id); });
 		$('.saveAllIncapRules').unbind().click(function(){ incapSaveAllPolicyTemplates(); });
 		$('.deleteRule').unbind().click(function(){ incapDeletePolicyFromSite(this.id); });
+	}
+}
+
+function loadPoliciesResponse(response,input_id) {
+	var confAry = input_id.split('_');
+	if (curSites.sites[confAry[1]]!=undefined) {
+		curSites.sites[confAry[1]].rules = response;
+		var str = '';
+		$.gritter.add({ title: 'Status', text: "Successfully retrieved Account Policies. "+input_id});
+		if (response.value != undefined && response.value.length>0) {
+			str += '<table class="tablesorter"><thead><tr>';
+			// str += '<th class="min"><a href="javascript:void(0)" id="site_'+confAry[1]+'_rules|incap_rules" title="Create CURL samples for all Incap Rules in Migration Tools tab" class="ui-icon ui-icon-newwin copyAllIncapRules"> </a></th>';
+			// str += '<th class="min"><!--a href="javascript:void(0)" id="site_'+confAry[1]+'_rules|incap_rules" title="Save all rules locally as templates" class="ui-icon ui-icon-disk saveAllIncapRules"> </a--></th>';
+			str += '<th>Policies</th><th>JSON</th></tr></thead><tbody>';
+			$.each(response.value, function(i,policyObj) {
+				str += '<tr>';
+				// str += '<td class="min"><a href="javascript:void(0)" id="incap_rules|'+ruleObj.id.replace(/\./g,'_')+'" title="Copy individual rule" class="ui-icon ui-icon-copy copyRule"> </a></td>';
+				// str += '<td class="min"><a href="javascript:void(0)" id="{\'ruleType\':\'incap_rules\',\'id\':\''+ruleObj.id.replace(/\./g,'_')+'\'}" title="Save individual rule" class="ui-icon ui-icon-disk saveRule"> </a></td>';
+				str += '<td>'+policyObj.name+'</td><td class="json" id="json_'+policyObj.id+'">'+JSON.stringify(policyObj)+'</td>';
+				// str += '<td class="min"><a href="javascript:void(0)" id="'+$('#incapSitesAccountsList').val()+'_'+ruleObj.id+'" title="Delete individual rule" class="ui-icon ui-icon-trash deleteRule"> </a></td>';
+				str += '</tr>';
+			});
+			str += '</tbody></table>';
+		}
+		$('#'+input_id).html(str);
+		// $('.copyRule').unbind().click(function(){ copyElementHelper(this.id); });
+		// $('.copyAllIncapRules').unbind().click(function(){ 
+		// 	//createAllRulesSampleCURL(this.id,"/api/prov/v1/sites/incapRules/add"); 
+		// });
+		// $('.saveRule').unbind().click(function(){ incapSavePolicyTemplate(this.id); });
+		// $('.saveAllIncapRules').unbind().click(function(){ incapSaveAllPolicyTemplates(); });
+		// $('.deleteRule').unbind().click(function(){ incapDeletePolicyFromSite(this.id); });
 	}
 }
 
