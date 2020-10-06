@@ -7,7 +7,7 @@ services:
     # volumes:
     #  - ./target/:/usr/local/tomcat/webapps/
     ports:
-    - 8080:80
+    - 8080:8080
     - 8443:443
     environment:
       TZ: ${TZ:-UTC}
