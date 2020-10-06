@@ -2,8 +2,9 @@
 body { font: 62.5% "Trebuchet MS", sans-serif; font-size: 10px;  
 	background: url('../images/bg_grad.jpg') top repeat-x #5d5d5d; margin: 0; min-height: 100%; }
 #wrapper { margin: 0 auto; position: relative; width: 100%; }
-#header { background: url('../images/bg_head.png') top right no-repeat; padding: 25px 0px 0px 25px; height: 105px; }
-#logo { background: url('../images/imperva-logo.png') center center no-repeat #fff; width:300px; height:75px;  }
+#header { background: url('../images/bg_head.png'); background-size: cover; padding: 25px 0px 0px 25px; height: 105px; }
+/* #header { background: url('../images/bg_head_cut.png') top right no-repeat; background-size: auto; padding: 25px 0px 0px 25px; height: 105px; } */
+#logo { background: url('../images/imperva-logo.svg') center center no-repeat; width:300px; height:75px;  }
 
 #dialog_link {padding: .4em 1em .4em 20px; text-decoration: none; position: relative;}
 #dialog_link span.ui-icon {margin: 0 5px 0 0;position: absolute;left: .2em;top: 50%;margin-top: -8px;}
@@ -19,6 +20,55 @@ ul#icons span.ui-icon {float: left; margin: 0 4px;}
     display: inline-block;
     padding: 16px 16px 0px 0px;
 }
+
+.param_tbl_level1 td.colL,
+.param_tbl_level2 td.colL,
+.param_tbl_level3 td.colL,
+.param_tbl_level4 td.colL,
+.param_tbl_level5 td.colL {
+	border:black thin solid;
+}
+
+.param_tbl_level1 td.colL {
+    /* width:50%; */
+	width: -webkit-calc(50% - 50px);
+    width:    -moz-calc(50% - 50px);
+    width:         calc(50% - 50px);
+}
+.param_tbl_level2 td.colL {
+	width: -webkit-calc(50% - 100px);
+    width:    -moz-calc(50% - 100px);
+    width:         calc(50% - 100px);
+}
+.param_tbl_level3 td.colL {
+	width: -webkit-calc(50% - 30px);
+    width:    -moz-calc(50% - 30px);
+    width:         calc(50% - 30px);
+}
+.param_tbl_level4 td.colL {
+	width: -webkit-calc(50% - 40px);
+    width:    -moz-calc(50% - 40px);
+    width:         calc(50% - 40px);
+}
+.param_tbl_level5 td.colL {
+	width: -webkit-calc(50% - 50px);
+    width:    -moz-calc(50% - 50px);
+    width:         calc(50% - 50px);
+}
+
+
+
+/* .array_object_level0, 
+.array_object_level1, 
+.array_object_level2, 
+.array_object_level3, 
+.array_object_level4, 
+.array_object_level5 { border: 1px solid #ccc; } */
+#incapbodyParams textarea.parent {
+	width: 100%;
+	height: 50px;
+}
+/* a.toggle_param_link { float: right; display: block; } */
 
 .wrap1, .wrap2, .wrap3 { display:inline-table; /* \*/display:block;/**/ }
 .wrap1 { float:left; background:url('../images/shadow/shadow.gif') right bottom no-repeat; }
@@ -49,6 +99,11 @@ ul#icons span.ui-icon {float: left; margin: 0 4px;}
 #manageSSCredentialsBtn span, #manageCredentialsBtn span { text-decoration: underline; }
 
 .section { display:block; float:left; padding: 0 0 5px; }
+span.required {
+	color: red;
+	font-size: 18px;
+	font-weight: bold;
+}
 .formbox, .formbox2, .formbox3, .formbox4 { display:block; float:left; padding: 0 0 15px; }
 .formbox label, .formbox2 label, .formbox3 label, .formbox4 label, .section { 
 	/*text-align: right; display: block; float: left; padding: 4px 5px 5px 0; */
@@ -81,6 +136,24 @@ fieldset { padding: 0; }
 fieldset legend {
 	padding:5px 10px 5px;
 	font-weight:bold;
+}
+
+#incapqueryParams select,
+#incappathParams select,
+#incapbodyParams select,
+#incapformDataParams select {
+    width: auto;
+}
+
+.fieldwrapper fieldset.nested_param {
+	border: 1px solid #999;
+	display: none;
+}
+
+.fieldwrapper fieldset.nested_param legend {
+	font-weight: normal;
+	color: #999;
+	font-size: 1em;
 }
 
 .loading {
@@ -189,6 +262,27 @@ ul.ui-autocomplete { overflow: scroll; max-height: 280px; height: auto; }
 .ui-tabs-vertical .ui-tabs-nav li a { display:block; }
 .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active { padding-bottom: 0; padding-right: .1em; border-right-width: 1px; }
 .ui-tabs-vertical .ui-tabs-panel { padding: 1em; width: 100%; }
+
+#header_bar {
+	background: #111;
+	border: 1px solid #FFF;
+	color:#FFF;
+	width: -webkit-calc(100% - 2px);
+    width:    -moz-calc(100% - 2px);
+    width:         calc(100% - 2px);
+}
+.ui-widget-header {
+	border: 1px solid #999;
+}
+.ui-tabs-nav .ui-state-hover {
+	border: 1px solid #999;
+}
+.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {
+	background: #111;
+	border: 1px solid #111;
+}
+
+/* input.datepicker { width: 240px; } */
 
 #settingsNav li span {
 	padding: 8px 0px 8px 5px; display: block; 

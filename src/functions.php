@@ -20,4 +20,11 @@ function htmlspecialchars_deep($mixed, $quote_style = ENT_QUOTES, $charset = 'UT
 }
 	
 
+function isJson($string) {
+    json_decode($string);
+    return (json_last_error() == JSON_ERROR_NONE);
+}
+   
+   
+
 ?>

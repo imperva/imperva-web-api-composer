@@ -1,0 +1,841 @@
+---
+swagger: "2.0"
+info:
+  description: "Imperva Policy Management API Documentation"
+  version: "1.0.0"
+  title: "Imperva Policy Management"
+host: "api.imperva.com"
+basePath: "/policies"
+tags:
+- name: "Policy Management"
+- name: "Policy Management asset application"
+schemes:
+- "https"
+security:
+- api_id: []
+  api_key: []
+paths:
+  /v2/assets/policies/{policyId}:
+    get:
+      tags:
+      - "Policy Management asset application"
+      summary: "Retrieve assets to which policy is applied"
+      description: ""
+      operationId: "getAllAssetOfPolicy"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "policyId"
+        in: "path"
+        description: "The Policy ID"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/GetAssetsResponse"
+        400:
+          description: "Bad Request"
+          schema:
+            $ref: "#/definitions/SimpleTextErrorResponse"
+        404:
+          description: "Not Found"
+          schema:
+            $ref: "#/definitions/GetAssetsResponse"
+        500:
+          description: "Internal error"
+          schema:
+            $ref: "#/definitions/SimpleTextErrorResponse"
+  /v2/assets/{assetType}/{assetId}/policies:
+    get:
+      tags:
+      - "Policy Management asset application"
+      summary: "Retrieve all policies applied to an asset"
+      description: ""
+      operationId: "getAllPoliciesOfAsset"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "assetId"
+        in: "path"
+        description: "The Asset ID"
+        required: true
+        type: "integer"
+        format: "int64"
+      - name: "assetType"
+        in: "path"
+        description: "The Asset Type"
+        required: true
+        type: "string"
+      - name: "extended"
+        in: "query"
+        description: "Optional to get full policy data. Default is false"
+        required: false
+        type: "boolean"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/GetLeanPoliciesResponse"
+        404:
+          description: "Not Found"
+          schema:
+            $ref: "#/definitions/GetAssetsResponse"
+        500:
+          description: "Internal Error"
+          schema:
+            $ref: "#/definitions/SimpleTextErrorResponse"
+  /v2/assets/{assetType}/{assetId}/policies/{policyId}:
+    post:
+      tags:
+      - "Policy Management asset application"
+      summary: "Apply a single policy to a single asset"
+      description: "Applies a policy to an asset. Policies already assigned to the\
+        \ asset are not modified."
+      operationId: "applyAssetToPolicy"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "assetId"
+        in: "path"
+        description: "Asset Id to add to policy"
+        required: true
+        type: "integer"
+        format: "int64"
+      - name: "assetType"
+        in: "path"
+        description: "Asset type to add to policy"
+        required: true
+        type: "string"
+      - name: "policyId"
+        in: "path"
+        description: "The Policy ID"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/GetAssetsResponse"
+        400:
+          description: "Bad Request"
+          schema:
+            $ref: "#/definitions/SimpleTextErrorResponse"
+        500:
+          description: "Internal error"
+          schema:
+            $ref: "#/definitions/SimpleTextErrorResponse"
+    put:
+      tags:
+      - "Policy Management asset application"
+      summary: "Overwrite policies assigned to a single asset"
+      description: "Applies a single policy to a single asset and removes previously\
+        \ assigned policies."
+      operationId: "updatePolicyOnAsset"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "assetId"
+        in: "path"
+        description: "Asset Id"
+        required: true
+        type: "integer"
+        format: "int64"
+      - name: "assetType"
+        in: "path"
+        description: "Asset type"
+        required: true
+        type: "string"
+      - name: "policyId"
+        in: "path"
+        description: "The Policy ID"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/AssetResult"
+        400:
+          description: "Bad Request"
+          schema:
+            $ref: "#/definitions/SimpleTextErrorResponse"
+        500:
+          description: "Internal error"
+          schema:
+            $ref: "#/definitions/SimpleTextErrorResponse"
+    delete:
+      tags:
+      - "Policy Management asset application"
+      summary: "Remove policy from asset"
+      description: ""
+      operationId: "unApplyPolicyOnAsset"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "assetId"
+        in: "path"
+        description: "Asset Id to remove"
+        required: true
+        type: "integer"
+        format: "int64"
+      - name: "assetType"
+        in: "path"
+        description: "Asset type to remove"
+        required: true
+        type: "string"
+      - name: "policyId"
+        in: "path"
+        description: "The Policy ID"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/AssetResult"
+        400:
+          description: "Bad Request"
+          schema:
+            $ref: "#/definitions/SimpleTextErrorResponse"
+        500:
+          description: "Internal error"
+          schema:
+            $ref: "#/definitions/SimpleTextErrorResponse"
+  /v2/policies:
+    get:
+      tags:
+      - "Policy Management"
+      summary: "Retrieve all policies in account"
+      description: ""
+      operationId: "getAllPoliciesByAccount"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "extended"
+        in: "query"
+        description: "Optional to get full policy data. Default is false"
+        required: false
+        type: "boolean"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/GetLeanPoliciesResponse"
+        404:
+          description: "Not Found"
+          schema:
+            $ref: "#/definitions/SimpleTextErrorResponse"
+        500:
+          description: "Internal Error"
+          schema:
+            $ref: "#/definitions/SimpleTextErrorResponse"
+    post:
+      tags:
+      - "Policy Management"
+      summary: "Add a new policy or copy an existing policy"
+      description: ""
+      operationId: "createNewPolicy"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Policy to save. The supported format JSON"
+        required: true
+        schema:
+          $ref: "#/definitions/PolicyDto"
+      - name: "sourcePolicyId"
+        in: "query"
+        description: "Optional to clone full policy data"
+        required: false
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/GetPolicyResponse"
+        400:
+          description: "Bad Request"
+          schema:
+            $ref: "#/definitions/SimpleTextErrorResponse"
+        500:
+          description: "Internal Error"
+          schema:
+            $ref: "#/definitions/SimpleTextErrorResponse"
+  /v2/policies/{policyId}:
+    get:
+      tags:
+      - "Policy Management"
+      summary: "Retrieve policy details"
+      description: ""
+      operationId: "getPolicyById"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "extended"
+        in: "query"
+        description: "Optional to get full policy data"
+        required: false
+        type: "boolean"
+      - name: "policyId"
+        in: "path"
+        description: "The Policy ID"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/GetLeanPolicyResponse"
+        404:
+          description: "Not Found"
+          schema:
+            $ref: "#/definitions/SimpleTextErrorResponse"
+        500:
+          description: "Internal Error"
+          schema:
+            $ref: "#/definitions/SimpleTextErrorResponse"
+    post:
+      tags:
+      - "Policy Management"
+      summary: "Modify an existing policy (partial update)"
+      description: ""
+      operationId: "modifyPolicy"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Policy to save. The supported format JSON"
+        required: true
+        schema:
+          $ref: "#/definitions/UpdatePolicyDto"
+      - name: "policyId"
+        in: "path"
+        description: "The Policy ID"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/GetPolicyResponse"
+        400:
+          description: "Bad Request"
+          schema:
+            $ref: "#/definitions/SimpleTextErrorResponse"
+        404:
+          description: "Not Found"
+          schema:
+            $ref: "#/definitions/SimpleTextErrorResponse"
+    put:
+      tags:
+      - "Policy Management"
+      summary: "Overwrite an existing policy (full update)"
+      description: ""
+      operationId: "updatePolicy"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Policy to save. The supported format JSON"
+        required: true
+        schema:
+          $ref: "#/definitions/PolicyDto"
+      - name: "policyId"
+        in: "path"
+        description: "The Policy ID"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/GetPolicyResponse"
+        400:
+          description: "Bad Request"
+          schema:
+            $ref: "#/definitions/SimpleTextErrorResponse"
+        404:
+          description: "Not Found"
+          schema:
+            $ref: "#/definitions/SimpleTextErrorResponse"
+    delete:
+      tags:
+      - "Policy Management"
+      summary: "Delete an existing policy"
+      description: ""
+      operationId: "deletePolicy"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "policyId"
+        in: "path"
+        description: "The Policy ID"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/PolicyResult"
+        400:
+          description: "Bad Request"
+          schema:
+            $ref: "#/definitions/SimpleTextErrorResponse"
+        500:
+          description: "Internal Error"
+          schema:
+            $ref: "#/definitions/SimpleTextErrorResponse"
+securityDefinitions:
+  api_id:
+    description: "An API ID created and managed in the Imperva Cloud Security Console\
+      \ and used for authentication"
+    type: "apiKey"
+    name: "api_id"
+    in: "query"
+  api_key:
+    description: "An API key created and managed in the Imperva Cloud Security Console\
+      \ and used for authentication"
+    type: "apiKey"
+    name: "api_key"
+    in: "query"
+definitions:
+  AssetResult:
+    type: "object"
+    required:
+    - "value"
+    properties:
+      value:
+        type: "object"
+      isError:
+        type: "boolean"
+        example: false
+        description: "States if an error has occurred"
+  DefaultPolicyConfigDto:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        example: 10
+        description: "The Default Policy Config ID"
+      accountId:
+        type: "integer"
+        format: "int64"
+        example: 10
+        description: "The account ID"
+      assetType:
+        type: "string"
+        description: "Type of an asset"
+        enum:
+        - "WEBSITE"
+      policyId:
+        type: "integer"
+        format: "int64"
+        example: 8
+        description: "The Policy ID"
+  ExceptionsDataDto:
+    type: "object"
+    required:
+    - "validateExceptionData"
+    properties:
+      validateExceptionData:
+        type: "boolean"
+      exceptionType:
+        type: "string"
+        description: "The ExceptionType type"
+        enum:
+        - "GEO"
+        - "IP"
+        - "URL"
+        - "CLIENT_ID"
+        - "SITE_ID"
+      values:
+        type: "array"
+        example: "10"
+        description: "The account ID"
+        items:
+          type: "string"
+  GeoDto:
+    type: "object"
+    required:
+    - "empty"
+    properties:
+      empty:
+        type: "boolean"
+      countries:
+        type: "array"
+        example: "[AE,AC]"
+        description: "Country Codes array"
+        items:
+          type: "string"
+      continents:
+        type: "array"
+        example: "[APAC,US]"
+        description: "Continent Codes array"
+        items:
+          type: "string"
+    description: "Country/Continent Codes arrays"
+  GetAssetsResponse:
+    type: "object"
+    properties:
+      value:
+        type: "array"
+        items:
+          $ref: "#/definitions/PolicyAssetMappingDto"
+      isError:
+        type: "boolean"
+        example: false
+        description: "States if an error has occurred"
+  GetLeanPoliciesResponse:
+    type: "object"
+    properties:
+      value:
+        type: "array"
+        items:
+          $ref: "#/definitions/LeanPolicyDto"
+      isError:
+        type: "boolean"
+        example: false
+        description: "States if an error has occurred"
+  GetLeanPolicyResponse:
+    type: "object"
+    properties:
+      value:
+        $ref: "#/definitions/LeanPolicyDto"
+      isError:
+        type: "boolean"
+        example: false
+        description: "States if an error has occurred"
+  GetPoliciesResponse:
+    type: "object"
+    properties:
+      value:
+        type: "array"
+        items:
+          $ref: "#/definitions/PolicyDto"
+      isError:
+        type: "boolean"
+        example: false
+        description: "States if an error has occurred"
+  GetPolicyResponse:
+    type: "object"
+    properties:
+      value:
+        $ref: "#/definitions/PolicyDto"
+      isError:
+        type: "boolean"
+        example: false
+        description: "States if an error has occurred"
+  LeanPolicyDto:
+    type: "object"
+    required:
+    - "description"
+    - "isMarkedAsDefault"
+    - "lastModified"
+    - "lastModifiedBy"
+    - "lastUserModified"
+    - "numberOfAssets"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        example: 10
+        description: "The Policy ID"
+      policyType:
+        type: "string"
+        example: "ACL"
+        description: "The Policy type"
+        enum:
+        - "ACL"
+        - "WHITELIST"
+      name:
+        type: "string"
+        example: "Block ip Policy"
+        description: "The Policy name"
+      description:
+        type: "string"
+      lastModified:
+        type: "string"
+        format: "date-time"
+      lastModifiedBy:
+        type: "integer"
+        format: "int64"
+      lastUserModified:
+        type: "string"
+      numberOfAssets:
+        type: "integer"
+        format: "int32"
+      isMarkedAsDefault:
+        type: "boolean"
+  PolicyAssetMappingDto:
+    type: "object"
+    required:
+    - "policyId"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        example: 10
+        description: "The PolicySettings ID"
+      policyId:
+        type: "integer"
+        format: "int64"
+      assetId:
+        type: "integer"
+        format: "int64"
+      assetType:
+        type: "string"
+        description: "The of an asset"
+        enum:
+        - "WEBSITE"
+  PolicyDataExceptionDto:
+    type: "object"
+    required:
+    - "id"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        example: 10
+        description: "The PolicyDataExceptions ID"
+      policySettingsId:
+        type: "integer"
+        format: "int64"
+        example: 55
+        description: "The PolicySettings ID"
+      data:
+        type: "array"
+        description: "The Filter/s of the exception"
+        items:
+          $ref: "#/definitions/ExceptionsDataDto"
+      comment:
+        type: "string"
+        example: "exclude all ips for pen tests"
+        description: "Comment describing the exception and its reason"
+        minLength: 0
+        maxLength: 500
+  PolicyDto:
+    type: "object"
+    required:
+    - "enabled"
+    - "name"
+    - "policySettings"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        example: 10
+        description: "The Policy ID"
+      name:
+        type: "string"
+        example: "Block ip Policy"
+        description: "The Policy name"
+        minLength: 1
+        maxLength: 100
+      description:
+        type: "string"
+        example: "This is policy blocks all requests from Europe"
+        description: "The Policy description"
+        minLength: 0
+        maxLength: 1500
+      enabled:
+        type: "boolean"
+        description: "Enable or Disable the policy"
+      accountId:
+        type: "integer"
+        format: "int64"
+        example: 10
+        description: "The Account Id Of the Policy"
+      policyType:
+        type: "string"
+        description: "The Policy type"
+        enum:
+        - "ACL"
+        - "WHITELIST"
+      policySettings:
+        type: "array"
+        items:
+          $ref: "#/definitions/PolicySettingsDto"
+      defaultPolicyConfig:
+        type: "array"
+        description: "The default accounts configuration this policy is applied on"
+        items:
+          $ref: "#/definitions/DefaultPolicyConfigDto"
+    description: "Policy meta data"
+  PolicyResult:
+    type: "object"
+    required:
+    - "value"
+    properties:
+      value:
+        type: "object"
+      isError:
+        type: "boolean"
+        example: false
+        description: "States if an error has occurred"
+  PolicySettingsDto:
+    type: "object"
+    required:
+    - "policyId"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        example: 10
+        description: "The PolicySettings ID"
+      policyId:
+        type: "integer"
+        format: "int64"
+      settingsAction:
+        type: "string"
+        example: "BLOCK"
+        description: "The PolicySettings action"
+        enum:
+        - "BLOCK"
+        - "ALLOW"
+        - "ALERT"
+        - "BLOCK_USER"
+        - "BLOCK_IP"
+        - "IGNORE"
+      policySettingType:
+        type: "string"
+        example: "IP/GEO/URL"
+        description: "The PolicySettings type"
+        enum:
+        - "IP"
+        - "GEO"
+        - "URL"
+      data:
+        description: "depends on the policy settings type"
+        $ref: "#/definitions/SettingsDataDto"
+      policyDataExceptions:
+        type: "array"
+        description: "The exception configuration on a given settings"
+        items:
+          $ref: "#/definitions/PolicyDataExceptionDto"
+  SettingsDataDto:
+    type: "object"
+    properties:
+      geo:
+        $ref: "#/definitions/GeoDto"
+      ips:
+        type: "array"
+        items:
+          type: "string"
+      urls:
+        type: "array"
+        items:
+          $ref: "#/definitions/UrlsDto"
+      headerValue:
+        type: "string"
+  SimpleTextErrorResponse:
+    type: "object"
+    properties:
+      value:
+        type: "string"
+      isError:
+        type: "boolean"
+        example: true
+        description: "States if an error has occurred"
+  UpdatePolicyDto:
+    type: "object"
+    required:
+    - "id"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        example: 10
+        description: "The Policy ID"
+      name:
+        type: "string"
+        example: "Block ip Policy"
+        description: "The Policy name"
+        minLength: 1
+        maxLength: 100
+      description:
+        type: "string"
+        example: "This is policy blocks all requests from Europe"
+        description: "The Policy description"
+        minLength: 0
+        maxLength: 1500
+      enabled:
+        type: "boolean"
+        description: "Enable or Disable the policy"
+      accountId:
+        type: "integer"
+        format: "int64"
+        example: 10
+        description: "The Account Id Of the Policy"
+      policyType:
+        type: "string"
+        description: "The Policy type"
+        enum:
+        - "ACL"
+        - "WHITELIST"
+      policySettings:
+        type: "array"
+        description: "The Policy settings configuration"
+        items:
+          $ref: "#/definitions/PolicySettingsDto"
+      defaultPolicyConfig:
+        type: "array"
+        description: "The default accounts configuration this policy is applied on"
+        items:
+          $ref: "#/definitions/DefaultPolicyConfigDto"
+    description: "Policy meta data"
+  UrlsDto:
+    type: "object"
+    properties:
+      pattern:
+        type: "string"
+        description: "URL pattern for rule"
+        enum:
+        - "EQUALS"
+        - "NOT_EQUALS"
+        - "NOT_CONTAINS"
+        - "PREFIX"
+        - "SUFFIX"
+        - "NOT_PREFIX"
+        - "NOT_SUFFIX"
+        - "CONTAINS"
+      url:
+        type: "string"
+        example: "/test"
+        description: "URL value"

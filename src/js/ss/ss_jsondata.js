@@ -12,20 +12,26 @@ var dbPortMapping = {
 	"Cache":[]
 }
 
-var SSPolicyTypeDisplayMapping = {
-	"webServiceCustomPolicies":'Web Service Custom',
-	"webApplicationCustomPolicies":'Web Application Custom'
-}
-
 // Use jsonParamMapping to override or hardcode param values/objects in the event they are not parsed from the WADL/XSD correctly
 // obj, array (any structure of nested objects), list (hard-coded set of values displayed in dropdown), string, boolean, int
 var SSapiParamMapping = {
+	"actionSetName":{
+		"getAPIurlMapping":{
+			"default":{
+				"url":"/v1/conf/actionSets",
+				"listName":"actionSets" // objectName, listName
+				// "id":"name",
+				// "displayText":"path",
+			}
+		}
+	},
 	"agentName":{
 		"getAPIurlMapping":{
 			"default":{
 				"url":"/v1/conf/agents",
-				"nestedItemName":"name",
-				"nestedItemLevel":1
+				"listName":"agents", // objectName, listName
+				"id":"name"
+				// "displayText":"path",
 			}
 		}
 	},
@@ -39,8 +45,9 @@ var SSapiParamMapping = {
 		"getAPIurlMapping":{
 			"default":{
 				"url":"/v1/conf/applicationGroups",
-				"nestedItemName":"name",
-				"nestedItemLevel":1
+				"listName":"application-groups", // objectName, listName
+				"id":"name"
+				// "displayText":"path",
 			}
 			//"default":"/v1/conf/applicationGroups/{applicationGroupName}"
 		}
@@ -62,8 +69,14 @@ var SSapiParamMapping = {
 		"getAPIurlMapping":{
 			"default":{
 				"url":"/v1/conf/agents/{agentName}/dataInterfaces",
-				"nestedItemName":"id",
-				"nestedItemLevel":1
+				"id":"id"
+			}
+		}
+	},
+	"dataSetName":{
+		"getAPIurlMapping":{
+			"default":{
+				"url":"/v1/conf/dataSets"
 			}
 		}
 	},
@@ -72,6 +85,14 @@ var SSapiParamMapping = {
 		"type":"array",
 		"values":[{"database":"finance","schema":"payroll","application":"financeApp"},{"database":"HR","schema":"","application":"HRApp"}],
 		"getAPIurlMapping":{}
+	},
+	"dbServiceName":{
+		"getAPIurlMapping":{
+			"default":{
+				"url":"/v1/conf/dbServices/{siteName}/{serverGroupName}",
+				"listName":"db-services"
+			}
+		}
 	},
 	"db-service-type":{
 		"name":"db-service-type",
@@ -83,6 +104,19 @@ var SSapiParamMapping = {
 		"getAPIurlMapping":{
 			"default":{
 				"url":"/v1/conf/dbApplications/{siteName}/{serverGroupName}/{dbServiceName}"
+			}
+		}
+	},
+	"dictionaryGroup":{
+		"type":"list",
+		"values":["myDictionaries","predefinedDictionaries","predefinedThreatradarDictionaries"],
+	},
+	"dictionaryName":{
+		"getAPIurlMapping":{
+			"default":{
+				"url":"/v1/conf/dictionaries",
+				"listName":"dictionaries",
+				"subLists":true
 			}
 		}
 	},
@@ -125,7 +159,8 @@ var SSapiParamMapping = {
 		"type":"string",
 		"getAPIurlMapping":{
 			"default":{
-				"url":"/v1/conf/gatewayGroups"
+				"url":"/v1/conf/gatewayGroups",
+				"listName":"gateway-groups"
 			}
 		}
 	},
@@ -152,8 +187,7 @@ var SSapiParamMapping = {
 		"getAPIurlMapping":{
 			"default":{
 				"url":"/v1/conf/serverGroups/{siteName}/{serverGroupName}/protectedIPs",
-				"nestedItemName":"ip",
-				"nestedItemLevel":1
+				"id":"ip",
 			}
 		}
 	},
@@ -202,6 +236,16 @@ var SSapiParamMapping = {
 		"values":["LearnAll","LearnAllExceptStatics","LearnUrlsWithParams"],
 		"getAPIurlMapping":{}
 	},
+	"name":{
+		"getAPIurlMapping":{
+			"default":{
+				"url":"/v1/conf/agentsMonitoringRules",
+				"listName":"policies",
+				"id":"policy-name",
+				"displayText":["policy-type"]
+			}
+		}
+	},
 	"mode":{
 		"name":"mode",
 		"type":"list",
@@ -245,11 +289,49 @@ var SSapiParamMapping = {
 	},
 	"policyName":{
 		"getAPIurlMapping":{
-			"/v1/conf/webServiceCustomPolicies/{policyName}":{
-				"url":"/v1/conf/webServiceCustomPolicies"
+			"/v1/conf/policies/security/firewallPolicies/{policyName}":{
+				"url":"/v1/conf/policies/security/firewallPolicies/",
+				"listName":"policies"
 			},
-			"/v1/conf/webApplicationCustomPolicies/{policyName}":{
-				"url":"/v1/conf/webApplicationCustomPolicies"
+			"/v1/conf/policies/security/http2ProtocolPolicies/{policyName}":{
+				"url":"/v1/conf/policies/security/http2ProtocolPolicies",
+				"listName":"policies"
+			},
+			"/v1/conf/policies/security/httpProtocolPolicies/{policyName}":{
+				"url":"/v1/conf/policies/security/httpProtocolPolicies",
+				"listName":"policies"
+			},			
+			"/v1/conf/policies/security/httpProtocolSignaturesPolicies/{policyName}":{
+				"url":"/v1/conf/policies/security/httpProtocolSignaturesPolicies/",
+				"listName":"policies"
+			},
+			"/v1/conf/policies/security/snippetInjectionPolicies/{policyName}":{
+				"url":"/v1/conf/policies/security/snippetInjectionPolicies/",
+				"listName":"policies"
+			},
+			"/v1/conf/policies/security/streamSignaturesPolicies/{policyName}":{
+				"url":"/v1/conf/policies/security/streamSignaturesPolicies/",
+				"listName":"policies"
+			},
+			"/v1/conf/policies/security/webApplicationCustomPolicies{policyName}":{
+				"url":"/v1/conf/policies/security/webApplicationCustomPolicies",
+				"listName":"customWebPolicies"
+			},
+			"/v1/conf/policies/security/webApplicationSignaturesPolicies/{policyName}":{
+				"url":"/v1/conf/policies/security/webApplicationSignaturesPolicies/",
+				"listName":"policies"
+			},			
+			"/v1/conf/policies/security/webCorrelationPolicies/{policyName}":{
+				"url":"/v1/conf/policies/security/webCorrelationPolicies/",
+				"listName":"policies"
+			},			
+			"/v1/conf/policies/security/webProfilePolicies/{policyName}":{
+				"url":"/v1/conf/policies/security/webProfilePolicies/",
+				"listName":"policies"
+			},			
+			"/v1/conf/policies/security/webServiceCustomPolicies/{policyName}":{
+				"url":"/v1/conf/policies/security/webServiceCustomPolicies",
+				"listName":"customWebPolicies"
 			},
 			"/v1/conf/auditPolicies/{policyName}":{
 				"url":"/v1/conf/auditPolicies"
@@ -316,7 +398,8 @@ var SSapiParamMapping = {
 	"serverGroupName":{
 		"getAPIurlMapping":{
 			"default":{
-				"url":"/v1/conf/serverGroups/{siteName}"
+				"url":"/v1/conf/serverGroups/{siteName}",
+				"listName":"server-groups"
 			}
 		}
 	},
@@ -333,10 +416,19 @@ var SSapiParamMapping = {
 			}
 		}
 	},
+	"signatureName":{
+		"getAPIurlMapping":{
+			"default":{
+				"url":"/v1/conf/dictionaries/{dictionaryGroup}/{dictionaryName}",
+				"listName":"signatures"
+			}
+		}
+	},
 	"siteName":{
 		"getAPIurlMapping":{
 			"default":{
-				"url":"/v1/conf/sites"
+				"url":"/v1/conf/sites",
+				"listName":"sites"
 			}
 		}
 	},
@@ -389,7 +481,8 @@ var SSapiParamMapping = {
 	"webServiceName":{
 		"getAPIurlMapping":{
 			"default":{
-				"url":"/v1/conf/webServices/{siteName}/{serverGroupName}"
+				"url":"/v1/conf/webServices/{siteName}/{serverGroupName}",
+				"listName":"web-services"
 			}
 		}
 	},

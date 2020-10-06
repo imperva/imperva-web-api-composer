@@ -1,0 +1,190 @@
+﻿{
+  "swagger": "2.0",
+  "info": {
+    "description": "This is an API for Imperva Audit Trail",
+    "version": "v1",
+    "title": "Audit Trail API",
+    "termsOfService": "https://www.imperva.com/legal/terms-of-use"
+  },
+  "host": "api.imperva.com",
+  "basePath": "/audit-trail",
+  "tags": [
+    {
+      "name": "v1"
+    }
+  ],
+  "schemes": [
+    "https"
+  ],
+  "security": [
+    {
+      "api_id": [],
+      "api_key": []
+    }
+  ],
+  "paths": {
+    "/v1/events": {
+      "get": {
+        "tags": [
+          "v1"
+        ],
+        "summary": "Get account audit events",
+        "description": "Get audit event information",
+        "operationId": "getAuditEvents",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "caid",
+            "in": "query",
+            "description": "Numeric identifier of the account to operate on. If not specified, operation will be performed on the account identified by the authentication parameters.",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "end",
+            "in": "query",
+            "description": "Latest time boundary (in milliseconds)",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "The number of objects to return in the response. Defaults to 50. Maximum is 100",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "The offset to start the query from. Default to 0",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "start",
+            "in": "query",
+            "description": "Earliest time boundary (in milliseconds)",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "The action that was performed in the account, such as ACCOUNT_LOGIN",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Legal response",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/audit_record"
+              }
+            }
+          },
+          "406": {
+            "description": "Error response",
+            "schema": {
+              "$ref": "#/definitions/error_response_wrapper"
+            }
+          }
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "api_id": {
+      "description": "An API ID created and managed in the Imperva Cloud Security Console and used for authentication",
+      "type": "apiKey",
+      "name": "api_id",
+      "in": "query"
+    },
+    "api_key": {
+      "description": "An API key created and managed in the Imperva Cloud Security Console and used for authentication",
+      "type": "apiKey",
+      "name": "api_key",
+      "in": "query"
+    }
+  },
+  "definitions": {
+    "audit_record": {
+      "type": "object",
+      "properties": {
+        "time": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Time of the audit event"
+        },
+        "type_key": {
+          "type": "string",
+          "description": "The name of the action that was performed in the account, such as ACCOUNT_LOGIN or SITE_ORIGIN_SERVERS_SETTINGS_CHANGED."
+        },
+        "type_description": {
+          "type": "string",
+          "description": "A description of the action that was performed in the account, such as logging in or changing site settings."
+        },
+        "user_id": {
+          "type": "string",
+          "description": "ID of the user who performed the action"
+        },
+        "account_id": {
+          "type": "string",
+          "description": "ID of the account that the action was done in"
+        },
+        "resource_type_key": {
+          "type": "string",
+          "example": "Site",
+          "description": "The type of the resource that the action was done on"
+        },
+        "resource_id": {
+          "type": "string",
+          "description": "ID of the resource that the action was done on"
+        },
+        "message": {
+          "type": "string",
+          "description": "Detailed description of the audit event"
+        },
+        "context_key": {
+          "type": "string",
+          "example": "UI",
+          "description": "The audit activity context. Can be one of the following: UI, API, INTERNAL_API, JOB, NA"
+        }
+      },
+      "description": "A single audit record"
+    },
+    "error_response_wrapper": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32",
+          "example": 1001,
+          "description": "Internal response code"
+        },
+        "message": {
+          "type": "string",
+          "example": "Required parameter 'start' is missing",
+          "description": "Response message"
+        },
+        "id": {
+          "type": "string",
+          "example": "Xu09cHAb",
+          "description": "Unique id to identify the error in the logs",
+          "readOnly": true
+        }
+      },
+      "description": "Object that describes a non valid response"
+    }
+  }
+}

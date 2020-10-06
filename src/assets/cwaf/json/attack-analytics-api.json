@@ -1,0 +1,1037 @@
+﻿{
+  "swagger": "2.0",
+  "info": {
+    "description": "This is an api for Imperva Attack Analytics",
+    "version": "v1",
+    "title": "Attack Analytics API",
+    "license": {
+      "name": "ISC",
+      "url": "https://opensource.org/licenses/ISC"
+    }
+  },
+  "host": "api.imperva.com",
+  "basePath": "/analytics",
+  "tags": [
+    {
+      "name": "v1"
+    }
+  ],
+  "schemes": [
+    "https"
+  ],
+  "security": [
+    {
+      "api_id": [],
+      "api_key": []
+    }
+  ],
+  "paths": {
+    "/v1/incidents": {
+      "get": {
+        "tags": [
+          "v1"
+        ],
+        "summary": "List of incidents",
+        "description": "Fetching attack analytics information",
+        "operationId": "getIncidentsByAccount",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "caid",
+            "in": "query",
+            "description": "Account ID. Unique identifier of the account to operate on.",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "from_timestamp",
+            "in": "query",
+            "description": "Earliest time boundary, specified as number of milliseconds since midnight 1970 (UNIX time * 1000).",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "to_timestamp",
+            "in": "query",
+            "description": "Latest time boundary, specified as number of milliseconds since midnight 1970 (UNIX time * 1000).",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Legal response",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Incident"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/incidents/{incidentId}/sample-events": {
+      "get": {
+        "tags": [
+          "v1"
+        ],
+        "summary": "Incident sample events",
+        "description": "Fetching attack analytics information",
+        "operationId": "getSampleEventsByIncident",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "caid",
+            "in": "query",
+            "description": "Unique identifier of the account to operate on",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "incidentId",
+            "in": "path",
+            "description": "The incident identifier",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Legal response",
+            "schema": {
+              "$ref": "#/definitions/Event"
+            }
+          },
+          "500": {
+            "description": "Error while fetching sample events",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponseWrapper"
+            }
+          }
+        }
+      }
+    },
+    "/v1/incidents/{incidentId}/stats": {
+      "get": {
+        "tags": [
+          "v1"
+        ],
+        "summary": "Incident statistics",
+        "description": "Fetching attack analytics information",
+        "operationId": "getIncidentStatsByAccount",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "caid",
+            "in": "query",
+            "description": "Account ID. Unique identifier of the account to operate on.",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "incidentId",
+            "in": "path",
+            "description": "The incident identifier.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Legal response",
+            "schema": {
+              "$ref": "#/definitions/IncidentStats"
+            }
+          },
+          "500": {
+            "description": "Error while fetching incident",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponseWrapper"
+            }
+          }
+        }
+      }
+    },
+    "/v1/insights": {
+      "get": {
+        "tags": [
+          "v1"
+        ],
+        "summary": "Insights per account",
+        "description": "Fetching attack analytics information",
+        "operationId": "getInsightsPerAccount",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "caid",
+            "in": "query",
+            "description": "Unique account id",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Legal response",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/GeneralInsightData"
+              }
+            }
+          },
+          "500": {
+            "description": "Error while fetching insights",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponseWrapper"
+            }
+          }
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "api_id": {
+      "description": "An API ID created and managed in the Imperva Cloud Security Console and used for authentication",
+      "type": "apiKey",
+      "name": "api_id",
+      "in": "query"
+    },
+    "api_key": {
+      "description": "An API key created and managed in the Imperva Cloud Security Console and used for authentication",
+      "type": "apiKey",
+      "name": "api_key",
+      "in": "query"
+    }
+  },
+  "definitions": {
+    "AttackedSiteInfo": {
+      "type": "object",
+      "properties": {
+        "site_id": {
+          "type": "integer",
+          "format": "int64",
+          "example": 12345678,
+          "description": "site id",
+          "readOnly": true
+        },
+        "site_name": {
+          "type": "string",
+          "example": "example.com",
+          "description": "site name",
+          "readOnly": true
+        }
+      }
+    },
+    "Cookie": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "auth_cookie",
+          "description": "Cookie name",
+          "readOnly": true
+        },
+        "value": {
+          "type": "string",
+          "example": "anything stored in the cookie",
+          "description": "Content of the cookie",
+          "readOnly": true
+        },
+        "domain": {
+          "type": "string",
+          "example": "acme.com",
+          "description": "Cookie source domain",
+          "readOnly": true
+        },
+        "expiration": {
+          "type": "string",
+          "example": "2019-06-26T11:16:59.000Z",
+          "description": "When the cookie is going to expire",
+          "readOnly": true
+        },
+        "path": {
+          "type": "string",
+          "example": "/subfolder",
+          "description": "Path under which this cookie is valid",
+          "readOnly": true
+        },
+        "persistent": {
+          "type": "boolean",
+          "example": true,
+          "description": "True if a cookie is persistent",
+          "readOnly": true
+        },
+        "secure": {
+          "type": "boolean",
+          "example": true,
+          "description": "True id cookie is secure",
+          "readOnly": true
+        },
+        "traceability": {
+          "type": "string",
+          "example": "aa",
+          "description": "Tracability of a cookie",
+          "readOnly": true
+        }
+      }
+    },
+    "CountryDominance": {
+      "type": "object",
+      "properties": {
+        "dominance": {
+          "type": "string",
+          "example": "STRONGLY_DOMINANT",
+          "description": "How dominant is the value among other values",
+          "enum": [
+            "STRONGLY_DOMINANT",
+            "DOMINANT",
+            "DISTRIBUTED",
+            "BLANK"
+          ]
+        },
+        "country": {
+          "type": "string",
+          "example": "Russia",
+          "description": "Country name"
+        },
+        "countryCode": {
+          "type": "string",
+          "example": "RU",
+          "description": "Country two character code"
+        }
+      }
+    },
+    "ErrorResponseWrapper": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "Xu09cHAb",
+          "description": "Unique id to identify the error in the logs",
+          "readOnly": true
+        },
+        "code": {
+          "type": "string",
+          "example": "500",
+          "description": "HTTP response code",
+          "readOnly": true,
+          "enum": [
+            "OK",
+            "CREATED",
+            "ACCEPTED",
+            "NO_CONTENT",
+            "RESET_CONTENT",
+            "PARTIAL_CONTENT",
+            "MOVED_PERMANENTLY",
+            "FOUND",
+            "SEE_OTHER",
+            "NOT_MODIFIED",
+            "USE_PROXY",
+            "TEMPORARY_REDIRECT",
+            "BAD_REQUEST",
+            "UNAUTHORIZED",
+            "PAYMENT_REQUIRED",
+            "FORBIDDEN",
+            "NOT_FOUND",
+            "METHOD_NOT_ALLOWED",
+            "NOT_ACCEPTABLE",
+            "PROXY_AUTHENTICATION_REQUIRED",
+            "REQUEST_TIMEOUT",
+            "CONFLICT",
+            "GONE",
+            "LENGTH_REQUIRED",
+            "PRECONDITION_FAILED",
+            "REQUEST_ENTITY_TOO_LARGE",
+            "REQUEST_URI_TOO_LONG",
+            "UNSUPPORTED_MEDIA_TYPE",
+            "REQUESTED_RANGE_NOT_SATISFIABLE",
+            "EXPECTATION_FAILED",
+            "PRECONDITION_REQUIRED",
+            "TOO_MANY_REQUESTS",
+            "REQUEST_HEADER_FIELDS_TOO_LARGE",
+            "INTERNAL_SERVER_ERROR",
+            "NOT_IMPLEMENTED",
+            "BAD_GATEWAY",
+            "SERVICE_UNAVAILABLE",
+            "GATEWAY_TIMEOUT",
+            "HTTP_VERSION_NOT_SUPPORTED",
+            "NETWORK_AUTHENTICATION_REQUIRED"
+          ]
+        },
+        "message": {
+          "type": "string",
+          "example": "Error fetching incident: ad2c8f40-3e82-11e9-354e-b114829e37eb",
+          "description": "Error description",
+          "readOnly": true
+        }
+      },
+      "description": "Object that describes a non valid response"
+    },
+    "Event": {
+      "type": "object",
+      "properties": {
+        "event_id": {
+          "type": "integer",
+          "format": "int64",
+          "example": 123,
+          "description": "Id of the event",
+          "readOnly": true
+        },
+        "method": {
+          "type": "string",
+          "example": "GET",
+          "description": "HTTP method that this request was sent with",
+          "readOnly": true
+        },
+        "host": {
+          "type": "string",
+          "example": "www.acme.com",
+          "description": "The host that this request was sent to",
+          "readOnly": true
+        },
+        "query_string": {
+          "type": "string",
+          "example": "id=1&base=true",
+          "description": "Query string arguments that were sent with this request",
+          "readOnly": true
+        },
+        "url_path": {
+          "type": "string",
+          "example": "/admin/login",
+          "description": "Path that this request accessed",
+          "readOnly": true
+        },
+        "response_code": {
+          "type": "string",
+          "example": "200",
+          "description": "HTTP response code of this request",
+          "readOnly": true
+        },
+        "session_id": {
+          "type": "string",
+          "example": "S5jb22Z4z8XE7C84lZe",
+          "description": "Id of request session",
+          "readOnly": true
+        },
+        "main_client_ip": {
+          "type": "string",
+          "example": "10.0.0.1",
+          "description": "Ip address that was identified as request source",
+          "readOnly": true
+        },
+        "country_code": {
+          "type": "array",
+          "example": "US",
+          "description": "Two digit country code that this request was sent from",
+          "readOnly": true,
+          "items": {
+            "type": "string"
+          }
+        },
+        "client_application": {
+          "type": "string",
+          "example": "BLEXBot Crawler",
+          "description": "Application that was identified by Imperva as the sender",
+          "readOnly": true
+        },
+        "declared_client_application": {
+          "type": "string",
+          "example": "Firefox",
+          "description": "Application that was declared as the sender",
+          "readOnly": true
+        },
+        "destination_ip": {
+          "type": "string",
+          "example": "10.0.0.1",
+          "description": "Ip address that event was sent to",
+          "readOnly": true
+        },
+        "referrer": {
+          "type": "string",
+          "example": "/",
+          "description": "The address of the webpage (i.e. the URI or IRI) that linked to the resource being requested",
+          "readOnly": true
+        },
+        "is_event_blocked": {
+          "type": "boolean",
+          "example": true,
+          "description": "Whether or not this event was blocked by Imperva WAF",
+          "readOnly": true
+        },
+        "violations": {
+          "type": "array",
+          "example": "[{'ruleDescription': 'Bad Bots','action': 'RULE_ACTION_BLOCK','violationContext': 'Path'}]",
+          "description": "The violations that this request was associated with",
+          "readOnly": true,
+          "items": {
+            "$ref": "#/definitions/Violation"
+          }
+        },
+        "headers": {
+          "type": "array",
+          "example": "[{key: 'Access-Control-Allow-Origin', value:'*', key: 'cache-control', value: 'no-cache'}]",
+          "description": "List of http headers in this request",
+          "readOnly": true,
+          "items": {
+            "$ref": "#/definitions/KeyValueStringString"
+          }
+        },
+        "cookies": {
+          "type": "array",
+          "example": "[{name:'acme_auth', value:'1234', domain:'acme.com', expiration:'2019-06-26T11:16:59.000Z', path:'/',}]",
+          "description": "Cookies passed in the request",
+          "readOnly": true,
+          "items": {
+            "$ref": "#/definitions/Cookie"
+          }
+        },
+        "reporter": {
+          "type": "string",
+          "example": "Cloud WAF",
+          "description": "Imperva WAF system that reported this request. Can be either 'Cloud WAF' or 'On-Premise WAF'",
+          "readOnly": true
+        },
+        "creation_time": {
+          "type": "string",
+          "example": "1561727125000",
+          "description": "Time when this event occurred in milliseconds",
+          "readOnly": true
+        }
+      },
+      "description": "Single event that participated in the attack"
+    },
+    "GeneralInsightData": {
+      "type": "object",
+      "properties": {
+        "attacked_site_info": {
+          "description": "attacked site information",
+          "readOnly": true,
+          "$ref": "#/definitions/AttackedSiteInfo"
+        }
+      }
+    },
+    "Incident": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "ad2c8f40-3e82-11e9-354e-b114829e37eb",
+          "description": "Unique incident identifier",
+          "readOnly": true
+        },
+        "main_sentence": {
+          "type": "string",
+          "example": "Bad Bots attack from United States using hacking_tool",
+          "description": "Short description of the attack",
+          "readOnly": true
+        },
+        "secondary_sentence": {
+          "type": "string",
+          "example": "On host \"acme.com\" targeting an empty URL resource extension",
+          "description": "Secondary sentence with more details",
+          "readOnly": true
+        },
+        "events_count": {
+          "type": "integer",
+          "format": "int64",
+          "example": 520,
+          "description": "Number of http events participated in the attack",
+          "readOnly": true
+        },
+        "events_blocked_percent": {
+          "type": "integer",
+          "format": "int64",
+          "example": 20,
+          "description": "Percentage of http events that were blocked by Imperva",
+          "readOnly": true
+        },
+        "first_event_time": {
+          "type": "integer",
+          "format": "int64",
+          "example": 1548073343000,
+          "description": "Timestamp (in milliseconds) of first event in the attack",
+          "readOnly": true
+        },
+        "last_event_time": {
+          "type": "integer",
+          "format": "int64",
+          "example": 1548073343000,
+          "description": "Timestamp (in milliseconds) of last event in the attack",
+          "readOnly": true
+        },
+        "severity": {
+          "type": "string",
+          "example": "MINOR",
+          "description": "Attack severity as set by the system",
+          "readOnly": true
+        },
+        "severity_explanation": {
+          "type": "string",
+          "example": "Highly targeted",
+          "description": "Explanation on why attack receive its severity",
+          "readOnly": true
+        },
+        "dominant_attack_country": {
+          "description": "Country that more than 50% of attacks came from",
+          "readOnly": true,
+          "$ref": "#/definitions/CountryDominance"
+        },
+        "dominant_attack_ip": {
+          "description": "Ip that more than 50% of attacks came from",
+          "readOnly": true,
+          "$ref": "#/definitions/IpDominance"
+        },
+        "dominant_attacked_host": {
+          "description": "Host that was attacked by more than 50% of events",
+          "readOnly": true,
+          "$ref": "#/definitions/ShinyObject"
+        },
+        "dominant_attack_tool": {
+          "description": "Tool that was used in more than 50% of attacks",
+          "readOnly": true,
+          "$ref": "#/definitions/ToolDominance"
+        },
+        "dominant_attack_violation": {
+          "type": "string",
+          "example": "Backdoor",
+          "description": "Violation in more than 50% of attacks",
+          "readOnly": true
+        },
+        "only_custom_rule_based": {
+          "type": "boolean",
+          "example": true,
+          "description": "True if all events of the incident were created due to user defined rules",
+          "readOnly": true
+        },
+        "how_common": {
+          "type": "string",
+          "example": "INDUSTRY",
+          "description": "Describes if this incident was spotted on other Imperva customers",
+          "readOnly": true
+        }
+      },
+      "description": "Single attack analytics incident"
+    },
+    "IncidentStats": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "ad2c8f40-3e82-11e9-354e-b114829e37eb",
+          "description": "Unique incident identifier",
+          "readOnly": true
+        },
+        "events_count": {
+          "type": "integer",
+          "format": "int64",
+          "example": 520,
+          "description": "Number of http events participated in the attack",
+          "readOnly": true
+        },
+        "blocked_events_timeseries": {
+          "type": "array",
+          "example": "[{timestamp: '1553420378000', value: 5}, {timestamp: '1553420978000', value: 10}]",
+          "description": "Timeseries of blocked event counts",
+          "items": {
+            "$ref": "#/definitions/KeyValueLongInteger"
+          }
+        },
+        "alerted_events_timeseries": {
+          "type": "array",
+          "example": "[{timestamp: '1553420378000', value: 2}, {timestamp: '1553420978000', value: 12}]",
+          "description": "Timeseries of alerted event counts",
+          "items": {
+            "$ref": "#/definitions/KeyValueLongInteger"
+          }
+        },
+        "attack_ips": {
+          "type": "array",
+          "description": "List of IP addresses that participated in the attack",
+          "items": {
+            "$ref": "#/definitions/KeyValueIpObjectLong"
+          }
+        },
+        "attack_agents": {
+          "type": "array",
+          "example": "[{key:'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683 Safari/537.36', 5},{key: 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0) AddSugarSpiderBot www.idealobserver.com', 10}]",
+          "description": "List of user-agents that participated in the attack",
+          "items": {
+            "$ref": "#/definitions/KeyValueStringLong"
+          }
+        },
+        "attack_tools": {
+          "type": "array",
+          "example": "[{key: 'AddSugarSpiderBot', count: 5}, {key: 'Google bot', count: 10}]",
+          "description": "List of tools that were used in the attack",
+          "items": {
+            "$ref": "#/definitions/KeyValueStringLong"
+          }
+        },
+        "attack_tool_types": {
+          "type": "array",
+          "example": "[{key: 'MALICIOUS_TOOL', count: 5}, {key: 'CLAPP_TYPE_UNKNOWN', count: 10}]",
+          "description": "List of tool types that were used in the attack",
+          "items": {
+            "$ref": "#/definitions/KeyValueStringLong"
+          }
+        },
+        "violations_blocked": {
+          "type": "array",
+          "example": "[{key: '1553420378000', count: 5}, {key: '1553420978000', count: 10}]",
+          "description": "A list of blocked violations that were identified in the incident",
+          "items": {
+            "$ref": "#/definitions/KeyValueStringLong"
+          }
+        },
+        "violations_alerted": {
+          "type": "array",
+          "example": "[{key: '1553420378000', count: 2}, {key: '1553420978000', count: 15}]",
+          "description": "A list of alerted violations that were identified in the incident",
+          "items": {
+            "$ref": "#/definitions/KeyValueStringLong"
+          }
+        },
+        "attack_urls": {
+          "type": "array",
+          "example": "[{key: '/admin.php', count: 5}, {key: '/', count: 10}]",
+          "description": "List of URLs that were attacked during this incident",
+          "items": {
+            "$ref": "#/definitions/KeyValueStringLong"
+          }
+        },
+        "attacked_hosts": {
+          "type": "array",
+          "example": "[{key: 'acme.com', count: 5}, {key: 'm.acme.com', count: 10}]",
+          "description": "List of hosts that were attacked during this incident",
+          "items": {
+            "$ref": "#/definitions/KeyValueStringLong"
+          }
+        },
+        "attack_class_c": {
+          "type": "array",
+          "example": "[{key: '1.0.0', count: 5}, {key: '2.0.0', count: 10}]",
+          "description": "List of Class C subnets that participated in the attack",
+          "items": {
+            "$ref": "#/definitions/KeyValueStringLong"
+          }
+        },
+        "attack_geolocations": {
+          "type": "array",
+          "example": "[{key: 'Oregon US', count: 5}, {key: 'Poltavska Oblast', count: 10}]",
+          "description": "List of geographical areas that events came from",
+          "items": {
+            "$ref": "#/definitions/KeyValueStringLong"
+          }
+        },
+        "waf_origins_of_alerts": {
+          "type": "array",
+          "example": "[{site_id: 123, site_name:'acme.com', violation:'Bad Bots', count: 1},{site_id: 124, site_name:'www.acme.com', violation:'DDOS', count: 4}]",
+          "description": "List of WAF servers that alerted events",
+          "items": {
+            "$ref": "#/definitions/SiteViolation"
+          }
+        },
+        "waf_origins_of_blocks": {
+          "type": "array",
+          "example": "[{site_id: 123, site_name:'acme.com', violation:'Bad Bots', count: 1},{site_id: 124, site_name:'www.acme.com', violation:'DDOS', count: 4}]",
+          "description": "List of WAF servers that blocked events",
+          "items": {
+            "$ref": "#/definitions/SiteViolation"
+          }
+        },
+        "waf_origins_entities": {
+          "type": "array",
+          "example": "[{site_id: 123, site_name:'acme.com', violation:'', count: 1},{site_id: 124, site_name:'www.acme.com', violation:'', count: 4}]",
+          "description": "List of WAF servers that events came through",
+          "items": {
+            "$ref": "#/definitions/Site"
+          }
+        },
+        "rules_list": {
+          "type": "array",
+          "example": "[{key: '12.1.0', count: 5}, {key: '8.2.0', count: 10}]",
+          "description": "List of rules that triggered this incident",
+          "items": {
+            "$ref": "#/definitions/KeyValueStringLong"
+          }
+        },
+        "associated_cve": {
+          "type": "array",
+          "example": "['CVE-2020-8417', 'CVE-2017-6090']",
+          "description": "List of known CVEs associated with this incident",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "IpDominance": {
+      "type": "object",
+      "properties": {
+        "dominance": {
+          "type": "string",
+          "example": "STRONGLY_DOMINANT",
+          "description": "How dominant is the value among other values",
+          "enum": [
+            "STRONGLY_DOMINANT",
+            "DOMINANT",
+            "DISTRIBUTED",
+            "BLANK"
+          ]
+        },
+        "ip": {
+          "type": "string",
+          "example": "192.168.0.1",
+          "description": "IP address"
+        },
+        "reputation": {
+          "type": "array",
+          "example": "['comment-spammer']",
+          "description": "IP address",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "IpObject": {
+      "type": "object",
+      "properties": {
+        "ip": {
+          "type": "string",
+          "example": "192.168.0.1",
+          "description": "Ip address"
+        },
+        "reputation": {
+          "type": "array",
+          "example": "['comment-spammers','sql-injection']",
+          "description": "List of ip address metadata tags that would identify its malicious usage",
+          "items": {
+            "type": "string"
+          }
+        },
+        "countryCode": {
+          "type": "string",
+          "example": "RU",
+          "description": "2 character code of IPs country"
+        }
+      }
+    },
+    "KeyValue": {
+      "type": "object",
+      "required": [
+        "key",
+        "value"
+      ],
+      "properties": {
+        "key": {
+          "type": "object"
+        },
+        "value": {
+          "type": "object"
+        }
+      }
+    },
+    "KeyValueIpObjectLong": {
+      "type": "object",
+      "required": [
+        "key",
+        "value"
+      ],
+      "properties": {
+        "key": {
+          "$ref": "#/definitions/IpObject"
+        },
+        "value": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "KeyValueLongInteger": {
+      "type": "object",
+      "required": [
+        "key",
+        "value"
+      ],
+      "properties": {
+        "key": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "value": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "KeyValueStringLong": {
+      "type": "object",
+      "required": [
+        "key",
+        "value"
+      ],
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "value": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "KeyValueStringString": {
+      "type": "object",
+      "required": [
+        "key",
+        "value"
+      ],
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      }
+    },
+    "ShinyObject": {
+      "type": "object",
+      "properties": {
+        "dominance": {
+          "type": "string",
+          "example": "STRONGLY_DOMINANT",
+          "description": "How dominant is the value among other values",
+          "enum": [
+            "STRONGLY_DOMINANT",
+            "DOMINANT",
+            "DISTRIBUTED",
+            "BLANK"
+          ]
+        },
+        "value": {
+          "type": "string",
+          "example": "acme.com",
+          "description": "Value in key/value pair",
+          "readOnly": true
+        }
+      }
+    },
+    "Site": {
+      "type": "object",
+      "required": [
+        "count",
+        "siteId",
+        "siteName"
+      ],
+      "properties": {
+        "siteId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "siteName": {
+          "type": "string"
+        },
+        "count": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "SiteViolation": {
+      "type": "object",
+      "required": [
+        "count",
+        "siteId",
+        "siteName",
+        "violation"
+      ],
+      "properties": {
+        "siteId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "siteName": {
+          "type": "string"
+        },
+        "count": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "violation": {
+          "type": "string"
+        }
+      }
+    },
+    "ToolDominance": {
+      "type": "object",
+      "properties": {
+        "dominance": {
+          "type": "string",
+          "example": "STRONGLY_DOMINANT",
+          "description": "How dominant is the value among other values",
+          "enum": [
+            "STRONGLY_DOMINANT",
+            "DOMINANT",
+            "DISTRIBUTED",
+            "BLANK"
+          ]
+        },
+        "name": {
+          "type": "string",
+          "example": "Google bot",
+          "description": "Tool's name",
+          "readOnly": true
+        },
+        "type": {
+          "type": "string",
+          "example": "Suspicious",
+          "description": "Tool's type",
+          "readOnly": true
+        }
+      }
+    },
+    "Violation": {
+      "type": "object",
+      "properties": {
+        "rule_description": {
+          "type": "string",
+          "example": "Bad Bots",
+          "description": "Violation that this rule relates to",
+          "readOnly": true
+        },
+        "action": {
+          "type": "string",
+          "example": "RULE_ACTION_BLOCK",
+          "description": "The result of this rule action",
+          "readOnly": true
+        },
+        "violation_context": {
+          "type": "string",
+          "example": "Path",
+          "description": "Context on which the violation was applied",
+          "readOnly": true
+        }
+      }
+    }
+  }
+}

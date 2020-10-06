@@ -8,80 +8,6 @@ var ss_action_sel = '#SecureSphereAPI #SSActions';
 var ss_method_sel = '#SecureSphereAPI #SSmethod';
 var ss_session_sel = '#SecureSphereAPI #jsessionid';
 var ss_data_sel = '#SecureSphereAPI #SSdata';
-
-/*
-Legacy:
-getSSActions
-	{url}
-		methods[]
-			{method}
-				jsonParams[]
-					{name,type,values}
-				urlParams[]
-					{name,type,values}
-SSapiParamMapping
-	{paramName}
-		"name":"aliasName",
-		"type":"string",
-		"values":"AWS Default",
-		"getAPIurlMapping":{
-			"default":{
-				"url":"/v1/conf/applicationGroups",
-				"nestedItemName":"name"
-			}
-			OR
-
-			"/v1/conf/webServiceCustomPolicies/{policyName}":{
-				"url":"/v1/conf/webServiceCustomPolicies"
-			},
-			"/v1/conf/webApplicationCustomPolicies/{policyName}":{
-				"url":"/v1/conf/webApplicationCustomPolicies"
-			},
-			"/v1/conf/auditPolicies/{policyName}":{
-				"url":"/v1/conf/auditPolicies"
-			}
-		}
-
-SSSwagger new structure
-	basePath	"/SecureSphere/api"
-	definitions {
-		ServerGroupDTO
-			properties	Object { name: {…}, operationMode: {…} }
-			name	Object { type: "string" }
-			type	"string"
-			operationMode	Object { type: "string" }
-			type	"string"
-			type
-	}
-	paths	{
-		"/v1/status/alarms/active":
-			"post"
-				operationId	"createServerGroup"
-				parameters [{
-					in	"path"
-					name	"siteName"
-					required	true
-					type	"string"
-				},{
-					in	"body"
-					name	"body"
-					required	false
-					schema	Object { "$ref": "#/definitions/ServerGroupDTO" }
-					$ref	"#/definitions/ServerGroupDTO"
-				},{
-					in	"query"
-					name	"gatewayGroup"
-					required	false
-					type	"string"
-				}]
-				produces	Array [ "application/json" ]
-				responses
-	schemes
-
-
-
-*/
-
 var xsd = {"complexTypes":{},"elements":{}};
 var SScurUrlParamsAry = [];
 var SScurUrlParamsIndex = 0;
@@ -95,7 +21,7 @@ $().ready(function() {
 	$('#SecureSphereAPI #siteName').change(function(){
 		SSrenderJSONParamsHTML();
 	});
-	$('#ss_policies_refresh').button({iconPosition: "beginning", icon: "ui-icon-refresh"}).click(function(){ getAllWAFPolicies(); });
+	$('#ss_policies_refresh').button({iconPosition: "beginning", icon: "ui-icon-refresh"}).click(function(){ getAllWAFSecurityPoliciesInit(); });
 	$('#SecureSphereAPI #SSJSONparams input, #SecureSphereAPI #SSJSONparams textarea').blur(function(){ SSUpdateJSON(); });
 	$('#SecureSphereAPI #SSJSONparams select').change(function(){ SSUpdateJSON(); });
 	$('#SecureSphereAPI #SSrequestUrl').keyup(function(){ checkForm(); SSUpdateCURL(); });
@@ -110,12 +36,9 @@ $().ready(function() {
 
 // Main AJAX function to proxy API calls
 function makeSSCall(action,method,callback,postDataObj) {
-	// debugger
 	if (action!==undefined || checkForm()) {
-		// debugger
 		var postData = $(ss_data_sel).val(); // postDataObj = JSON.parse($(ss_data_sel).val());
 		if (postDataObj!==undefined) postData = JSON.stringify(postDataObj);
-		// debugger
 		$('#SecureSphereAPI #SSresult').val('processing...');
 		var requestUrl = $('#SecureSphereAPI #MXServer').val()+$(ss_action_sel).val();
 		if (action!==undefined) {
@@ -139,9 +62,10 @@ function makeSSCall(action,method,callback,postDataObj) {
 				var isValidSession = true;
 				try { if (data['errors'][0]["description"]=="User is not logged in") { isValidSession=false; login(); } } catch(err) {}
 				responseObj = data;
-				$('#SecureSphereAPI #SSresult').val(JSON.stringify(data));
 				if (callback!=undefined) {
 					return callback(data);
+				} else {
+					$('#SecureSphereAPI #SSresult').val(JSON.stringify(data));
 				}
 			}
 		});
@@ -290,7 +214,7 @@ function SSchangeAction() {
 				}
 			});
 		});
-		$("#SecureSphereAPI #SSmethod option:not([disabled]):first").attr('selected', 'selected');
+		$("#SecureSphereAPI #SSmethod").val($("#SecureSphereAPI #SSmethod option:not([disabled]):first").val());
 		var curMethodObj = SSSwagger.paths[$("#SecureSphereAPI #SSActions").val()][$(ss_method_sel).val()];
 		if (curMethodObj.queryParams!=undefined) {
 			if (curMethodObj.queryParams.index.length>0) $('#SecureSphereAPI #SSrequestUrl').val($('#SecureSphereAPI #SSrequestUrl').val()+"?");
@@ -388,7 +312,7 @@ function SSUpdateJSON(){
 function SSUpdateCURL(){
 	if (!$('#SecureSphereAPI #SSrequestUrl').hasClass('errors')) {
 		//alert("$('#SecureSphereAPI #SSrequestUrl').hasClass('errors')="+$('#SecureSphereAPI #SSrequestUrl').hasClass('errors'));
-		var str = 'curl -ik -X '+$(ss_method_sel).val().toUpperCase()+' ';
+		var str = 'curl -ik -X '+$(ss_method_sel).prop("value").toUpperCase()+' ';
 		if ($(ss_session_sel).val()=="") {
 			str += '-H "Authorization: Basic '+btoa($('#SecureSphereAPI #SSusername').val()+":"+$('#SecureSphereAPI #SSpassword').val())+'"';
 		} else {
@@ -486,7 +410,7 @@ function loadSwagger(){
 			for (var i=0; i<actionkeys.length; i++) { $(ss_action_sel).append('<option value="'+actionkeys[i]+'">'+actionkeys[i]+'</option>'); }
 			$.gritter.add({ title: 'Success', text: "Loaded WADL and populated actions"});
 			SSchangeAction();
-			getAllWAFPolicies();
+			getAllWAFSecurityPoliciesInit();
 		}
 	});
 }
@@ -519,7 +443,7 @@ function SSgetURLParams(curObj) {
 		if (SSapiParamMapping[curParam]!=undefined) {
 			var curAction = null;
 			try { curAction = SSresolveActionPlaceHolders(SSapiParamMapping[curParam].getAPIurlMapping.default.url); } catch(err) {}
-			if (curAction==null && SSapiParamMapping[curParam].getAPIurlMapping[$(ss_action_sel).val()]!=undefined) curAction = SSresolveActionPlaceHolders(SSapiParamMapping[curParam].getAPIurlMapping[$(ss_action_sel).val()].url);
+			if (curAction==null && SSapiParamMapping[curParam].getAPIurlMapping!=undefined && SSapiParamMapping[curParam].getAPIurlMapping[$(ss_action_sel).val()]!=undefined) curAction = SSresolveActionPlaceHolders(SSapiParamMapping[curParam].getAPIurlMapping[$(ss_action_sel).val()].url);
 			if (curAction!=null && curAction!=undefined) {
 				makeSSCall(curAction,'GET',SSrenderURLParams,{});
 			} else {
@@ -533,6 +457,8 @@ function SSgetURLParams(curObj) {
 				} else if (SSapiParamMapping[curParam].type=='string') {
 					$('#SecureSphereAPI #'+SScurUrlParamsAry[SScurUrlParamsIndex].name).html('<option value="'+SSapiParamMapping[curParam].values+'">'+SSapiParamMapping[curParam].values+'</option>');
 				}
+				SScurUrlParamsIndex++;
+				SSgetURLParams(curObj);
 			}
 		} else {
 			for (var i=(SScurUrlParamsIndex); i<SScurUrlParamsAry.length; i++) {
@@ -551,37 +477,96 @@ function setCurrentParamIndex(obj){
 	return curIndex;
 }
 
-function SSrenderURLParams(data){
-	var tmpAry = {"list":[]};
-	try { 
-		if (SSapiParamMapping[SScurUrlParamsAry[SScurUrlParamsIndex].name].getAPIurlMapping.default!=undefined){
-			if (SSapiParamMapping[SScurUrlParamsAry[SScurUrlParamsIndex].name].getAPIurlMapping.default.nestedItemName!=undefined) {
-				var nestedMappingObj = SSapiParamMapping[SScurUrlParamsAry[SScurUrlParamsIndex].name].getAPIurlMapping.default;
-				$.each(data,function(i, ary){
-					if (nestedMappingObj.nestedItemLevel==0) { 
-						tmpAry.list.push(ary[SSapiParamMapping[SScurUrlParamsAry[SScurUrlParamsIndex].name].getAPIurlMapping.default.nestedItemName]); 
-					} else if (nestedMappingObj.nestedItemLevel==1 && ary.length!=0) { 
-						$.each(ary,function(i, obj){ 
-							tmpAry.list.push(obj[SSapiParamMapping[SScurUrlParamsAry[SScurUrlParamsIndex].name].getAPIurlMapping.default.nestedItemName]); 
-						}); 
-					} 
+function SSrenderURLParams(response){
+	if (SSapiParamMapping[SScurUrlParamsAry[SScurUrlParamsIndex].name]!=undefined){
+		var curParamObj = SSapiParamMapping[SScurUrlParamsAry[SScurUrlParamsIndex].name];
+		var paramActionObj = (curParamObj.getAPIurlMapping.default!=undefined) ? curParamObj.getAPIurlMapping.default : (curParamObj.getAPIurlMapping[$("#SSActions").val()]!=undefined) ? curParamObj.getAPIurlMapping[$("#SSActions").val()] : null;
+		if (paramActionObj!=null) {
+			var paramActionObjIndex = [];
+			var paramActionObjAry = {};
+			var input_id = SScurUrlParamsAry[SScurUrlParamsIndex].name;
+			$("#"+input_id).html('');
+			if (paramActionObj.listName!=undefined) {
+				if (paramActionObj.subLists==true) {
+					var selectSubGroupName = null;
+					$.each(response[paramActionObj.listName], function(subGroupName,subGroupAry) {
+						$("#"+input_id).append('<optgroup label="'+subGroupName+'">'); 
+						$.each(subGroupAry, function(i,item) {
+							$("#"+input_id).append('<option title="'+item+'" value="'+item+'">'+item+'</option>'); 
+						});
+						$("#"+input_id).append('</optgroup>'); 
+					});	
+				} else {
+					$.each(response[paramActionObj.listName], function(i,subGroupObj) {	
+						var displayText = getSSParamDisplayText(subGroupObj,paramActionObj);
+						var paramIndex = displayText+((paramActionObj.id!=undefined) ? '_'+subGroupObj[paramActionObj.id] : '');
+						paramActionObjIndex.push(paramIndex);
+						paramActionObjAry[paramIndex] = subGroupObj;
+					});
+					paramActionObjIndex.sort();
+					$.each(paramActionObjIndex, function(i,paramActionIdStr) {	
+						var subGroupObj = paramActionObjAry[paramActionIdStr];
+						var displayText = getSSParamDisplayText(subGroupObj,paramActionObj);
+						var displayValue = (paramActionObj.id==undefined) ? displayText : subGroupObj[paramActionObj.id];
+						$("#"+input_id).append('<option title="'+displayText+'" value="'+displayValue+'">'+displayText+'</option>'); 
+					});
+				}
+			} else if (paramActionObj.objectName!=undefined) {
+				var subObj = response[paramActionObj.objectName];
+				var displayText = getSSParamDisplayText(subObj,subObj);
+				var displayValue = (subObj.id==undefined) ? displayText : subGroupObj[subObj.id];
+				$("#"+input_id).append('<option title="'+((displayText==displayValue) ? displayText : displayText+' ('+displayValue+')')+'" value="'+displayValue+'">'+((displayText==displayValue) ? displayText : displayText+' ('+displayValue+')')+'</option>');
+			} else if (Array.isArray(response)) {
+				$.each(response, function(i,subGroupObj) {
+					var displayText = getSSParamDisplayText(subGroupObj,paramActionObj);
+					paramActionObjIndex.push(displayText+'_'+subGroupObj[paramActionObj.id]);
+					paramActionObjAry[displayText+'_'+subGroupObj[paramActionObj.id]] = subGroupObj;
 				});
-				data = tmpAry;
-			} 
+				paramActionObjIndex.sort();
+				$.each(paramActionObjIndex, function(i,paramActionIdStr) {	
+					var subGroupObj = paramActionObjAry[paramActionIdStr];
+					var displayText = getSSParamDisplayText(subGroupObj,paramActionObj);
+					var displayValue = (paramActionObj.id==undefined) ? displayText : subGroupObj[paramActionObj.id];
+					$("#"+input_id).append('<option title="'+((displayText==displayValue) ? displayText : displayText+' ('+displayValue+')')+'" value="'+displayValue+'">'+((displayText==displayValue) ? displayText : displayText+' ('+displayValue+')')+'</option>');
+				});	
+			} else {
+				if (response[paramActionObj.id]!=undefined) $("#"+input_id).append('<option value="'+response[paramActionObj.id]+'">'+response[paramActionObj.displayText]+' ('+response[paramActionObj.id]+')</option>');
+			}
 		}
-	} catch(err) {}	
-	populateSelect(SScurUrlParamsAry[SScurUrlParamsIndex].name,data);
+	}
+	
+	// populateSelect(SScurUrlParamsAry[SScurUrlParamsIndex].name,data);
 	$("#SecureSphereAPI #"+SScurUrlParamsAry[SScurUrlParamsIndex].name).unbind().change(function(){ SSgetURLParams(this); });
-	if (SScurUrlParamsAry[SScurUrlParamsIndex].name=='policyName') {
-		$('#SecureSphereAPI #policyName').val(curLoadedPolicyName);
-		$(ss_method_sel).val('GET');
+	if (SScurUrlParamsAry[SScurUrlParamsIndex].name=='policyName' && curLoadedPolicyName!=null) {
+		$('#SecureSphereAPI #policyName').val();
+		$(ss_method_sel).val('get');
 		$('#SecureSphereAPI #policyName_btn').trigger('click');
 		SSUpdateJSON();
-		$('#SecureSphereAPI #SSexecute').trigger('click');
+		curLoadedPolicyName = null;
+		$('#SecureSphereAPI #SSexecute').trigger('click');		
 	}
 	SScurUrlParamsIndex++;
 	SSgetURLParams();
 }
+
+function getSSParamDisplayText(record,paramActionObj){
+	var displayText = '';
+	if (paramActionObj.displayText!=undefined) {
+		if (Array.isArray(paramActionObj.displayText)) {
+			$.each(paramActionObj.displayText, function(i,attrName) {
+				if (displayText!='') displayText += ' - ' 
+				displayText += record[attrName];
+			});
+			displayText += (paramActionObj.id!=undefined) ? ' ('+record[paramActionObj.id]+')' : '';
+		} else {
+			displayText = record[paramActionObj.displayText];
+		}
+	} else {
+		displayText = (paramActionObj.id!=undefined) ? record[paramActionObj.id] : record;
+	}
+	return displayText;
+}
+
 
 function SSrenderJSONParamsHTML(){
 	$("#SecureSphereAPI #SSJSONparams table").html('');

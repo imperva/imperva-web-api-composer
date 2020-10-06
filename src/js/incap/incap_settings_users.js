@@ -76,13 +76,16 @@ function set_renderIncapUserHTML(usrObj){
 
 function set_incapSaveUser(obj) {
 	$(obj).parent().parent().addClass("current");
+	var auth = {
+		"api_key": $('#incap_users_tbl tr.current .api_key').val(),
+		"api_id": $('#incap_users_tbl tr.current .api_id').val(),
+		"method": "query"
+	}
 	var postDataObj = {
-		"api_key":$('#incap_users_tbl tr.current .api_key').val(),
-		"api_id":$('#incap_users_tbl tr.current .api_id').val(),
-		"account_id":$('#incap_users_tbl tr.current .account_id').val()
+		"account_id": $('#incap_users_tbl tr.current .account_id').val()
 	}
 	$.gritter.add({ title: 'Saving User', text: 'Testing credentials on account ID "'+$('#incap_users_tbl tr.current .api_id').val()+'".'});
-	makeIncapCall('/api/prov/v1/account','POST',set_incapSaveUserResponse,postDataObj,'set');
+	makeIncapCall(getSwHost("Cloud WAF API (v1)")+'/api/prov/v1/account','POST',auth,set_incapSaveUserResponse,{"postData":postDataObj},'set',"application/x-www-form-urlencoded");
 }
 
 function set_incapSaveUserResponse(response){
@@ -96,7 +99,8 @@ function set_incapSaveUserResponse(response){
 			"account_id":$('#incap_users_tbl tr.current .account_id').val(),
 			"api_id":$('#incap_users_tbl tr.current .api_id').val(),
 			"api_key":$('#incap_users_tbl tr.current .api_key').val(),
-			"plan_name": response.plan_name.substr(0,10)
+			"plan_name": response.plan_name.substr(0,10),
+			"sub_account_action": subAccountActionMappingByPlan[response.plan_name.substr(0,10).toLowerCase()]
 		}
 		INCAP_USERS[$('#incap_users_tbl tr.current .api_id').val()] = usrObj;
 		localStorage.setItem('INCAP_USERS',JSON.stringify(INCAP_USERS));

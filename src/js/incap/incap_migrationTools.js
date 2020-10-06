@@ -186,20 +186,23 @@ function renderMigrationUserSites(){
     if (!incap_migUserSites.processing) {        
         INCAP_USERS = JSON.parse(localStorage.getItem('INCAP_USERS'));
         if ($("#incap_migrationAction").val()!='') {
-            var curConfig = INCAP_USERS[$("#incap_migrationAction").val()];
-            delete curConfig.user_name;
-            curConfig.account_id = $('#incap_migrationAction_accountIDList').val();
-            curConfig.page_size = $('#incap_migrationAction_page_size').val();
-            curConfig.page_num = $('#incap_migrationAction_page_num').val();
+            var auth = INCAP_USERS[$("#incap_migrationAction").val()];
+            delete auth.user_name;
+            auth.method = "query";
+            var postParams = {
+                "account_id":$('#incap_migrationAction_accountIDList').val(),
+                "page_size":$('#incap_migrationAction_page_size').val(),
+                "page_num":$('#incap_migrationAction_page_num').val()
+            }
             //$('#incap_migrationConfig').attr('disabled','disabled');
             $('#incap_migrationAction').attr('disabled','disabled');
             $('#incap_migrationActionType').attr('disabled','disabled');
             $('#runMigration').addClass('disabled').unbind();
             $('#incap_migrationAction_accountIDList, #incap_migrationAction_page_num').attr('disabled','disabled');
             $("#incap_migrationAction_sites").html('<option value="">loading...</option>').attr('disabled','disabled');;
-            $.gritter.add({ title: 'Status', text: "Loading sites for api_id:"+curConfig.api_id});
+            $.gritter.add({ title: 'Status', text: "Loading sites for api_id:"+auth.api_id});
             incap_migUserSites = {"index":[],"members":{},"processing":true};
-            makeIncapCall('/api/prov/v1/sites/list','POST',renderMigrationUserSitesResponse,curConfig,'set');
+            makeIncapCall(getSwHost("Cloud WAF API (v1)")+'/api/prov/v1/sites/list','POST',auth,renderMigrationUserSitesResponse,{"postData":postParams},'set',"application/x-www-form-urlencoded");
         }
     }
 }
@@ -229,9 +232,12 @@ function renderMigrationUserSitesResponse(response){
 function loadMigSiteDataCenters(){
     if (incap_migUserSites.index[incap_migUserSites.curIndex]!=undefined){
             var siteObj = jQuery.extend(true, {}, incap_migUserSites.members[incap_migUserSites.index[incap_migUserSites.curIndex]]);
-            var postDataObj = jQuery.extend(true, {}, getUserAuthObj(siteObj.api_id));
-            postDataObj.site_id = siteObj.site_id;
-            makeIncapCall('/api/prov/v1/sites/dataCenters/list','POST',loadMigSiteDataCentersResponse,postDataObj,'set');
+            var auth = jQuery.extend(true, {}, getUserAuthObj(siteObj.api_id));
+            auth.method = "query";
+            var postParams = {
+                "site_id":siteObj.site_id
+            }
+            makeIncapCall(getSwHost("Cloud WAF API (v1)")+'/api/prov/v1/sites/dataCenters/list','POST',auth,loadMigSiteDataCentersResponse,{"postData":postParams},'set',"application/x-www-form-urlencoded");
     } else {
         //$('#incap_migrationConfig').attr('disabled',false);
         $('#incap_migrationActionType').attr('disabled',false);
@@ -469,8 +475,15 @@ function loadCurMigrationSiteObj() {
         delete curSiteObj.DCs;
 		$('#incap_eventLogs').append('<span>########## Loading site config for '+curSiteObj.domain+' ('+curSiteObj.site_id+') ##########</span><br />');
         delete curSiteObj.domain;
+        var auth = {
+            "api_id": curSiteObj.api_id,
+            "api_key": curSiteObj.api_key,
+            "method": "query"
+        }
+        delete curSiteObj.api_id;
+        delete curSiteObj.api_key;
         $('#incap_eventLogs').append(incap_transformToCURL($('#incapServer').val()+'/api/prov/v1/sites/status',curSiteObj,$('#incap_migrationConfigMaskSecretKey').is(":checked"))+'<br /><br />');
-        makeIncapCall('/api/prov/v1/sites/status','POST',loadCurMigrationSiteObjResponse,curSiteObj,'set');
+        makeIncapCall(getSwHost("Cloud WAF API (v1)")+'/api/prov/v1/sites/status','POST',auth,loadCurMigrationSiteObjResponse,{"postData":curSiteObj},'set',"application/x-www-form-urlencoded");
         scrollDownInLog();
     } else {
         $('#incap_eventLogs').append('<span class="res_error">(ERROR):<br />Site not found, local data store malformed.</span><br /><br />');
@@ -521,9 +534,16 @@ function loadCurMigrationSitePolicies(){
     var curSiteObj = jQuery.extend(true, {}, incap_curMigDestSiteIterator.sites[incap_curMigDestSiteIterator.index[incap_curMigDestSiteIterator.curIndex]]);
     delete curSiteObj.domain;
     delete curSiteObj.DCs;
+    var auth = {
+        "api_id": curSiteObj.api_id,
+        "api_key": curSiteObj.api_key,
+        "method": "query"
+    }
+    delete curSiteObj.api_id;
+    delete curSiteObj.api_key;
     $('#incap_eventLogs').append('<span>########## Loading site incap_rules and ADR policies for '+incap_curMigSiteObj.site_id+' ('+incap_curMigSiteObj.domain+') ##########</span><br />');
     $('#incap_eventLogs').append(incap_transformToCURL($('#incapServer').val()+'/api/prov/v1/sites/incapRules/list',curSiteObj,$('#incap_migrationConfigMaskSecretKey').is(":checked"))+'<br /><br />');
-    makeIncapCall('/api/prov/v1/sites/incapRules/list','POST',loadCurMigrationSitePoliciesResponse,curSiteObj,'set');
+    makeIncapCall(getSwHost("Cloud WAF API (v1)")+'/api/prov/v1/sites/incapRules/list','POST',auth,loadCurMigrationSitePoliciesResponse,{"postData":curSiteObj},'set',"application/x-www-form-urlencoded");
     scrollDownInLog();
 }
 
@@ -562,12 +582,17 @@ function runMigration(){
         // siteObj = account_id,api_id,site_id,domain
         if (incap_curMigDestSiteIterator.index[incap_curMigDestSiteIterator.curIndex]!=undefined) {
             var curSiteObj = jQuery.extend(true, {}, incap_curMigDestSiteIterator.sites[incap_curMigDestSiteIterator.index[incap_curMigDestSiteIterator.curIndex]]);
+            var auth = {
+                "api_id": curSiteObj.api_id,
+                "api_key": curSiteObj.api_key,
+                "method": "query"
+            }
+            delete curSiteObj.api_id;
+            delete curSiteObj.api_key;
             if (incap_curMigPolicies.index[incap_curMigPolicies.curIndex]!=undefined) {
                 // check to see if there are any more incap_rules or ADR rules to process
                 var policyIdAry = incap_curMigPolicies.index[incap_curMigPolicies.curIndex].split(';|;'); // policyType;|;policyName
                 var curPolicyObj = jQuery.extend(true, {}, incap_curMigPolicies[policyIdAry[0]][policyIdAry[1]]);
-                curPolicyObj.api_id = curSiteObj.api_id;
-                curPolicyObj.api_key = curSiteObj.api_key;
                 curPolicyObj.site_id = curSiteObj.site_id;
                 $('#incap_eventLogs').append('<span>#CURL REQUEST - Create Rule: '+curPolicyObj.name+'</span><br />');
                 var cur_id = curSiteObj.site_id+'_'+curPolicyObj.name.replace(/\ /g,'_');
@@ -581,7 +606,7 @@ function runMigration(){
                     }                
                 }
                 $('#incap_eventLogs').append(incap_transformToCURL($('#incapServer').val()+incapCopyObjectURLMappings[policyIdAry[0]].action,curPolicyObj,$('#incap_migrationConfigMaskSecretKey').is(":checked"))+'<br /><br />');
-                makeIncapCall(incapCopyObjectURLMappings[policyIdAry[0]].action,'POST',runMigrationResponse,curPolicyObj,'set');
+                makeIncapCall(getSwHost("Cloud WAF API (v1)")+incapCopyObjectURLMappings[policyIdAry[0]].action,'POST',auth,runMigrationResponse,{"postData":curPolicyObj},'set',"application/x-www-form-urlencoded");
                 scrollDownInLog();
             } else if (incap_curMigRules.index[incap_curMigRules.curIndex]!=undefined) {
                 // check to see if there are any ACLs or WAF rules to process
@@ -600,7 +625,7 @@ function runMigration(){
                         if (curExp.curIndex==0) $('#incap_eventLogs').append('<span>#Found '+curExp.ids.length+' existing exception on rule ('+curSiteObj.rule_id+') for site ('+incap_curMigSiteObj.domain+')</span><br /><br />');
                         $('#incap_eventLogs').append('<span>#CURL REQUEST - Removing existing exception ('+curExp.curIndex+'); id ('+curSiteObj.whitelist_id+') on rule ('+curSiteObj.rule_id+') for site ('+incap_curMigSiteObj.domain+')</span><br />');
                         $('#incap_eventLogs').append(incap_transformToCURL($('#incapServer').val()+"/api/prov/v1/sites/configure/whitelists",curSiteObj,$('#incap_migrationConfigMaskSecretKey').is(":checked"))+'<br /><br />');
-                        makeIncapCall("/api/prov/v1/sites/configure/whitelists",'POST',deleteRuleExceptionsFromSiteResponse,curSiteObj,'set');
+                        makeIncapCall(getSwHost("Cloud WAF API (v1)")+"/api/prov/v1/sites/configure/whitelists",'POST',auth,deleteRuleExceptionsFromSiteResponse,{"postData":curSiteObj},'set',"application/x-www-form-urlencoded");
                         scrollDownInLog();
                     } else {
                         removeExistingExceptionsComplete=true;
@@ -648,7 +673,7 @@ function runMigration(){
                         incap_curMigRules[ruleAry[0]][ruleAry[1]].isCreated='processing';
                         $('#incap_eventLogs').append('<span>#CURL REQUEST - Creating Rule - Local Name ('+incap_curMigRules[ruleAry[0]][ruleAry[1]].name+') | Incapsula Rule Name ('+incapCopyObjectURLMappings[curRuleObj.rule_id].displayText+') | rule_id ('+curRuleObj.rule_id+') </span><br />');
                         $('#incap_eventLogs').append(incap_transformToCURL($('#incapServer').val()+incapCopyObjectURLMappings[ruleAry[0]].action,curRuleObj,$('#incap_migrationConfigMaskSecretKey').is(":checked"))+'<br /><br />');
-                        makeIncapCall(incapCopyObjectURLMappings[ruleAry[0]].action,'POST',runMigrationResponse,curRuleObj,'set');
+                        makeIncapCall(getSwHost("Cloud WAF API (v1)")+incapCopyObjectURLMappings[ruleAry[0]].action,'POST',auth,runMigrationResponse,{"postData":curRuleObj},'set',"application/x-www-form-urlencoded");
                         scrollDownInLog();
                     } else {
                         if (incap_curMigRules.currentExceptions[incap_curMigRules.index[incap_curMigRules.curIndex]]!=undefined) {
@@ -698,7 +723,7 @@ function runMigration(){
                                 if (curExceptionObj.curIndex==0) $('#incap_eventLogs').append('<span>#Creating '+curExceptionObj.members.length+' Rule Exception on ('+incap_curMigRules[ruleAry[0]][ruleAry[1]].name+')</span><br /><br />');
                                 $('#incap_eventLogs').append('<span>#CURL REQUEST - Create Rule Exception on ('+incap_curMigRules[ruleAry[0]][ruleAry[1]].name+') - exception ('+curExceptionObj.curIndex+')</span><br />');
                                 $('#incap_eventLogs').append(incap_transformToCURL($('#incapServer').val()+'/api/prov/v1/sites/configure/whitelists',curRuleObj,$('#incap_migrationConfigMaskSecretKey').is(":checked"))+'<br /><br />');
-                                makeIncapCall('/api/prov/v1/sites/configure/whitelists','POST',runMigrationResponse,curRuleObj,'set');
+                                makeIncapCall(getSwHost("Cloud WAF API (v1)")+'/api/prov/v1/sites/configure/whitelists','POST',auth,runMigrationResponse,{"postData":curRuleObj},'set',"application/x-www-form-urlencoded");
                                 scrollDownInLog();
                             }
                         }

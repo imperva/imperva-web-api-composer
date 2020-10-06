@@ -1,32 +1,80 @@
-var allSSWAFPolicies_src = {"webServiceCustomPolicies":{},"webApplicationCustomPolicies":{}};
-var allSSWAFPolicies_dest = {"webServiceCustomPolicies":{},"webApplicationCustomPolicies":{}};
+var webSecurityPolicies = {
+	"policyCurIndex":0,
+	"policyTypeIndex":[
+		"firewallPolicies",
+		"httpProtocolPolicies",
+		"http2ProtocolPolicies",
+		"httpProtocolSignaturesPolicies",
+		"snippetInjectionPolicies",
+		"streamSignaturesPolicies",
+		"webApplicationCustomPolicies",
+		"webApplicationSignaturesPolicies",
+		// "webCorrelationPolicies",
+		// "webProfilePolicies",
+		"webServiceCustomPolicies"	
+	],
+	"policyTypes":{
+		"firewallPolicies":{"url":"/v1/conf/policies/security/firewallPolicies","listName":"policies","displayText":"Firewall Policies"},
+		"httpProtocolPolicies":{"url":"/v1/conf/policies/security/httpProtocolPolicies","listName":"policies","displayText":"HTTP Protocol"},
+		"http2ProtocolPolicies":{"url":"/v1/conf/policies/security/http2ProtocolPolicies","listName":"policies","displayText":"HTTP2 Protocol"},
+		"httpProtocolSignaturesPolicies":{"url":"/v1/conf/policies/security/httpProtocolSignaturesPolicies","listName":"policies","displayText":"HTTP Protocol Signature"},
+		"snippetInjectionPolicies":{"url":"/v1/conf/policies/security/snippetInjectionPolicies","listName":"policies","displayText":"Snippit Injection"},
+		"streamSignaturesPolicies":{"url":"/v1/conf/policies/security/streamSignaturesPolicies","listName":"policies","displayText":"Stream Signature"},
+		"webApplicationCustomPolicies":{"url":"/v1/conf/policies/security/webApplicationCustomPolicies","listName":"customWebPolicies","displayText":"Web Application Custom"},
+		"webApplicationSignaturesPolicies":{"url":"/v1/conf/policies/security/webApplicationSignaturesPolicies","listName":"policies","displayText":"Web Application Signature"},
+		// "webCorrelationPolicies":{"url":"/v1/conf/policies/security/webCorrelationPolicies","listName":"policies","displayText":"Web Correlation Policies"},
+		// "webProfilePolicies":{"url":"/v1/conf/policies/security/webProfilePolicies","listName":"policies","displayText":"Web Profile Policies"},
+		"webServiceCustomPolicies":{"url":"/v1/conf/webServiceCustomPolicies","listName":"customWebPolicies","displayText":"Web Service Custom"}
+	}
+}
+var allSSWAFPolicies_src = {};
+var allSSWAFPolicies_dest = {};
 var allSSWAFPolicies_extDataSrcs = {"ipGroups":{},"dataSets":{}};
 var curLoadedPolicyName = null;
 
-function getAllWAFPolicies(){
-	$('#SecureSphereAPI #SSWAFPolicies').html('<option>loading...</option>');
-	$.gritter.add({ title: 'Retrieving WAF Policies', text: "Type: Web Service Custom"});
-	makeSSCall('/v1/conf/webServiceCustomPolicies','GET',getAllWebAppCustomPolicies,{});
+function getAllWAFSecurityPoliciesInit() {
+	allSSWAFPolicies_src = {};
+	allSSWAFPolicies_dest = {};
+	allSSWAFPolicies_extDataSrcs = {"ipGroups":{},"dataSets":{}};
+	webSecurityPolicies.policyCurIndex = 0;
+	getAllWAFSecurityPolicies();
 }
 
-function getAllWebAppCustomPolicies(data){
-	data.customWebPolicies.sort();
-	$.each(data.customWebPolicies, function(i,policyName) { allSSWAFPolicies_src['webServiceCustomPolicies'][policyName] = true; });
-	$.gritter.add({ title: 'Retrieving WAF Policies', text: "Type: Web Application Custom"});
-	makeSSCall('/v1/conf/webApplicationCustomPolicies','GET',getAllWebAppCustomPoliciesResponse,{});
+function getAllWAFSecurityPolicies(){
+	$('#SecureSphereAPI #SSWAFPolicies_src').html('<option>loading...</option>');
+	var curPolicyType = webSecurityPolicies.policyTypeIndex[webSecurityPolicies.policyCurIndex]
+	var policyTypeObj = webSecurityPolicies.policyTypes[curPolicyType];
+	allSSWAFPolicies_src[curPolicyType] = {}
+	allSSWAFPolicies_dest[curPolicyType] = {}
+	$.gritter.add({ title: 'Retrieving WAF Policies', text: "Type: "+policyTypeObj.displayText});
+	makeSSCall(policyTypeObj.url+"?customData="+curPolicyType,'GET',getAllWAFSecurityPoliciesResponse,{});	
 }
 
-function getAllWebAppCustomPoliciesResponse(data){
-	data.customWebPolicies.sort();
-	$.each(data.customWebPolicies, function(i,policyName) { allSSWAFPolicies_src['webApplicationCustomPolicies'][policyName] = true; });
-	renderPolicyOptions('SSWAFPolicies_src',allSSWAFPolicies_src);
-	renderPolicyOptions('SSWAFPolicies_dest',allSSWAFPolicies_dest);
+function getAllWAFSecurityPoliciesResponse(data){
+	var curPolicyType = webSecurityPolicies.policyTypeIndex[webSecurityPolicies.policyCurIndex]
+	var policyTypeObj = webSecurityPolicies.policyTypes[curPolicyType];
+	var curPolicies = data[policyTypeObj.listName];
+	if (Array.isArray(curPolicies)){
+		$.each(curPolicies, function(i,policyName) { 
+			allSSWAFPolicies_src[curPolicyType][policyName] = true; 
+		});
+	} else {
+		allSSWAFPolicies_src[curPolicyType][curPolicies] = true; 
+	}
+	webSecurityPolicies.policyCurIndex++;
+	if (webSecurityPolicies.policyTypeIndex[webSecurityPolicies.policyCurIndex]!=undefined) {
+		getAllWAFSecurityPolicies();
+	} else {
+		renderPolicyOptions('SSWAFPolicies_src',allSSWAFPolicies_src);
+		renderPolicyOptions('SSWAFPolicies_dest',allSSWAFPolicies_dest);	
+	}
 }
 
 function renderPolicyOptions(selectId,policyAry){
 	var str = '';
 	$.each(policyAry, function(policyType,policies) {
-		str += '<optgroup id="'+policyType+'" label="'+SSPolicyTypeDisplayMapping[policyType]+'">';
+		var policyTypeObj = webSecurityPolicies.policyTypes[policyType];
+		str += '<optgroup id="'+policyType+'" label="'+policyTypeObj.displayText+'">';
 		var actionkeys_src = Object.keys(policies);
 		$.each(actionkeys_src.sort(), function(i,policyName) {
 			var isSupported=true; if (!policyAry[policyType][policyName]) { isSupported=false; }
