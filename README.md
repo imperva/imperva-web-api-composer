@@ -38,7 +38,7 @@ TO DO...
 
 ## Troubleshooting
 
-If you need to access the container in order to troubleshoot one or more errors, you should use the `docker exec -t -i _container name_ /bin/bash -l` command to connect to the container replacing **_container_name_** with the actual name of the container shown when you run `docker ps -a`.  
+If you need to access the container in order to troubleshoot one or more errors, you should use the `docker exec -t -i _container id_ /bin/ash` command to connect to the container replacing **_ _container id_ _** with the actual ID of the container shown in the first column when you run `docker ps -a`.  
 
 Once connected, error information can be found in the **/var/log/apache2/apitool_error_log** file.
 
