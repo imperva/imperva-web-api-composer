@@ -7,7 +7,6 @@ $().ready(function() {
 	$("#mainNav").tabs();
 	$("#settingsNav").tabs().addClass( "ui-tabs-vertical ui-helper-clearfix" );
 	$("#settingsNav li").removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
-	$('#version').html("Version: "+appVersion);
     // var INCAP_AUTH = JSON.parse(localStorage.getItem('INCAP_AUTH'));
 	/*if (localStorage.getItem('INCAP_AUTH')==null) {
 		localStorage.setItem("INCAP_AUTH",JSON.stringify({

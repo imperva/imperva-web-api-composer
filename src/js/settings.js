@@ -1,4 +1,3 @@
-var appVersion = '1.0';
 var incapDefConfig = {
 	"sitePageSize":100,
 	"sitePageNum":100,

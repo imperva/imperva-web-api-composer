@@ -1,6 +1,6 @@
 {
 	"ci_tool": "gitlab",
-	"version": "1.0.0",
+	"version": "2.0.0",
 	"docker": {
 		"images": {
 			"imperva-web-api-composer": {
