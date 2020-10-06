@@ -165,22 +165,6 @@ function getSwHost(swagerKey){
 	return "https://"+incapAPIDefinitions[swagerKey].definition.host;
 }
 
-// function incap_transformToCURL(requestUrl,reqObj,maskSecretKey){
-// 	var curlStr = "curl '"+requestUrl+"'";
-// 	$.each(reqObj, function(param,val) {
-// 		if (maskSecretKey==true && param=='api_key') {
-// 			curlStr += " --data-urlencode '"+param+'='+starStr.substr(0,val.length)+"'";
-// 		// } else if (param=='filter') {
-// 		// 	curlStr += " --data-urlencode '"+param+'='+val.replace(/\ /g,'\+')+"'";
-// 		} else {
-// 			curlStr += " --data-urlencode '"+param+'='+val+"'";
-// 		}
-// 	});
-// 	curlStr = curlStr.replace(/\(\ /g,'(').replace(/ \)/g,')');
-// 	return curlStr;
-// }
-
-
 function incap_transformToCURL(requestUrl=$('#incapRequestUrl').val(),auth=getUserAuthObj($('#incapAccountsList').val()),reqObj=$('#incapData').val(),maskSecretKey=$('#incap_configMaskSecretKey').is(":checked")){
 	var curlStr = '';
 	if (!$('#incapRequestUrl').hasClass('errors')) {
@@ -211,7 +195,6 @@ function incap_transformToCURL(requestUrl=$('#incapRequestUrl').val(),auth=getUs
 				});
 			}
 		}
-		// curlStr = curlStr.replace(/\(\ /g,'(').replace(/ \)/g,')');
 	}
 	return curlStr;
 }
@@ -632,144 +615,6 @@ function incapResolveActionPlaceHolders(str){
 	});
 	return str;
 }
-
-// function incapRenderQueryParams(data){
-// 	debugger
-// 	var tmpAry = {"list":[]};
-// 	console.log("incapRenderQueryParams");
-// 	console.log(incapCurQueryParamsAry);
-// 	console.log("incapCurQueryParamsIndex="+incapCurQueryParamsIndex);
-// 	console.log(incapCurQueryParamsAry[incapCurQueryParamsIndex]);
-// 	console.log(incapJsonParamMapping[incapCurQueryParamsAry[incapCurQueryParamsIndex].name]);
-
-// 	try { 
-// 		if (incapJsonParamMapping[incapCurQueryParamsAry[incapCurQueryParamsIndex].name].getAPIurlMapping.default!=undefined){
-
-// 		}
-// 	} catch(err) {}	
-// 	// populateSelect(incapCurQueryParamsAry[incapCurQueryParamsIndex].name,data);
-// 	// $("#IncapsulaAPI #"+incapCurQueryParamsAry[incapCurQueryParamsIndex].name).unbind().change(function(){ incapGetURLParams(this); });
-// 	// if (incapCurQueryParamsAry[incapCurQueryParamsIndex].name=='policyName') {
-// 	// 	$('#IncapsulaAPI #policyName').val(curLoadedPolicyName);
-// 	// 	$(ss_method_sel).val('GET');
-// 	// 	$('#IncapsulaAPI #policyName_btn').trigger('click');
-// 	// 	SSUpdateJSON();
-// 	// 	$('#IncapsulaAPI #execute').trigger('click');
-// 	// }
-// 	// incapCurQueryParamsIndex++;
-// 	// incapGetURLParams();
-// }
-
-// function incapGetPathParams(curObj) {
-// 	var curSwagger = incapApiActions[$('#incapActions :selected').parent().attr('label')];
-// 	var currentAction = $("#incapActions").val().substr(curSwagger.basePath.length);
-// 	var methodObj = jQuery.extend(true, {}, curSwagger.paths[currentAction][$(incap_method_sel).val()]);
-// 	// console.log(methodObj);
-// 	if (curObj!=undefined) setCurrentIncapPathParamIndex(curObj);
-// 	if (incapCurPathParamsAry.length>(incapCurPathParamsIndex)) {
-// 		$('#IncapsulaAPI #'+incapCurPathParamsAry[incapCurPathParamsIndex].name).html('<option value="">loading...</option>');
-// 		for (var i=(incapCurPathParamsIndex+1); i<incapCurPathParamsAry.length; i++) {
-// 			$('#IncapsulaAPI #'+incapCurPathParamsAry[i].name).html('');
-// 		}
-// 		var curParam = incapCurPathParamsAry[incapCurPathParamsIndex].name;
-// 		if (incapJsonParamMapping[curParam]!=undefined) {
-// 			var curAction = null;
-// 			try { curAction = incapResolveActionPlaceHolders(incapJsonParamMapping[curParam].getAPIurlMapping.default.url); } catch(err) {}
-// 			if (curAction==null && incapJsonParamMapping[curParam].getAPIurlMapping[$(ss_action_sel).val()]!=undefined) {
-// 				curAction = incapResolveActionPlaceHolders(incapJsonParamMapping[curParam].getAPIurlMapping[$(ss_action_sel).val()].url);
-// 			}
-// 			if (curAction!=null && curAction!=undefined) {
-// 				// makeIncapCall(paramActionObj.action,'POST',renderParamListValues,reqObj,paramName);
-// 				makeIncapCall(curAction,'GET',incapRenderPathParams,{});
-// 			} else {
-// 				if (incapJsonParamMapping[curParam].type=="list") {
-// 					$('#IncapsulaAPI #'+incapCurPathParamsAry[incapCurPathParamsIndex].name).html('');
-// 					$.each(incapJsonParamMapping[curParam].values, function(i,value) { 
-// 						$('#IncapsulaAPI #'+incapCurPathParamsAry[incapCurPathParamsIndex].name).append('<option value="'+value+'">'+value+'</option>'); 
-// 					});
-// 				} else if (incapJsonParamMapping[curParam].type=='boolean') {
-// 					$('#IncapsulaAPI #'+incapCurPathParamsAry[incapCurPathParamsIndex].name).html('<option value="true">true</option><option value="false">false</option>');
-// 				} else if (incapJsonParamMapping[curParam].type=='string') {
-// 					$('#IncapsulaAPI #'+incapCurPathParamsAry[incapCurPathParamsIndex].name).html('<option value="'+incapJsonParamMapping[curParam].values+'">'+incapJsonParamMapping[curParam].values+'</option>');
-// 				}
-// 			}
-// 		} else {
-// 			for (var i=(incapCurPathParamsIndex); i<incapCurPathParamsAry.length; i++) {
-// 				$('#IncapsulaAPI #'+incapCurPathParamsAry[i].name).html('<option value="">Not Currently Available</option>');
-// 			}
-// 		}
-// 	}
-// }
-
-// function setCurrentIncapPathParamIndex(obj){
-// 	var curIndex = 0;
-// 	$.each(incapCurPathParamsAry, function(i,param){ param.isCurObj=false; });
-// 	if (obj!=undefined) {
-// 		$.each(incapCurPathParamsAry, function(i,param){ if (param.name==obj.id) incapCurPathParamsIndex=(i+1); });
-// 	}
-// 	return curIndex;
-// }
-
-// function incapRenderPathParams(data){
-// 	var tmpAry = {"list":[]};
-// 	console.log(incapCurPathParamsAry);
-// 	try { 
-// 		if (incapJsonParamMapping[incapCurPathParamsAry[incapCurPathParamsIndex].name].getAPIurlMapping.default!=undefined){
-
-// 		}
-
-// 		// if (incapJsonParamMapping[incapCurPathParamsAry[incapCurPathParamsIndex].name].getAPIurlMapping.default!=undefined){
-// 		// 	if (incapJsonParamMapping[incapCurPathParamsAry[incapCurPathParamsIndex].name].getAPIurlMapping.default.nestedItemName!=undefined) {
-// 		// 		var nestedMappingObj = incapJsonParamMapping[incapCurPathParamsAry[incapCurPathParamsIndex].name].getAPIurlMapping.default;
-// 		// 		$.each(data,function(i, ary){
-// 		// 			if (nestedMappingObj.nestedItemLevel==0) { 
-// 		// 				tmpAry.list.push(ary[incapJsonParamMapping[incapCurPathParamsAry[incapCurPathParamsIndex].name].getAPIurlMapping.default.nestedItemName]); 
-// 		// 			} else if (nestedMappingObj.nestedItemLevel==1 && ary.length!=0) { 
-// 		// 				$.each(ary,function(i, obj){ 
-// 		// 					tmpAry.list.push(obj[incapJsonParamMapping[incapCurPathParamsAry[incapCurPathParamsIndex].name].getAPIurlMapping.default.nestedItemName]); 
-// 		// 				}); 
-// 		// 			} 
-// 		// 		});
-// 		// 		data = tmpAry;
-// 		// 	} 
-// 		// } else if (incapJsonParamMapping[incapCurPathParamsAry[incapCurPathParamsIndex].name].getAPIurlMapping[$('#incapActions').val()]!=undefined) {
-// 		// 	var nestedMappingObj = incapJsonParamMapping[incapCurPathParamsAry[incapCurPathParamsIndex].name].getAPIurlMapping[$('#incapActions').val()];
-// 		// 	$.each(data,function(i, ary){
-// 		// 		if (nestedMappingObj.nestedItemLevel==0) { 
-// 		// 			if (nestedMappingObj.nestedItemName!=undefined) {
-// 		// 				tmpAry.list.push(ary[nestedMappingObj.nestedItemName]); 
-// 		// 				// debugger
-// 		// 			} else {
-// 		// 				tmpAry.list.push(ary[nestedMappingObj]); 
-// 		// 				// debugger
-// 		// 			}
-// 		// 		} else if (nestedMappingObj.nestedItemLevel==1 && ary.length!=0) { 
-// 		// 			// $.each(ary,function(i, obj){ 
-// 		// 			// 	if (nestedMappingObj.nestedItemName!=undefined) {
-// 		// 			// 		tmpAry.list.push(obj[incapJsonParamMapping[incapCurPathParamsAry[incapCurPathParamsIndex].name].getAPIurlMappingnestedItemName]); 
-// 		// 			// 		debugger
-// 		// 			// 	} else {
-// 		// 			// 		tmpAry.list.push(obj[incapJsonParamMapping[incapCurPathParamsAry[incapCurPathParamsIndex].name].getAPIurlMapping.default.nestedItemName]); 
-// 		// 			// 		debugger
-// 		// 			// 	}
-// 		// 			// }); 
-// 		// 		} 
-// 		// 	});
-// 		// 	data = tmpAry;
-// 		// }
-// 	} catch(err) {}	
-// 	// populateSelect(incapCurUrlParamsAry[incapCurPathParamsIndex].name,data);
-// 	// $("#IncapsulaAPI #"+incapCurUrlParamsAry[incapCurPathParamsIndex].name).unbind().change(function(){ incapGetURLParams(this); });
-// 	// if (incapCurUrlParamsAry[incapCurPathParamsIndex].name=='policyName') {
-// 	// 	$('#IncapsulaAPI #policyName').val(curLoadedPolicyName);
-// 	// 	$(ss_method_sel).val('GET');
-// 	// 	$('#IncapsulaAPI #policyName_btn').trigger('click');
-// 	// 	SSUpdateJSON();
-// 	// 	$('#IncapsulaAPI #execute').trigger('click');
-// 	// }
-// 	// incapCurPathParamsIndex++;
-// 	// incapGetPathParams();
-// }
 
 function renderParamsHTML(){
 	// reset the request url to pull from host/action
