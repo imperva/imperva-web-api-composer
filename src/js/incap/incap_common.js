@@ -762,6 +762,7 @@ function renderParamHTML(param,paramType){
 	} else if (param.type=="object") {
 		str += '<textarea class="'+paramType+' '+paramLevel+'"  name="'+param.name+'" id="'+param.id_str+'" style="width:200px; height: 50px;"'+required+'>'+param.jsonStr+'</textarea>';
 	} else {
+		if (paramType=='pathParams') str += '<a href="javascript:void(0)" class="ui-icon ui-icon-copy" id="'+param.id_str+'_btn" title="Copy to Request URL">copy</a>';
 		str += '<input type="text" class="'+paramType+' '+paramLevel+'" name="'+param.name+'" id="'+param.id_str+'" value="" placeholder="'+param.type+'"'+required+' />';
 	}
 	str += '</td></tr>';

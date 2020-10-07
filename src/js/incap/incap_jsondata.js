@@ -29,6 +29,10 @@ incapAPIDefinitions = {
 		"endpoint":"https://docs-be.imperva.com/bundle/cloud-application-security/attach/audit-trail-api.yaml",
 		"definition":{}
 	},
+	"Certificate Management":{
+		"endpoint":"https://docs-be.imperva.com/bundle/cloud-application-security/attach/certificate-api.yaml",
+		"definition":{}
+	},
 	"Policy Management":{
 		"endpoint":"https://docs-be.imperva.com/bundle/cloud-application-security/attach/policies-api.yaml",
 		"definition":{}
@@ -36,6 +40,10 @@ incapAPIDefinitions = {
 	"Performance Settings":{
 		"endpoint":"https://docs-be.imperva.com/bundle/cloud-application-security/attach/performance-api.yaml",
 		"definition":{}
+	},
+	"Protected IP":{
+		"endpoint":"https://docs-be.imperva.com/bundle/cloud-application-security/attach/protected-ip.yaml",
+		"definition":{}		
 	},
 	"Reputation Intelligence":{
 		"endpoint":"https://docs-be.imperva.com/bundle/ip-reputation/attach/reputation-intelligence-api.yaml",
@@ -58,10 +66,12 @@ incapAPIKeyMap = {
 	"ato":{ "displayName":"Account Take Over" },
 	"attack_analytics":{ "displayName":"Attack Analytics" },
 	"audit_trail":{ "displayName":"Audit Trail" },
+	"certificate":{ "displayName":"Certificate Management" },
 	"policy_management":{ "displayName":"Policy Management" },
 	"performance_settings":{ "displayName":"Performance Settings" },
 	"reputation_intelligence":{ "displayName":"Reputation Intelligence" },
-	"role_management":{ "displayName":"Role Management" }
+	"role_management":{ "displayName":"Role Management" },
+	"protected_ip":{ "displayName":"Protected IP" }
 }
 
 var incapGetObjectActionMapping = {
@@ -90,7 +100,6 @@ var incapGetObjectActionMapping = {
 	//    "children":["endpointId"]  // child dependant dynamic params
 	//   }
 	// }
-
 	"accountId":{
 		"default":{
 			"definition":"Cloud WAF API (v1)",
@@ -99,7 +108,8 @@ var incapGetObjectActionMapping = {
 			"method":"POST",
 			"listName":"resultList", // objectName, listName
 			"id":"sub_account_id",
-			"displayText":"sub_account_name"
+			"displayText":"sub_account_name",
+			"children":["certId"]
 		}
 	},
 	"apiId":{
@@ -164,6 +174,43 @@ var incapGetObjectActionMapping = {
 			"id":"account_id",
 			"displayText":"account_name",
 			"children":["incidentId"]
+		}
+	},
+	"certId":{
+		"/certificate-manager/v2/accounts/{accountId}/client-certificates/{certId}":{
+			"definition":"Certificate Management",
+			"action":"/certificate-manager/v2/accounts/{accountId}/client-certificates",
+			"method":"GET",
+			"listName":"value", // objectName, listName
+			"id":"id",
+			"displayText":"name",
+			"parents":[
+				{"id":"accountId","in":"path"} // in: path, body, query
+			]
+		},
+		"/certificate-manager/v2/sites/{siteId}/client-certificates/{certId}":{
+			"definition":"Certificate Management",
+			"action":"/certificate-manager/v2/sites/{siteId}/client-certificates",
+			"method":"GET",
+			"listName":"value", // objectName, listName
+			"id":"id",
+			"displayText":"name",
+			"parents":[
+				{"id":"siteId","in":"path"} // in: path, body, query
+			]
+		}		
+	},
+	"crlId":{
+		"default":{
+			"definition":"Certificate Management",
+			"action":"/certificate-manager/sites/{siteId}/CRL",
+			"method":"GET",
+			"listName":"value", // objectName, listName
+			"id":"id",
+			"displayText":"name",
+			"parents":[
+				{"id":"siteId","in":"path"} // in: path, body, query
+			]
 		}
 	},
 	"dc_id":{
@@ -406,7 +453,7 @@ var incapGetObjectActionMapping = {
 			"listName":"sites", // objectName, listName
 			"id":"site_id",
 			"displayText":"domain",
-			"children":["apiId","ruleId","dc_id"]
+			"children":["apiId","ruleId","dc_id","crlId","certId"]
 		}
 	},
 	"sourcePolicyId":{
