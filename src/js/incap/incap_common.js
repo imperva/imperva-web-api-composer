@@ -44,8 +44,10 @@ function getAPIDefinitionIndexes(){
 
 function initIncap(){
 	$.each(incapAPIDefinitions, function(optGroup,swagger) { 
+		var swaggerPaths = Object.keys(swagger.definition.paths).sort();
 		var str = '<optgroup label="'+optGroup+'">';
-		$.each(swagger.definition.paths, function(action,actionObj) {	
+		$.each(swaggerPaths, function(i,action) {
+			var actionObj = swagger.definition.paths[action];
 			str += '<option value="'+swagger.definition.basePath+action+'">'+swagger.definition.basePath+action+'</option>';
 		});
 		str += '</optgroup>';
@@ -63,7 +65,7 @@ function initIncap(){
 	$('#incapServer').val(incapDefConfig.server);
 	$('#incapActions').change(function(){ changeAction(); });
 	$('#incapMethod').change(function(){ renderParamsHTML(); });
-	$('#incapAuth').change(function(){ $('#incapCurlExample').val(incap_transformToCURL()); });
+	$('#incapAuth').change(function(){ incap_generateCodeExamples() });
 	$('#incap_migrationConfigType').change(function(){ renderMigrationToolbar_config(this); });
 	$('#incap_migrationActionType').change(function(){ renderMigrationToolbar_action(this); });
 
@@ -74,8 +76,8 @@ function initIncap(){
 	$('#incapDeleteAllCredentials').click(function(){ incapDeleteAllCredentials(); });
 	$('#incapBulkImportCredentials').click(function(){ incapBulkImportCredentials(); });
 
-	$('#incap_configMaskSecretKey').click(function(){ $('#incapCurlExample').val(incap_transformToCURL()); });
-	$('#incapData').blur(function(){ $('#incapCurlExample').val(incap_transformToCURL()); });
+	$('#incap_configMaskSecretKey').click(function(){ incap_generateCodeExamples() });
+	$('#incapData').blur(function(){ incap_generateCodeExamples() });
 	$('#incapbodyParams input, #incapbodyParams textarea').blur(function(){ updateRequestDataFromJsonParams(); });
 	$('#incapbodyParams select, #incapAccountIDList').change(function(){ updateRequestDataFromJsonParams(); });
 	//$('#incapRequestUrl').keyup(function(){ checkForm(); });
@@ -165,40 +167,6 @@ function getSwHost(swagerKey){
 	return "https://"+incapAPIDefinitions[swagerKey].definition.host;
 }
 
-function incap_transformToCURL(requestUrl=$('#incapRequestUrl').val(),auth=getUserAuthObj($('#incapAccountsList').val()),reqObj=$('#incapData').val(),maskSecretKey=$('#incap_configMaskSecretKey').is(":checked")){
-	var curlStr = '';
-	if (!$('#incapRequestUrl').hasClass('errors')) {
-		// $('#incapServer').val()+$('#incapActions').val(),reqObj,$('#incap_configMaskSecretKey').is(":checked")
-		var requestUrlAry = requestUrl.split("?");
-		var curRequestUrl = requestUrlAry.shift();
-		var headersStr = ' -H "Accept: application/json" -H "Content-Type: '+$('#incapContentType').val()+'" ';
-		var paramsAry = [];
-		if ($('#incapAuth').val()=='query') {
-			paramsAry.push("api_id="+auth.api_id);
-			paramsAry.push("api_key="+((maskSecretKey) ? starStr.substr(0,auth.api_key.length) : auth.api_key));
-		} else {
-			headersStr += ' -H "x-API-Key: '+((maskSecretKey) ? starStr.substr(0,auth.api_key.length) : auth.api_key)+'" ';
-			headersStr += ' -H "x-API-Id: '+auth.api_id+'" ';	
-		}
-		if (requestUrlAry.join().trim()!='') paramsAry = paramsAry.concat(requestUrlAry);
-		var method = $('#incapMethod').val();
-		
-		// Check for content type and format
-		var reqData = $('#incapData').val();
-		if ($('#incapContentType').val()=='application/json') {
-			curlStr = "curl -k -X "+method.toUpperCase()+headersStr+"'"+curRequestUrl+"?"+paramsAry.join("&")+"'"+(($('#incapData').val().replace("{}",'')!='') ? " --data-raw '"+reqData+"'" : '');
-		} else {
-			curlStr = "curl -k -X "+method.toUpperCase()+headersStr+"'"+curRequestUrl+"?"+paramsAry.join("&")+"'";
-			if ($('#incapData').val()!='{}' && $('#incapData').val()!='') {
-				$.each(JSON.parse($('#incapData').val()),function(paramName,paramValue){
-					curlStr += " --data-urlencode '"+paramName+"="+paramValue+"'";
-				});
-			}
-		}
-	}
-	return curlStr;
-}
-
 function incapUpdateReqURL() {
 	if ($(incap_req_url_sel).val()=='') {
 		$(incap_req_url_sel).val($('#IncapsulaAPI #incapServer').val()+$(incap_action_sel).val()+queryStr);
@@ -211,7 +179,7 @@ function incapUpdateReqURL() {
 		});
 		$(incap_req_url_sel).val(curReqUrl[0]+"?"+queryParams.join("&"));
 	}
-	if (checkIncapForm()) $('#incapCurlExample').val(incap_transformToCURL());
+	if (checkIncapForm()) incap_generateCodeExamples();
 }
 
 function checkIncapForm(){
@@ -366,6 +334,8 @@ function parseParamValue(input){
 	var val = input.val();
 	if (timestampParam[input.attr("id")]) {
 		val = new Date(input.val()).valueOf();
+	// } else if (base_64Param[input.attr("id")]) {
+	// 	val = btoa(input.val());
 	} else {
 		// console.log(param.id+" class="+input.parent().attr("class"));			
 		switch (input.parent().attr("class")) {
@@ -421,17 +391,18 @@ function updateRequestDataFromJsonParams(){
 
 		$('#incapData').val(JSON.stringify(reqObj));
 	}
-	$('#incapCurlExample').val(incap_transformToCURL());
+	incap_generateCodeExamples();
 }
 
 function updateRequestDataFromFormDataParams(){
 	if ($('#incapformDataParams .formDataParams').length>0) {
 		var queryParams = {};
 		$.each($('#incapformDataParams .formDataParams'), function(i,input) {
-			if (input.value!='') queryParams[input.id] = ((timestampParam[input.id]) ? new Date(input.value).valueOf(): input.value);
+			if (input.value!='') queryParams[input.id] = ((timestampParam[input.id]) ? new Date(input.value).valueOf(): (base_64Param[input.id]) ? btoa(input.value) : ($("#"+input.id).prop("multiple")) ? Array.from($("#"+input.id+" option:checked"),e=>e.value) : parseParamValue($('#'+input.id)));
 		});
 		$('#incapData').val(JSON.stringify(queryParams));
 	}
+	incap_generateCodeExamples();
 }
 // function updateReqURL() {
 // 	$('#incapRequestUrl').val($('#incapServer').val()+$('#incapActions').val());
@@ -747,10 +718,10 @@ function renderParamHTML(param,paramType){
 	if (incapGetObjectActionMapping[param.id_str]!=undefined) {
 		// var multiple = (incapGetObjectActionMapping[param.id_str].default.multiselect) ? ' multiple ': '';
 		if (paramType=='pathParams') str += '<a href="javascript:void(0)" class="ui-icon ui-icon-copy" id="'+param.id_str+'_btn" title="Copy to Request URL">copy</a>';
-		str += '<select name="'+param.name+'" class="'+paramType+' '+paramLevel+'" id="'+param.id_str+'"'+required+'><option value="">loading...</option></select>';
+		str += '<select name="'+param.name+'" class="'+paramType+' '+paramLevel+'" id="'+param.id_str+'"'+required+' '+((param.uniqueItems==false) ? 'multiple': '')+'><option value="">loading...</option></select>';
 	} else if (param.enum!=undefined) {
-		str += '<select name="'+param.name+'" class="'+paramType+' '+paramLevel+'" id="'+param.id_str+'"'+required+'>';
-		if (param.required!=true) str += '<option value="">-- select --</option>';
+		str += '<select name="'+param.name+'" class="'+paramType+' '+paramLevel+'" id="'+param.id_str+'"'+required+' '+((param.uniqueItems==false) ? 'multiple': '')+'>';
+		if (!param.required && (param.uniqueItems==undefined && param.uniqueItems!=false)) str += '<option value="">-- select --</option>';
 		$.each(param.enum, function(i,value) { str += '<option value="'+value+'">'+value+'</option>'; });
 		str += '</select>';
 	} else if (timestampParam[param.name]) {
@@ -763,7 +734,7 @@ function renderParamHTML(param,paramType){
 		str += '<textarea class="'+paramType+' '+paramLevel+'"  name="'+param.name+'" id="'+param.id_str+'" style="width:200px; height: 50px;"'+required+'>'+param.jsonStr+'</textarea>';
 	} else {
 		if (paramType=='pathParams') str += '<a href="javascript:void(0)" class="ui-icon ui-icon-copy" id="'+param.id_str+'_btn" title="Copy to Request URL">copy</a>';
-		str += '<input type="text" class="'+paramType+' '+paramLevel+'" name="'+param.name+'" id="'+param.id_str+'" value="" placeholder="'+param.type+'"'+required+' />';
+		str += '<input type="text" class="'+paramType+' '+paramLevel+'" name="'+param.name+'" id="'+param.id_str+'" value="" placeholder="'+param.type+((param.items!=undefined && param.items.type!=undefined) ? " ("+param.items.type+")" : '')+'"'+required+' />';
 	}
 	str += '</td></tr>';
 	return str;
@@ -852,7 +823,7 @@ function loadParamChildValues(paramName){
 
 function renderParamListValues(response,input_id) {
 	var paramActionObj = (incapGetObjectActionMapping[input_id][$('#incapActions').val()]!=undefined) ? incapGetObjectActionMapping[input_id][$('#incapActions').val()] : incapGetObjectActionMapping[input_id].default;
-	$("#"+input_id).removeClass('processing').html(($("#"+input_id).attr("required")=="required") ? '' : '<option value="">-- select --</option>');
+	$("#"+input_id).removeClass('processing').html(($("#"+input_id).attr("required")=="required" || $("#"+input_id).prop("multiple")) ? '' : '<option value="">-- select --</option>');
 	var paramActionObjIndex = [];
 	var paramActionObjAry = {};
 	if (paramActionObj.listName!=undefined) {
@@ -865,8 +836,8 @@ function renderParamListValues(response,input_id) {
 		$.each(paramActionObjIndex, function(i,paramActionIdStr) {	
 			var subGroupObj = paramActionObjAry[paramActionIdStr];
 			var displayText = getParamDisplayText(subGroupObj,paramActionObj);
-			var displayValue = (subGroupObj[paramActionObj.id].length>10) ? "..."+subGroupObj[paramActionObj.id].substr(0,10) : subGroupObj[paramActionObj.id];
-			$("#"+input_id).append('<option title="'+displayText+' ('+subGroupObj[paramActionObj.id]+')" value="'+subGroupObj[paramActionObj.id]+'">'+((displayText.length>20) ? displayText.substr(0,20)+"..." : displayText)+' ('+displayValue+')</option>'); 
+			var displayValue = subGroupObj[paramActionObj.id];
+			$("#"+input_id).append('<option title="'+displayText+' ('+subGroupObj[paramActionObj.id]+')" value="'+subGroupObj[paramActionObj.id]+'">'+displayText+' ('+displayValue+')</option>'); 
 		});
 	} else if (paramActionObj.objectName!=undefined) {
 		$("#"+input_id).append('<option value="'+response[paramActionObj.objectName][paramActionObj.id]+'">'+response[paramActionObj.objectName][paramActionObj.displayText]+' ('+response[paramActionObj.objectName][paramActionObj.id]+')</option>');
@@ -880,8 +851,8 @@ function renderParamListValues(response,input_id) {
 		$.each(paramActionObjIndex, function(i,paramActionIdStr) {	
 			var subGroupObj = paramActionObjAry[paramActionIdStr];
 			var displayText = getParamDisplayText(subGroupObj,paramActionObj);
-			var displayValue = (subGroupObj[paramActionObj.id].length>10) ? "..."+subGroupObj[paramActionObj.id].substr(0,10) : subGroupObj[paramActionObj.id];
-			$("#"+input_id).append('<option title="'+displayText+' ('+subGroupObj[paramActionObj.id]+')" value="'+subGroupObj[paramActionObj.id]+'">'+((displayText.length>20) ? displayText.substr(0,20)+"..." : displayText)+' ('+displayValue+')</option>');
+			var displayValue = subGroupObj[paramActionObj.id];
+			$("#"+input_id).append('<option title="'+displayText+' ('+subGroupObj[paramActionObj.id]+')" value="'+subGroupObj[paramActionObj.id]+'">'+displayText+' ('+displayValue+')</option>');
 		});	
 	} else {
 		if (response[paramActionObj.id]!=undefined) $("#"+input_id).append('<option value="'+response[paramActionObj.id]+'">'+response[paramActionObj.displayText]+' ('+response[paramActionObj.id]+')</option>');

@@ -20,6 +20,7 @@
 <script src="js/common.js"></script>
 <script src="js/incap/incap_jsondata.js"></script>
 <script src="js/incap/incap_ruleFilters.js"></script>
+<script src="js/incap/incap_codeExamples.js"></script>
 <script src="js/incap/incap_settings_users.js"></script>
 <script src="js/incap/incap_settings_userGroups.js"></script>
 <script src="js/incap/incap_settings_policies.js"></script>
@@ -317,17 +318,35 @@ $.extend($.gritter.options, {
 							<td valign="top">
 								<label for="incaprequestUrl">Request URL: </label><br clear="all" />
 								<textarea id="incapRequestUrl" style="height: 40px;" name="incapRequestUrl"></textarea><br clear="all" /><br />
-								<span style="float: right;">
-									<label for="incap_configMaskSecretKey">Mask secret key: </label>
-									<input id="incap_configMaskSecretKey" type="checkbox" checked="checked" value="maskSecretKey" />
-								</span>
 								<label for="incapData">Request Data: </label><span id="incaprequestdataspan"></span><br clear="all" />
 								<textarea id="incapData" style="height: 60px;" ></textarea><br clear="all" /><br clear="all" />
-								<label for="incapCurlExample">CURL Example: </label><span id="incapcurlexamplespan"></span><br clear="all" />
-								<textarea id="incapCurlExample" style="height: 60px;"></textarea><br clear="all" />
-								<a style="float: right;" href="assets/CURL_API_Samples_Incapsula.zip" target="_blank">Download Incapsula CURL Samples</a><br clear="all" />
 								<label for="incapResult">Response:</label><br clear="all" />
 								<textarea id="incapResult"></textarea><br clear="all" /><br />
+								<label for="incapExamplesNav">Code Examples: 
+									<span style="float: right;">
+										<label for="incap_configMaskSecretKey">Mask secret key: </label>
+										<input id="incap_configMaskSecretKey" type="checkbox" checked="checked" value="maskSecretKey" />
+									</span><br clear="all" />
+								</label>
+								<div id="incapExamplesNav" class="ui-widget-content content">
+									<ul>
+										<li><a id="incapCurlExampleBtn" class="codeExampleBtn" href="#incapCurlExampleDiv">[CURL]</a></li>
+										<li><a id="incapPythonExampleBtn" class="codeExampleBtn" href="#incapPythonExampleDiv">[Python]</a></li>
+										<!-- <li><a id="incapRubyExampleBtn" class="codeExampleBtn" href="#incapRubyExampleDiv">[Ruby]</a></li>
+										<li><a id="incapJavaScriptExampleBtn" class="codeExampleBtn" href="#incapJavaScriptExampleDiv">[JavaScript]</a></li>
+										<li><a id="incapPerlExampleBtn" class="codeExampleBtn" href="#incapPerlExampleDiv">[Perl]</a></li>
+										<li><a id="incapPowershellExampleBtn" class="codeExampleBtn" href="#incapPowershellExampleDiv">[Powershell]</a></li> -->
+									</ul>
+									<div id="incapCurlExampleDiv" class="codeExample">
+										<textarea readonly id="incapCurlExample" style="height: 60px;"></textarea><br clear="all" />
+										<a style="float: right;" href="assets/CURL_API_Samples_Incapsula.zip" target="_blank">Download Incapsula CURL Samples</a><br clear="all" />
+									</div>
+									<div id="incapPythonExampleDiv" class="codeExample"><textarea readonly id="incapPythonExample" style="height: 60px;"></textarea></div>
+									<!-- <div id="incapRubyExampleDiv" class="codeExample"><textarea readonly id="incapRubyExample" style="height: 60px;"></textarea></div>
+									<div id="incapJavaScriptExampleDiv" class="codeExample"><textarea readonly id="incapJavaScriptExample" style="height: 60px;"></textarea></div>
+									<div id="incapPerlExampleDiv" class="codeExample"><textarea readonly id="incapPerlExample" style="height: 60px;"></textarea></div>
+									<div id="incapPowershellExampleDiv" class="codeExample"><textarea readonly id="incapPowershellExample" style="height: 60px;"></textarea></div> -->
+								</div><br clear="all" />
 								<a href="https://my.incapsula.com/api/docs/v1" target="_blank">Incapsula API Documentation</a><br />
 								<a href="https://docs.imperva.com/search?q=api%20definition" target="_blank">Incapsula API Swagger Definition Files</a><br />
 								<a href="http://jsonformatter.curiousconcept.com/" target="_blank">JSON Formatter</a>

@@ -441,7 +441,7 @@ var incapGetObjectActionMapping = {
 			"listName":"sites", // objectName, listName
 			"id":"site_id",
 			"displayText":"domain",
-			"children":["dc_id"]
+			"children":["dc_id","visit_id"]
 		}
 	},
 	"siteId":{
@@ -477,7 +477,23 @@ var incapGetObjectActionMapping = {
 			"children":["incidentId"]
 		}
 	}
-
+	// "visit_id":{
+	// 	"default":{
+	// 		"definition":"Cloud WAF API (v1)",
+	// 		"method":"POST",
+	// 		"action":"/api/visits/v1",
+	// 		"listName":"visits",
+	// 		"id":"id",
+	// 		"displayText":["clientType","clientApplication"],
+	// 		"multiselect":true,
+	// 		"parents":[
+	// 			{"id":"site_id","in":"body"} // in: path, body, query
+	// 		],
+	// 		"addedLookupParams":[
+	// 			{"id":"time_range","in":"body","value":"last_7_days"}
+	// 		]
+	// 	}
+	// }
 	/*,
 	"rule_id":{"action":"/sites/dataCenters/list","listName":"DCs","id":"id","displayText":"name"},
 	"config_id":{"name":"config_id","type":"string","values":""},
@@ -491,6 +507,13 @@ var incapGetObjectActionMapping = {
 var subAccountActionMappingByPlan = {
 	"enterprise":"/api/prov/v1/accounts/listSubAccounts",
 	"not_enterprise":"/api/prov/v1/accounts/list"
+}
+
+var base_64Param = {
+	"content":true,
+	"certificate":true,
+	"private_key":true,
+	"public_key":true
 }
 
 var timestampParam = {

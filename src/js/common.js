@@ -5,8 +5,14 @@ var SS_AUTH;
 
 $().ready(function() {
 	$("#mainNav").tabs();
+	$("#incapExamplesNav").tabs();	
 	$("#settingsNav").tabs().addClass( "ui-tabs-vertical ui-helper-clearfix" );
 	$("#settingsNav li").removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
+
+	$(".codeExampleBtn").click(function(){ 
+		var curId = this.id.substr(0,this.id.length-3); 
+		$("#"+curId).height("5px").height((5+$("#"+curId).prop('scrollHeight'))+"px")		
+	});
     // var INCAP_AUTH = JSON.parse(localStorage.getItem('INCAP_AUTH'));
 	/*if (localStorage.getItem('INCAP_AUTH')==null) {
 		localStorage.setItem("INCAP_AUTH",JSON.stringify({
@@ -30,7 +36,7 @@ function initCopyButtons(){
 		var id = this.id.substring(0,this.id.length-4);
 		if ($("#"+id).val()!='') {
 			if ($("#"+id).hasClass("query")) {
-				$("#SSrequestUrl").val($("#SSrequestUrl").val().replace(id+"={string}",id+"="+$('#'+id).val()+"").replace(id+"={list}",id+"="+$('#'+id).val()+"").replace(id+"={boolean}",id+"="+$('#'+id).val()+""));
+				$("#SSrequestUrl").val($("#SSrequestUrl").val().replace(id+"={string}",id+"="+$('#'+id).val()+"").replaceAll(id+"={list}",id+"="+$('#'+id).val()+"").replaceAll(id+"={boolean}",id+"="+$('#'+id).val()+""));
 			} else {
 				$("#SSrequestUrl").val($("#SSrequestUrl").val().replace("{"+id+"}",$('#'+id).val()));
 			}

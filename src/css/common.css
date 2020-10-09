@@ -142,8 +142,16 @@ fieldset legend {
 #incappathParams select,
 #incapbodyParams select,
 #incapformDataParams select {
-    width: auto;
+    width: 200px;
 }
+
+#incapqueryParams input,
+#incappathParams input,
+#incapbodyParams input,
+#incapformDataParams input {
+    width: 200px;
+}
+
 
 .fieldwrapper fieldset.nested_param {
 	border: 1px solid #999;
@@ -344,3 +352,11 @@ td select.auto { width: auto; }
 #incap_eventLogs .res_error { color:red; font-weight: bold; }
 
 #incapSitesPageNum { width:auto; }
+
+
+#incapExamplesNav { padding:0 !important; border: none !important; }
+#incapExamplesNav .ui-tabs-panel { padding:0 !important; border: none !important; }
+#incapExamplesNav .ui-tabs-nav { padding:0 !important; border: none !important; background: none !important; }
+/* #incapExamplesNav .codeExample { border: 1px solid #999 !important; } */
+
+#incapExamplesNav .codeExample textarea { border: 1px solid #999 !important; background: #F8F8F8; padding: 5px; }
