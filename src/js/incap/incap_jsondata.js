@@ -52,12 +52,13 @@ incapAPIDefinitions = {
 	"Role Management":{
 		"endpoint":"https://docs-be.imperva.com/bundle/cloud-application-security/attach/role-management-api.yaml",
 		"definition":{}
-	},
-	"Cloud Data Security":{
-		"endpoint":"https://docs-be.imperva.com/bundle/cloud-data-security/attach/b17.yaml",
-		"definition":{}
 	}
 }
+
+	// "Cloud Data Security":{
+	// 	"endpoint":"https://docs-be.imperva.com/bundle/cloud-data-security/attach/b17.yaml",
+	// 	"definition":{}
+	// }
 
 incapAPIKeyMap = {
 	"cwaf_api_v1":{ "displayName":"Cloud WAF API (v1)" },
