@@ -38,7 +38,7 @@ incapAPIDefinitions = {
 		"definition":{}
 	},
 	"Performance Settings":{
-		"endpoint":"https://docs-be.imperva.com/bundle/cloud-application-security/attach/performance-api.yaml",
+		"endpoint":"https://docs-be.imperva.com/bundle/performance-api/attach/performance-api.yaml",
 		"definition":{}
 	},
 	"Protected IP":{
