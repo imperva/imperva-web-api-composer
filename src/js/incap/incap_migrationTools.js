@@ -200,7 +200,7 @@ function renderMigrationUserSites(){
             $('#runMigration').addClass('disabled').unbind();
             $('#incap_migrationAction_accountIDList, #incap_migrationAction_page_num').attr('disabled','disabled');
             $("#incap_migrationAction_sites").html('<option value="">loading...</option>').attr('disabled','disabled');;
-            $.gritter.add({ title: 'Status', text: "Loading sites for api_id:"+auth.api_id});
+            // $.gritter.add({ title: 'Status', text: "Loading sites for api_id:"+auth.api_id});
             incap_migUserSites = {"index":[],"members":{},"processing":true};
             makeIncapCall(getSwHost("Cloud WAF API (v1)")+'/api/prov/v1/sites/list','POST',auth,renderMigrationUserSitesResponse,{"postData":postParams},'set',"application/x-www-form-urlencoded");
         }

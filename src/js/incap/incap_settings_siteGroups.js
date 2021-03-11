@@ -31,7 +31,7 @@ function renderSiteGroupSites(){
             $('#moveIncapSiteGroupMemberLeft').unbind();
             $('#incap_site_groups_list').attr('disabled','disabled');
             $('#incap_site_group_account_list').attr('disabled','disabled');
-            $.gritter.add({ title: 'Status', text: "Loading sites for api_id:"+auth.api_id});
+            // $.gritter.add({ title: 'Status', text: "Loading sites for api_id:"+auth.api_id});
             makeIncapCall(getSwHost("Cloud WAF API (v1)")+'/api/prov/v1/sites/list', 'POST', auth, {"postData":postDataObj}, renderSiteGroupSitesResponse, 'set',"application/x-www-form-urlencoded");
         }
     }

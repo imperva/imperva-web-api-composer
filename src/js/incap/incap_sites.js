@@ -35,13 +35,13 @@ function loadSites(){
 			"page_size": $('#incapSitesPageSize').val(),
 			"page_num": $('#incapSitesPageNum').val()
 		}
-		$.gritter.add({ title: 'Status', text: 'Loading page '+postParams.page_num+' (page size: '+postParams.page_size+') on account_id: '+postParams.account_id});
+		// $.gritter.add({ title: 'Status', text: 'Loading page '+postParams.page_num+' (page size: '+postParams.page_size+') on account_id: '+postParams.account_id});
 		makeIncapCall(getSwHost("Cloud WAF API (v1)")+'/api/prov/v1/sites/list','POST',auth,loadSitesResponse,{"postData":postParams},'set',"application/x-www-form-urlencoded");
 	}
 }
 
 function loadSitesResponse(response){
-	$.gritter.add({ title: 'Status', text: "Successfully retrieved sites, puling down ADR rules for each site."});
+	// $.gritter.add({ title: 'Status', text: "Successfully retrieved sites, puling down ADR rules for each site."});
 	curSites.siteIndex = [];
 	curSites.sites = {};
 	$.each(response.sites, function(i,site) { 
@@ -226,7 +226,7 @@ function loadPoliciesResponse(response,input_id) {
 	if (curSites.sites[confAry[1]]!=undefined) {
 		curSites.sites[confAry[1]].rules = response;
 		var str = '';
-		$.gritter.add({ title: 'Status', text: "Successfully retrieved Account Policies. "+input_id});
+		// $.gritter.add({ title: 'Status', text: "Successfully retrieved Account Policies. "+input_id});
 		if (response.value != undefined && response.value.length>0) {
 			str += '<table class="tablesorter"><thead><tr>';
 			// str += '<th class="min"><a href="javascript:void(0)" id="site_'+confAry[1]+'_rules|incap_rules" title="Create CURL samples for all Incap Rules in Migration Tools tab" class="ui-icon ui-icon-newwin copyAllIncapRules"> </a></th>';

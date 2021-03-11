@@ -26,7 +26,7 @@ function loadcwafswagger(apiDefinitionEndpoint,callback){
 		contentType: "application/json; charset=utf-8",
 		success: function(data){
 			var curApiDefName = apiDefinitionsAry[data.apiDefinitionIndex];
-			$.gritter.add({ title: 'Processing...', text: "loading Swagger: "});
+			// $.gritter.add({ title: 'Processing...', text: "loading Swagger: "+curApiDefName});
 			incapAPIDefinitions[curApiDefName]["definition"] = data;
 			apiDefinitionIndex_processed++;
 			if (apiDefinitionIndex_processed == apiDefinitionsAry.length) { 
@@ -43,13 +43,18 @@ function getAPIDefinitionIndexes(){
 }
 
 function initIncap(){
-	$.each(incapAPIDefinitions, function(optGroup,swagger) { 
-		var swaggerPaths = Object.keys(swagger.definition.paths).sort();
+	$.each(incapAPIDefinitions, function(optGroup,swagger) { 		
 		var str = '<optgroup label="'+optGroup+'">';
-		$.each(swaggerPaths, function(i,action) {
-			var actionObj = swagger.definition.paths[action];
-			str += '<option value="'+swagger.definition.basePath+action+'">'+swagger.definition.basePath+action+'</option>';
-		});
+		try {
+			var swaggerPaths = Object.keys(swagger.definition.paths).sort();
+			$.each(swaggerPaths, function(i,action) {
+				var actionObj = swagger.definition.paths[action];
+				str += '<option value="'+swagger.definition.basePath+action+'">'+swagger.definition.basePath+action+'</option>';
+			});
+		} catch(err) {
+			str += '<option value="">Error parsing swagger</option>';
+			$.gritter.add({ title: 'ERROR', text: "Error retrieving and parsing swagger for: "+optGroup});
+		}		
 		str += '</optgroup>';
 		$("#incapActions").append(str); 
 	});
