@@ -11,7 +11,9 @@ function incap_generateCodeExamples(){
 }
 
 function incap_transformToCURL(requestUrl=$('#incapRequestUrl').val(),auth=getUserAuthObj($('#incapAccountsList').val()),reqObj=$('#incapData').val(),maskSecretKey=$('#incap_configMaskSecretKey').is(":checked")){
-	var curlStr = '';
+    var curlStr = '';
+    if (auth.api_id==undefined) auth.api_id="xxxxxx"
+    if (auth.api_key==undefined) auth.api_key="************************************'"
 	if (!$('#incapRequestUrl').hasClass('errors')) {
 		// $('#incapServer').val()+$('#incapActions').val(),reqObj,$('#incap_configMaskSecretKey').is(":checked")
 		var requestUrlAry = requestUrl.split("?");
