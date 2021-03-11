@@ -37,8 +37,20 @@ incapAPIDefinitions = {
 		"endpoint":"https://docs-be.imperva.com/bundle/cloud-application-security/attach/policies-api.yaml",
 		"definition":{}
 	},
-	"Performance Settings":{
-		"endpoint":"https://docs-be.imperva.com/bundle/performance-api/attach/performance-api.yaml",
+	"Cache Settings":{
+		"endpoint":"https://docs-be.imperva.com/bundle/cloud-application-security/attach/cache-api.yaml",
+		"definition":{}
+	},
+	"Delivery Settings":{
+		"endpoint":"https://docs-be.imperva.com/bundle/cloud-application-security/attach/delivery-api.yaml",
+		"definition":{}
+	},
+	"Load Balancing Settings":{
+		"endpoint":"https://docs-be.imperva.com/bundle/cloud-application-security/attach/load-balancing-api.yaml",
+		"definition":{}
+	},
+	"DNS Protection":{
+		"endpoint":"https://docs-be.imperva.com/bundle/cloud-application-security/attach/dns-protection-api.yaml",
 		"definition":{}
 	},
 	"Protected IP":{
