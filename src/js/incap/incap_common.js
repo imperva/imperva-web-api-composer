@@ -49,7 +49,8 @@ function initIncap(){
 			var swaggerPaths = Object.keys(swagger.definition.paths).sort();
 			$.each(swaggerPaths, function(i,action) {
 				var actionObj = swagger.definition.paths[action];
-				str += '<option value="'+swagger.definition.basePath+action+'">'+swagger.definition.basePath+action+'</option>';
+				var curAction = (swagger.definition.basePath!=undefined?swagger.definition.basePath:'')+action
+				str += '<option value="'+curAction+'">'+curAction+'</option>';
 			});
 		} catch(err) {
 			str += '<option value="">Error parsing swagger</option>';
@@ -168,8 +169,14 @@ function makeIncapCall(apiUrl=$('#incapRequestUrl').val(),method,auth,callback,p
 	});
 }
 
-function getSwHost(swagerKey){
-	return "https://"+incapAPIDefinitions[swagerKey].definition.host;
+function getSwHost(swaggerKey){
+	var host = "https://"+incapAPIDefinitions[swaggerKey].definition.host;
+	if (host && incapAPIDefinitions[swaggerKey].definition.servers && incapAPIDefinitions[swaggerKey].definition.servers.length>0) {
+		if (incapAPIDefinitions[swaggerKey].definition.servers[0].url!=undefined) {
+			host = incapAPIDefinitions[swaggerKey].definition.servers[0].url
+		}
+	}
+	return (host);
 }
 
 function incapUpdateReqURL() {
@@ -219,8 +226,9 @@ function changeAction() {
 	$(incap_method_sel+' option').attr('disabled','disabled');
 	var curSwagger = incapAPIDefinitions[$('#incapActions :selected').parent().attr('label')];
 	$('#incapContentType').val((curSwagger.definition.consumes!=undefined) ? curSwagger.definition.consumes[0] : "application/json");
-	$("#incapServer").val("https://"+curSwagger.definition.host);
-	var currentAction = $("#incapActions").val().substr(curSwagger.definition.basePath.length);
+	$("#incapServer").val(getSwHost($('#incapActions :selected').parent().attr('label')));
+	var curBasePath = (curSwagger.definition.basePath!=undefined ? curSwagger.definition.basePath : '');
+	var currentAction = $("#incapActions").val().substr(curBasePath.length);
 	if (incapAPIDefinitions[$('#incapActions :selected').parent().attr('label')].definition.paths[currentAction] != undefined) {
 		incapCurUrlParamsAry = [];
 		var actionObj = incapAPIDefinitions[$('#incapActions :selected').parent().attr('label')].definition.paths[currentAction];
@@ -473,22 +481,22 @@ function loadSubAccounts(obj){
 		if ($(obj).attr('id')=='incapAccountsList') { // API Client
 			$('#incapAccountIDList').html('<option value="'+authObj.account_id+'">loading...</option>');
 			//$('#get the page num id later ').val('0');
-			makeIncapCall(getSwHost("Cloud WAF API (v1)")+getSubAccountUrlByAccountId('#incapAccountsList'),'POST',authObj,loadSubAccountsResponse_APIClient,{},'set',"application/x-www-form-urlencoded");
+			makeIncapCall(getSwHost(apiV1SwaggerKey)+getSubAccountUrlByAccountId('#incapAccountsList'),'POST',authObj,loadSubAccountsResponse_APIClient,{},'set',"application/x-www-form-urlencoded");
 		} else if ($(obj).attr('id')=='incapSitesAccountsList') { // Sites
 			$('#incapSitesAccountIDList').html('<option value="'+authObj.account_id+'">loading...</option>');
 			$('#incapSitesPageNum').val('0');
-			makeIncapCall(getSwHost("Cloud WAF API (v1)")+getSubAccountUrlByAccountId('#incapSitesAccountsList'),'POST',authObj,loadSubAccountsResponse_Sites,{},'set',"application/x-www-form-urlencoded");
+			makeIncapCall(getSwHost(apiV1SwaggerKey)+getSubAccountUrlByAccountId('#incapSitesAccountsList'),'POST',authObj,loadSubAccountsResponse_Sites,{},'set',"application/x-www-form-urlencoded");
 		} else if ($(obj).attr('id')=='incap_migrationAction') { // Migration
 			$('#incap_migrationAction').attr('disabled','disabled');
 			$('#incap_migrationAction_accountIDList').html('<option value="'+authObj.account_id+'">loading...</option>').attr('disabled','disabled');
 			$("#incap_migrationAction_sites").html('<option value="">loading...</option>').attr('disabled','disabled');
 			$('#incap_migrationAction_page_num').val('0');
-			makeIncapCall(getSwHost("Cloud WAF API (v1)")+getSubAccountUrlByAccountId('#incap_migrationAction'),'POST',authObj,loadSubAccountsResponse_Migration,{},'set',"application/x-www-form-urlencoded");
+			makeIncapCall(getSwHost(apiV1SwaggerKey)+getSubAccountUrlByAccountId('#incap_migrationAction'),'POST',authObj,loadSubAccountsResponse_Migration,{},'set',"application/x-www-form-urlencoded");
 		} else if ($(obj).attr('id')=='incap_site_group_account_list') { // Site Group
 			$('#incap_site_group_account_ID_list').html('<option value="'+authObj.account_id+'">loading...</option>').attr('disabled','disabled');
 			$('#incap_site_group_page_num').val('0');
 			$("#avail_incap_group_sites").html('<option value="">loading...</option>');
-			makeIncapCall(getSwHost("Cloud WAF API (v1)")+getSubAccountUrlByAccountId('#incap_site_group_account_list'),'POST',authObj,loadSubAccountsResponse_SiteGroup,{},'set',"application/x-www-form-urlencoded");
+			makeIncapCall(getSwHost(apiV1SwaggerKey)+getSubAccountUrlByAccountId('#incap_site_group_account_list'),'POST',authObj,loadSubAccountsResponse_SiteGroup,{},'set',"application/x-www-form-urlencoded");
 		}
 	}
 }
@@ -597,7 +605,8 @@ function renderParamsHTML(){
 	$('#incapResult').val('');
 	$(incap_req_url_sel).val($('#IncapsulaAPI #incapServer').val()+$(incap_action_sel).val());
 	var curSwagger = incapAPIDefinitions[$('#incapActions :selected').parent().attr('label')];
-	var currentAction = $("#incapActions").val().substr(curSwagger.definition.basePath.length);
+	var curBasePath = (curSwagger.definition.basePath!=undefined ? curSwagger.definition.basePath : '');
+	var currentAction = $("#incapActions").val().substr(curBasePath.length);
 	var methodObj = jQuery.extend(true, {}, curSwagger.definition.paths[currentAction][$(incap_method_sel).val()]);
 	$('#incapData').val('');
 	$.each(["bodyParams","pathParams","queryParams","formDataParams"], function(i,paramType) {
@@ -606,7 +615,7 @@ function renderParamsHTML(){
 		if (methodObj[paramType]!=undefined) {
 			$.each(methodObj[paramType].index, function(i,paramName) {
 				var param = methodObj[paramType].list[paramName];
-				if (param.name!='api_id' && param.name!='api_key' && param.name!='account_id') {
+				if (param.name!='api_id' && param.name!='api_key') {
 					if ($('#'+param.id_str).length==0) {
 						if (param.id_str.includes("___")) {
 							var parentParamIndexAry = param.id_str.split("___");
@@ -620,6 +629,7 @@ function renderParamsHTML(){
 									var level = (currentContainerId.split("___").length);
 									var required = (param.required==true) ? ' required ': '';
 									var paramDataType = ((currentContainerParam.type!=undefined) ? currentContainerParam.type : 'object');
+									debugger
 									var str = '<tr id="'+currentContainerId+'_tbltr" class="fieldwrapper '+currentContainerId+'_tbltr">';
 									str += '<td valign="top" align="right" width><label title="'+currentContainerId+'" for="">';
 									str += ((currentContainerParam.description!=undefined) ? '<span class="info" title="'+currentContainerParam.description+'"> </span> ' : '');
@@ -715,6 +725,7 @@ function renderParamsHTML(){
 
 function renderParamHTML(param,paramType){
 	var paramLevel = (param.id_str.includes("___") ? 'child' : 'param');
+	var paramValType = (param.type!=undefined ? param.type : (param.schema !=undefined && param.schema.type!=undefined ? param.schema.type : "unknown_type")); 
 	var str = '<tr id="'+param.id_str+'tr" class="fieldwrapper"><td align="right"><label for="'+param.name+'">';
 	if (param.description!=undefined) str += '<span class="info" title="'+filterStr(param.description)+'"> </span> '; 
 	var required = (param.required==true) ? ' required ': '';
@@ -731,15 +742,15 @@ function renderParamHTML(param,paramType){
 		str += '</select>';
 	} else if (timestampParam[param.name]) {
 		str += '<input type="text" class="datepicker '+paramType+' '+paramLevel+'" name="'+param.name+'" id="'+param.id_str+'" value="" placeholder="epoch timestamp"'+required+' />';
-	} else if (param.type=="boolean") {
+	} else if (paramValType=="boolean") {
 		str += '<select name="'+param.name+'" class="'+paramType+' '+paramLevel+'" id="'+param.id_str+'"'+required+'>';
 		str += ((param.required) ? '' : '<option value="">-- select --</option>') +'<option value="true">true</option><option value="false">false</option>';
 		str += '</select>';
-	} else if (param.type=="object") {
+	} else if (paramValType=="object") {
 		str += '<textarea class="'+paramType+' '+paramLevel+'"  name="'+param.name+'" id="'+param.id_str+'" style="width:200px; height: 50px;"'+required+'>'+param.jsonStr+'</textarea>';
 	} else {
 		if (paramType=='pathParams') str += '<a href="javascript:void(0)" class="ui-icon ui-icon-copy" id="'+param.id_str+'_btn" title="Copy to Request URL">copy</a>';
-		str += '<input type="text" class="'+paramType+' '+paramLevel+'" name="'+param.name+'" id="'+param.id_str+'" value="" placeholder="'+param.type+((param.items!=undefined && param.items.type!=undefined) ? " ("+param.items.type+")" : '')+'"'+required+' />';
+		str += '<input type="text" class="'+paramType+' '+paramLevel+'" name="'+param.name+'" id="'+param.id_str+'" value="" placeholder="'+paramValType+((param.items!=undefined && param.items.type!=undefined) ? " ("+param.items.type+")" : '')+'"'+required+' />';
 	}
 	str += '</td></tr>';
 	return str;

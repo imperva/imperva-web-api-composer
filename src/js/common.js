@@ -100,5 +100,16 @@ function IsJsonString(str) {
 }
 
 function filterStr(str){
-	return str.replaceAll("<a href=","").replaceAll("</a>","").replaceAll("<","").replaceAll(">","").replaceAll("'","").replaceAll('"',"");
+	str = str.replaceAll("<a href=","");
+	str = str.replaceAll("<a href=","");
+	str = str.replaceAll("</a>","");
+	str = str.replaceAll("<br/>","\n");
+	str = str.replaceAll("<ul>","\n").replaceAll("</ul>","");
+	str = str.replaceAll("</li>","").replaceAll("<li>","\n • ");
+	str = str.replaceAll("<b>","").replaceAll("</b>"," - ");
+	str = str.replaceAll("<","");
+	str = str.replaceAll(">","");
+	str = str.replaceAll("'","");
+	str = str.replaceAll('"',"");
+	return str;
 }

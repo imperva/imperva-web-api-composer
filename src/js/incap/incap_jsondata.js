@@ -4,9 +4,14 @@ var subAccountLookUpMap = {
 	"default":{"url":"/api/prov/v1/accounts/listSubAccounts","attr":"resultList"}
 }
 
+var apiV1SwaggerKey = "Cloud WAF API (v1)"
 incapAPIDefinitions = {
+	// "Cloud WAF API (v1)":{
+	// 	"endpoint":"cwaf-v1-swagger.json",
+	// 	"definition":{}
+	// },
 	"Cloud WAF API (v1)":{
-		"endpoint":"cwaf-v1-swagger.json",
+		"endpoint":"cwaf-v1-swagger-3.json",
 		"definition":{}
 	},
 	"Cloud WAF API (v2)":{
@@ -29,28 +34,32 @@ incapAPIDefinitions = {
 		"endpoint":"https://docs-be.imperva.com/bundle/cloud-application-security/attach/audit-trail-api.yaml",
 		"definition":{}
 	},
+	"Cache Settings":{
+		"endpoint":"https://docs-be.imperva.com/bundle/cloud-application-security/attach/cache-api.yaml",
+		"definition":{}
+	},
 	"Certificate Management":{
 		"endpoint":"https://docs-be.imperva.com/bundle/cloud-application-security/attach/certificate-api.yaml",
 		"definition":{}
 	},
-	"Policy Management":{
-		"endpoint":"https://docs-be.imperva.com/bundle/cloud-application-security/attach/policies-api.yaml",
-		"definition":{}
-	},
-	"Cache Settings":{
-		"endpoint":"https://docs-be.imperva.com/bundle/cloud-application-security/attach/cache-api.yaml",
+	"Connectivity Settings":{
+		"endpoint":"https://docs-be.imperva.com/bundle/cloud-application-security/attach/network-settings-api.yaml",
 		"definition":{}
 	},
 	"Delivery Settings":{
 		"endpoint":"https://docs-be.imperva.com/bundle/cloud-application-security/attach/delivery-api.yaml",
 		"definition":{}
 	},
+	"DNS Protection":{
+		"endpoint":"https://docs-be.imperva.com/bundle/cloud-application-security/attach/dns-protection-api.yaml",
+		"definition":{}
+	},
 	"Load Balancing Settings":{
 		"endpoint":"https://docs-be.imperva.com/bundle/cloud-application-security/attach/load-balancing-api.yaml",
 		"definition":{}
 	},
-	"DNS Protection":{
-		"endpoint":"https://docs-be.imperva.com/bundle/cloud-application-security/attach/dns-protection-api.yaml",
+	"Policy Management":{
+		"endpoint":"https://docs-be.imperva.com/bundle/cloud-application-security/attach/policies-api.yaml",
 		"definition":{}
 	},
 	"Protected IP":{
@@ -114,6 +123,18 @@ var incapGetObjectActionMapping = {
 	//   }
 	// }
 	"accountId":{
+		"default":{
+			"definition":"Cloud WAF API (v1)",
+			"isParent":true,
+			"copy_from_select_id":"incapAccountIDList",
+			"method":"POST",
+			"listName":"resultList", // objectName, listName
+			"id":"sub_account_id",
+			"displayText":"sub_account_name",
+			"children":["certId"]
+		}
+	},
+	"account_id":{
 		"default":{
 			"definition":"Cloud WAF API (v1)",
 			"isParent":true,
