@@ -45,90 +45,24 @@
     "description" : "Implement integrations with the Imperva service."
   } ],
   "paths" : {
-    "/api/prov/v1/accounts/add" : {
+    "/api/prov/v1/accounts/gettoken" : {
       "post" : {
         "tags" : [ "Account Management" ],
-        "summary" : "Add a new managed account",
-        "description" : "Available for Reseller accounts only<br/>Use this operation to add a new account that should be managed by the account of the API client (the parent account). The new account will be configured according to the preferences set for the parent account by Imperva.\nDepending on these preferences, an activation e-mail will be sent to the specified e-mail address. The user responds to the activation e-mail, selects a password, and can then log directly into the Imperva console. The same e-mail address can also be used to send system notifications to the account. The new account is identified by a numeric value as provided by Imperva in the response in the field account_id.",
-        "operationId" : "addAccount",
+        "summary" : "Get account login token",
+        "description" : "Tokens are used instead of user/password based authentication to log in to the Imperva Cloud Security Console.\nUse this operation to generate a token for an account. The token is valid for 15 minutes.",
+        "operationId" : "getToken",
         "parameters" : [ {
-          "name" : "email",
+          "name" : "account_id",
           "in" : "query",
-          "description" : "Email address. For example: \"joe@example.com\".",
-          "required" : true,
+          "description" : "Numeric identifier of the account to operate on.<br/>If not specified, operation will be performed on the account identified by the authentication parameters.",
           "schema" : {
             "type" : "string"
-          },
-          "example" : "example@imperva.com"
-        }, {
-          "name" : "parent_id",
-          "in" : "query",
-          "description" : "The newly created account's parent id. If not specified, the invoking account will be assigned as the parent.",
-          "schema" : {
-            "type" : "integer",
-            "format" : "int64"
           },
           "example" : 10
         }, {
-          "name" : "name",
+          "name" : "partner_id",
           "in" : "query",
-          "description" : "The account owner's name. For example: \"John Doe\".",
-          "schema" : {
-            "type" : "string"
-          },
-          "example" : "Jhon"
-        }, {
-          "name" : "plan_id",
-          "in" : "query",
-          "description" : "An identifier of the plan to assign to the new account. For example, ent100 for the Enterprise 100 plan.",
-          "schema" : {
-            "type" : "string"
-          },
-          "example" : "ent100"
-        }, {
-          "name" : "ref_id",
-          "in" : "query",
-          "description" : "Customer specific identifier for this operation.",
-          "schema" : {
-            "type" : "string"
-          },
-          "example" : 324
-        }, {
-          "name" : "account_name",
-          "in" : "query",
-          "description" : "Account name.",
-          "schema" : {
-            "type" : "string"
-          },
-          "example" : "John Account"
-        }, {
-          "name" : "account_description",
-          "in" : "query",
-          "description" : "The account description",
-          "schema" : {
-            "type" : "string"
-          },
-          "example" : "Demo account"
-        }, {
-          "name" : "user_name",
-          "in" : "query",
-          "description" : "The account owner's name. For example: \"John Doe\".",
-          "schema" : {
-            "type" : "string"
-          },
-          "example" : "Jhon"
-        }, {
-          "name" : "log_level",
-          "in" : "query",
-          "description" : "Sets the log reporting level for the site.Possible values: full, security, none, default<br/>Available only for customers that purchased the Logs Integration SKU.",
-          "schema" : {
-            "type" : "string"
-          },
-          "example" : "full"
-        }, {
-          "name" : "logs_account_id",
-          "in" : "query",
-          "description" : "Numeric identifier of the account that purchased the logs integration SKU and which collects the logs.<br/>If not specified, operation will be performed on the account identified by the authentication parameters.\nAvailable only for customers that purchased the Logs Integration SKU.",
+          "description" : "Numeric identifier of the parent id to operate on",
           "schema" : {
             "type" : "string"
           },
@@ -136,15 +70,56 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "res - contains the specific error code:<br/>1003 - Plan ID invalid<br/>1001 - Email invalid<br/>1010 - Account exists<br/>9403 - Unknown/unauthorized account_id",
+            "description" : "Success",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "oneOf" : [ {
-                    "$ref" : "#/components/schemas/ApiResultAccountStatus"
-                  }, {
-                    "$ref" : "#/components/schemas/ApiResult"
-                  } ]
+                  "$ref" : "#/components/schemas/ApiResultGetSsoToken"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/prov/v1/accounts/list" : {
+      "post" : {
+        "tags" : [ "Account Management" ],
+        "summary" : "List managed accounts",
+        "description" : "Available for Reseller accounts only.<br/>Use this operation to get the list of accounts that are managed by account of the API client (the parent account).",
+        "operationId" : "listAccounts",
+        "parameters" : [ {
+          "name" : "account_id",
+          "in" : "query",
+          "description" : "Numeric identifier of the account to operate on.<br/>If not specified, operation will be performed on the account identified by the authentication parameters.",
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : 10
+        }, {
+          "name" : "page_size",
+          "in" : "query",
+          "description" : "The number of objects to return in the response.<br/>Default: 50<br/>Maximum: 100",
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : 75
+        }, {
+          "name" : "page_num",
+          "in" : "query",
+          "description" : "The page to return starting from 0. Default: '0",
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : 0
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ApiResultListUsers"
                 }
               }
             }
@@ -212,51 +187,6 @@
                   }, {
                     "$ref" : "#/components/schemas/ApiResult"
                   } ]
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/prov/v1/accounts/list" : {
-      "post" : {
-        "tags" : [ "Account Management" ],
-        "summary" : "List managed accounts",
-        "description" : "Available for Reseller accounts only.<br/>Use this operation to get the list of accounts that are managed by account of the API client (the parent account).",
-        "operationId" : "listAccounts",
-        "parameters" : [ {
-          "name" : "account_id",
-          "in" : "query",
-          "description" : "Numeric identifier of the account to operate on.<br/>If not specified, operation will be performed on the account identified by the authentication parameters.",
-          "schema" : {
-            "type" : "string"
-          },
-          "example" : 10
-        }, {
-          "name" : "page_size",
-          "in" : "query",
-          "description" : "The number of objects to return in the response.<br/>Default: 50<br/>Maximum: 100",
-          "schema" : {
-            "type" : "string"
-          },
-          "example" : 75
-        }, {
-          "name" : "page_num",
-          "in" : "query",
-          "description" : "The page to return starting from 0. Default: '0",
-          "schema" : {
-            "type" : "string"
-          },
-          "example" : 0
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Success",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ApiResultListUsers"
                 }
               }
             }
@@ -521,24 +451,90 @@
         }
       }
     },
-    "/api/prov/v1/accounts/gettoken" : {
+    "/api/prov/v1/accounts/add" : {
       "post" : {
         "tags" : [ "Account Management" ],
-        "summary" : "Get account login token",
-        "description" : "Tokens are used instead of user/password based authentication to log in to the Imperva Cloud Security Console.\nUse this operation to generate a token for an account. The token is valid for 15 minutes.",
-        "operationId" : "getToken",
+        "summary" : "Add a new managed account",
+        "description" : "Available for Reseller accounts only<br/>Use this operation to add a new account that should be managed by the account of the API client (the parent account). The new account will be configured according to the preferences set for the parent account by Imperva.\nDepending on these preferences, an activation e-mail will be sent to the specified e-mail address. The user responds to the activation e-mail, selects a password, and can then log directly into the Imperva console. The same e-mail address can also be used to send system notifications to the account. The new account is identified by a numeric value as provided by Imperva in the response in the field account_id.",
+        "operationId" : "addAccount",
         "parameters" : [ {
-          "name" : "account_id",
+          "name" : "email",
           "in" : "query",
-          "description" : "Numeric identifier of the account to operate on.<br/>If not specified, operation will be performed on the account identified by the authentication parameters.",
+          "description" : "Email address. For example: \"joe@example.com\".",
+          "required" : true,
           "schema" : {
             "type" : "string"
           },
+          "example" : "example@imperva.com"
+        }, {
+          "name" : "parent_id",
+          "in" : "query",
+          "description" : "The newly created account's parent id. If not specified, the invoking account will be assigned as the parent.",
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
           "example" : 10
         }, {
-          "name" : "partner_id",
+          "name" : "name",
           "in" : "query",
-          "description" : "Numeric identifier of the parent id to operate on",
+          "description" : "The account owner's name. For example: \"John Doe\".",
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "Jhon"
+        }, {
+          "name" : "plan_id",
+          "in" : "query",
+          "description" : "An identifier of the plan to assign to the new account. For example, ent100 for the Enterprise 100 plan.",
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "ent100"
+        }, {
+          "name" : "ref_id",
+          "in" : "query",
+          "description" : "Customer specific identifier for this operation.",
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : 324
+        }, {
+          "name" : "account_name",
+          "in" : "query",
+          "description" : "Account name.",
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "John Account"
+        }, {
+          "name" : "account_description",
+          "in" : "query",
+          "description" : "The account description",
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "Demo account"
+        }, {
+          "name" : "user_name",
+          "in" : "query",
+          "description" : "The account owner's name. For example: \"John Doe\".",
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "Jhon"
+        }, {
+          "name" : "log_level",
+          "in" : "query",
+          "description" : "Sets the log reporting level for the site.Possible values: full, security, none, default<br/>Available only for customers that purchased the Logs Integration SKU.",
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "full"
+        }, {
+          "name" : "logs_account_id",
+          "in" : "query",
+          "description" : "Numeric identifier of the account that purchased the logs integration SKU and which collects the logs.<br/>If not specified, operation will be performed on the account identified by the authentication parameters.\nAvailable only for customers that purchased the Logs Integration SKU.",
           "schema" : {
             "type" : "string"
           },
@@ -546,11 +542,132 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "Success",
+            "description" : "res - contains the specific error code:<br/>1003 - Plan ID invalid<br/>1001 - Email invalid<br/>1010 - Account exists<br/>9403 - Unknown/unauthorized account_id",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/ApiResultGetSsoToken"
+                  "oneOf" : [ {
+                    "$ref" : "#/components/schemas/ApiResultAccountStatus"
+                  }, {
+                    "$ref" : "#/components/schemas/ApiResult"
+                  } ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/prov/v1/sites/performance/caching-rules/add" : {
+      "post" : {
+        "tags" : [ "Site Management" ],
+        "summary" : "Add a cache rule",
+        "description" : "Use this operation for adding a cache rule",
+        "operationId" : "addCacheRule",
+        "parameters" : [ {
+          "name" : "action",
+          "in" : "query",
+          "description" : "Rule action. See Possible action parameter values.<br/>Possible action parameter values:<br/><ul><li><b>HTTP_CACHE_MAKE_STATIC</b> Cache Resource</li><li><b>HTTP_CACHE_CLIENT_CACHE_CTL</b> Cache Resource on Client</li><li><b>HTTP_CACHE_FORCE_UNCACHEABLE</b> Don't Cache Resource</li><li><b>HTTP_CACHE_DIFFERENTIATE_SSL</b> Differentiate Cache Key by HTTP/HTTPS Scheme</li><li><b>HTTP_CACHE_DIFFERENTIATE_BY_HEADER</b> Differentiate Cache Key by Header</li><li><b>HTTP_CACHE_DIFFERENTIATE_BY_COOKIE</b> Differentiate Cache Key by Cookie</li><li><b>HTTP_CACHE_IGNORE_PARAMS</b> Ignore Parameters in Cache Key</li><li><b>HTTP_CACHE_IGNORE_AUTH_HEADER</b> CacheRuleAction.HTTP_CACHE_IGNORE_AUTH_HEADER</li><li><b>HTTP_CACHE_FORCE_VALIDATION</b> Force User Authentication</li><li><b>HTTP_CACHE_ADD_TAG</b> Create Tag</li><li><b>HTTP_CACHE_ENRICH_CACHE_KEY</b> Enrich Cache Key</li></ul>",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "HTTP_CACHE_CREATE_TAG"
+        }, {
+          "name" : "site_id",
+          "in" : "query",
+          "description" : "Numeric identifier of the site to operate on.",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "example" : 10
+        }, {
+          "name" : "name",
+          "in" : "query",
+          "description" : "Rule name.",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "rule1"
+        }, {
+          "name" : "filter",
+          "in" : "query",
+          "description" : "Rule will trigger only a request that matches this filter. For more details on filters, see <a href=\"https://docs.imperva.com/csh?context=rule_syntax\">Syntax Guide</a>.",
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "URL ==  /admin"
+        }, {
+          "name" : "ttl",
+          "in" : "query",
+          "description" : "Rule TTL. Only relevant when action is HTTP_CACHE_MAKE_STATIC or HTTP_CACHE_CLIENT_CACHE_CTL",
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "TTL value"
+        }, {
+          "name" : "ttl_unit",
+          "in" : "query",
+          "description" : "Rule TTL time unit.<br/>Must be one of SECONDS, MINUTES, HOURS, DAYS or WEEKS. If no time unit is provided, SECONDS is used.<br/>Only relevant when action is HTTP_CACHE_MAKE_STATIC or HTTP_CACHE_CLIENT_CACHE_CTL",
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "SECONDS"
+        }, {
+          "name" : "differentiated_by_value",
+          "in" : "query",
+          "description" : "Value to differentiate by. HTTP_CACHE_DIFFERENTIATE_BY_HEADER - header name, HTTP_CACHE_DIFFERENTIATE_BY_COOKIE - cookie name, HTTP_CACHE_DIFFERENTIATE_BY_GEO - geo location <br/>(ISO 3166-1 alpha-2 country codes ), otherwise irrelevant.",
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "cookie name"
+        }, {
+          "name" : "params",
+          "in" : "query",
+          "description" : "Comma separated list of parameters to ignore.",
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "{a,b,c}"
+        }, {
+          "name" : "all_params",
+          "in" : "query",
+          "description" : "When set to <b>true</b>: all parameters in cache key will be ignored.<br/>Default: false.<br/>Relevant for HTTP_CACHE_IGNORE_PARAMS action",
+          "schema" : {
+            "type" : "boolean"
+          },
+          "example" : true
+        }, {
+          "name" : "tag_name",
+          "in" : "query",
+          "description" : "The name of the tag to add.",
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "tag example"
+        }, {
+          "name" : "text",
+          "in" : "query",
+          "description" : "Add text to the cache key as suffix. Relevant for the HTTP_CACHE_ENRICH_CACHE_KEY action",
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "suffix"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "res - contains the specific error code:<br/>9413 - Unknown/unauthorized site_id<br/>9415 - Operation not allowed<br/>2 - Invalid input",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "oneOf" : [ {
+                    "$ref" : "#/components/schemas/ApiResultAddCacheRule"
+                  }, {
+                    "$ref" : "#/components/schemas/ApiResult"
+                  } ]
                 }
               }
             }
@@ -588,6 +705,56 @@
         "responses" : {
           "200" : {
             "description" : "res - contains the specific error code:<br/>9413 - Unknown/unauthorized site_id<br/>9415 - Operation not allowed<br/>2 - Invalid input<br/>2002 - Object is not found<br/>1 - Unexpected error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ApiResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/prov/v1/sites/performance/caching-rules/enable" : {
+      "post" : {
+        "tags" : [ "Site Management" ],
+        "summary" : "Enable or disable cache rule",
+        "description" : "Use this operation for enabling or disable cache rule",
+        "operationId" : "enableDisableCacheRule",
+        "parameters" : [ {
+          "name" : "site_id",
+          "in" : "query",
+          "description" : "Numeric identifier of the site to operate on.",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "example" : 10
+        }, {
+          "name" : "rule_id",
+          "in" : "query",
+          "description" : "Numeric identifier of the site to operate on.",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "example" : 3746
+        }, {
+          "name" : "enable",
+          "in" : "query",
+          "description" : "When true, the rule will be enabled. Set to false to disable.",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : true
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "res - contains the specific error code:<br/>9413 - Unknown/unauthorized site_id<br/>9415 - Operation not allowed<br/>2 - Invalid input<br/>2002 - Object is not found",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -772,163 +939,96 @@
         }
       }
     },
-    "/api/prov/v1/sites/performance/caching-rules/enable" : {
+    "/api/v1/infra/stats" : {
       "post" : {
-        "tags" : [ "Site Management" ],
-        "summary" : "Enable or disable cache rule",
-        "description" : "Use this operation for enabling or disable cache rule",
-        "operationId" : "enableDisableCacheRule",
+        "tags" : [ "Traffic Statistics and Logs" ],
+        "summary" : "Get Infrastructure Protection Statistics",
+        "description" : "Use this operation to get Infrastructure Protection event information for an account.",
+        "operationId" : "getInfraStats",
         "parameters" : [ {
-          "name" : "site_id",
+          "name" : "account_id",
           "in" : "query",
-          "description" : "Numeric identifier of the site to operate on.",
-          "required" : true,
+          "description" : "Numeric identifier of the account to operate on.<br/>If not specified, operation will be performed on the account identified by the authentication parameters.",
           "schema" : {
             "type" : "integer",
             "format" : "int64"
           },
           "example" : 10
         }, {
-          "name" : "rule_id",
+          "name" : "ip_prefix",
           "in" : "query",
-          "description" : "Numeric identifier of the site to operate on.",
-          "required" : true,
+          "description" : "Specific Protected IP or IP range. For example, 1.1.1.0/24.",
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "1.1.1.0/24"
+        }, {
+          "name" : "traffic",
+          "in" : "query",
+          "description" : "Specific traffic. One of: Total, Passed, Blocked.",
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "Blocked"
+        }, {
+          "name" : "traffic_type",
+          "in" : "query",
+          "description" : "A comma separated list of specific traffic types. Any of: UDP, TCP, DNS, DNS_RESPONSE, ICMP, SYN, FRAG, LARGE_SYN, NTP, NETFLOW, SSDP, GENERAL. Cannot be used together with the pop parameter.",
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "TCP"
+        }, {
+          "name" : "pop",
+          "in" : "query",
+          "description" : "A comma separated list of specific PoP names. For example: iad, tko. Cannot be used together with the traffic_type parameter. For the list of PoP codes and locations, see <a href=\"https://docs.imperva.com/csh?context=pops\">Imperva Data Centers (PoPs)</a>.",
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "tko"
+        }, {
+          "name" : "start",
+          "in" : "query",
+          "description" : "The start date in milliseconds, since 1970.<br/>Some operations require the user to specify a time range. This is done via the time_range parameter, which accepts the following values:<br/><ul><li><b>today</b> Retrieve data from midnight today until the current time.</li><li><b>last_7_days</b> Retrieve data from midnight of 7 days ago until the current time.</li><li><b>last_30_days</b> Retrieve data from midnight of 30 days ago until the current time.</li><li><b>last_90_days</b> Retrieve data from midnight of 90 days ago until the current time.</li><li><b>month_to_date</b> Retrieve data from midnight of the first day of the month until the current time.</li><li><b>custom</b> Specify a custom time range using two additional parameters: start and end.<br/>Results are provided for full days only, starting from midnight. A time range of less than 24 hours gives results for the full day.<br/>For example:<ul><li>A time range of 14:00 - 20:00 yesterday gives results for all of yesterday (midnight to midnight) - a full day.</li><li>A time range of 14:00 last Tuesday to 14:00 last Wednesday gives results for all of Tuesday and Wednesday - two full days.</li> <li>A time range of 14:00 yesterday to 14:00 today gives results for all of yesterday starting from midnight until the current time today.</li></ul></li></ul>",
           "schema" : {
             "type" : "integer",
             "format" : "int64"
           },
-          "example" : 3746
+          "example" : 1610356734
         }, {
-          "name" : "enable",
+          "name" : "end",
           "in" : "query",
-          "description" : "When true, the rule will be enabled. Set to false to disable.",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          },
-          "example" : true
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "res - contains the specific error code:<br/>9413 - Unknown/unauthorized site_id<br/>9415 - Operation not allowed<br/>2 - Invalid input<br/>2002 - Object is not found",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ApiResult"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/prov/v1/sites/performance/caching-rules/add" : {
-      "post" : {
-        "tags" : [ "Site Management" ],
-        "summary" : "Add a cache rule",
-        "description" : "Use this operation for adding a cache rule",
-        "operationId" : "addCacheRule",
-        "parameters" : [ {
-          "name" : "action",
-          "in" : "query",
-          "description" : "Rule action. See Possible action parameter values.<br/>Possible action parameter values:<br/><ul><li><b>HTTP_CACHE_MAKE_STATIC</b> Cache Resource</li><li><b>HTTP_CACHE_CLIENT_CACHE_CTL</b> Cache Resource on Client</li><li><b>HTTP_CACHE_FORCE_UNCACHEABLE</b> Don't Cache Resource</li><li><b>HTTP_CACHE_DIFFERENTIATE_SSL</b> Differentiate Cache Key by HTTP/HTTPS Scheme</li><li><b>HTTP_CACHE_DIFFERENTIATE_BY_HEADER</b> Differentiate Cache Key by Header</li><li><b>HTTP_CACHE_DIFFERENTIATE_BY_COOKIE</b> Differentiate Cache Key by Cookie</li><li><b>HTTP_CACHE_IGNORE_PARAMS</b> Ignore Parameters in Cache Key</li><li><b>HTTP_CACHE_IGNORE_AUTH_HEADER</b> CacheRuleAction.HTTP_CACHE_IGNORE_AUTH_HEADER</li><li><b>HTTP_CACHE_FORCE_VALIDATION</b> Force User Authentication</li><li><b>HTTP_CACHE_ADD_TAG</b> Create Tag</li><li><b>HTTP_CACHE_ENRICH_CACHE_KEY</b> Enrich Cache Key</li></ul>",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          },
-          "example" : "HTTP_CACHE_CREATE_TAG"
-        }, {
-          "name" : "site_id",
-          "in" : "query",
-          "description" : "Numeric identifier of the site to operate on.",
-          "required" : true,
+          "description" : "The end date in milliseconds, since 1970.<br/>Some operations require the user to specify a time range. This is done via the time_range parameter, which accepts the following values:<br/><ul><li><b>today</b> Retrieve data from midnight today until the current time.</li><li><b>last_7_days</b> Retrieve data from midnight of 7 days ago until the current time.</li><li><b>last_30_days</b> Retrieve data from midnight of 30 days ago until the current time.</li><li><b>last_90_days</b> Retrieve data from midnight of 90 days ago until the current time.</li><li><b>month_to_date</b> Retrieve data from midnight of the first day of the month until the current time.</li><li><b>custom</b> Specify a custom time range using two additional parameters: start and end.<br/>Results are provided for full days only, starting from midnight. A time range of less than 24 hours gives results for the full day.<br/>For example:<ul><li>A time range of 14:00 - 20:00 yesterday gives results for all of yesterday (midnight to midnight) - a full day.</li><li>A time range of 14:00 last Tuesday to 14:00 last Wednesday gives results for all of Tuesday and Wednesday - two full days.</li> <li>A time range of 14:00 yesterday to 14:00 today gives results for all of yesterday starting from midnight until the current time today.</li></ul></li></ul>",
           "schema" : {
             "type" : "integer",
             "format" : "int64"
           },
-          "example" : 10
+          "example" : 1610356734
         }, {
-          "name" : "name",
+          "name" : "directionTypes",
           "in" : "query",
-          "description" : "Rule name.",
-          "required" : true,
+          "description" : "The type of direction(INGRESS/EGRESS) to filter the data",
           "schema" : {
             "type" : "string"
           },
-          "example" : "rule1"
+          "example" : "INGRESS"
         }, {
-          "name" : "filter",
+          "name" : "range_type",
           "in" : "query",
-          "description" : "Rule will trigger only a request that matches this filter. For more details on filters, see <a href=\"https://docs.imperva.com/csh?context=rule_syntax\">Syntax Guide</a>.",
+          "description" : "Can be one of the following: BGP, PROTECTED_IP",
           "schema" : {
             "type" : "string"
           },
-          "example" : "URL ==  /admin"
-        }, {
-          "name" : "ttl",
-          "in" : "query",
-          "description" : "Rule TTL. Only relevant when action is HTTP_CACHE_MAKE_STATIC or HTTP_CACHE_CLIENT_CACHE_CTL",
-          "schema" : {
-            "type" : "string"
-          },
-          "example" : "TTL value"
-        }, {
-          "name" : "ttl_unit",
-          "in" : "query",
-          "description" : "Rule TTL time unit.<br/>Must be one of SECONDS, MINUTES, HOURS, DAYS or WEEKS. If no time unit is provided, SECONDS is used.<br/>Only relevant when action is HTTP_CACHE_MAKE_STATIC or HTTP_CACHE_CLIENT_CACHE_CTL",
-          "schema" : {
-            "type" : "string"
-          },
-          "example" : "SECONDS"
-        }, {
-          "name" : "differentiated_by_value",
-          "in" : "query",
-          "description" : "Value to differentiate by. HTTP_CACHE_DIFFERENTIATE_BY_HEADER - header name, HTTP_CACHE_DIFFERENTIATE_BY_COOKIE - cookie name, HTTP_CACHE_DIFFERENTIATE_BY_GEO - geo location <br/>(ISO 3166-1 alpha-2 country codes ), otherwise irrelevant.",
-          "schema" : {
-            "type" : "string"
-          },
-          "example" : "cookie name"
-        }, {
-          "name" : "params",
-          "in" : "query",
-          "description" : "Comma separated list of parameters to ignore.",
-          "schema" : {
-            "type" : "string"
-          },
-          "example" : "{a,b,c}"
-        }, {
-          "name" : "all_params",
-          "in" : "query",
-          "description" : "When set to <b>true</b>: all parameters in cache key will be ignored.<br/>Default: false.<br/>Relevant for HTTP_CACHE_IGNORE_PARAMS action",
-          "schema" : {
-            "type" : "boolean"
-          },
-          "example" : true
-        }, {
-          "name" : "tag_name",
-          "in" : "query",
-          "description" : "The name of the tag to add.",
-          "schema" : {
-            "type" : "string"
-          },
-          "example" : "tag example"
-        }, {
-          "name" : "text",
-          "in" : "query",
-          "description" : "Add text to the cache key as suffix. Relevant for the HTTP_CACHE_ENRICH_CACHE_KEY action",
-          "schema" : {
-            "type" : "string"
-          },
-          "example" : "suffix"
+          "example" : "INCAPSULA_IP"
         } ],
         "responses" : {
           "200" : {
-            "description" : "res - contains the specific error code:<br/>9413 - Unknown/unauthorized site_id<br/>9415 - Operation not allowed<br/>2 - Invalid input",
+            "description" : "res - contains the specific error code:<br/>2 - Invalid input<br/>3015 - Internal error",
             "content" : {
               "application/json" : {
                 "schema" : {
                   "oneOf" : [ {
-                    "$ref" : "#/components/schemas/ApiResultAddCacheRule"
+                    "$ref" : "#/components/schemas/InfraStatsApiResponse"
                   }, {
                     "$ref" : "#/components/schemas/ApiResult"
                   } ]
@@ -1012,87 +1112,6 @@
                 "schema" : {
                   "oneOf" : [ {
                     "$ref" : "#/components/schemas/ApiResultSiteStats"
-                  }, {
-                    "$ref" : "#/components/schemas/ApiResult"
-                  } ]
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/infra/events" : {
-      "post" : {
-        "tags" : [ "Traffic Statistics and Logs" ],
-        "summary" : "Get Infrastructure Protection Events",
-        "description" : "Use this operation to get Infrastructure Protection event information for an account",
-        "operationId" : "getInfraEvents",
-        "parameters" : [ {
-          "name" : "account_id",
-          "in" : "query",
-          "description" : "Numeric identifier of the account to operate on.<br/>If not specified, operation will be performed on the account identified by the authentication parameters.",
-          "schema" : {
-            "type" : "string"
-          },
-          "example" : 10
-        }, {
-          "name" : "event_type",
-          "in" : "query",
-          "description" : "A comma separated list of specific event types. Any of: GRE_TUNNEL_UP, GRE_TUNNEL_DOWN, ORIGIN_CONNECTION_GRE_UP, ORIGIN_CONNECTION_GRE_DOWN, ORIGIN_CONNECTION_ECX_UP, ORIGIN_CONNECTION_ECX_DOWN, ORIGIN_CONNECTION_CROSS_CONNECT_UP, ORIGIN_CONNECTION_CROSS_CONNECT_DOWN, DDOS_START_IP_RANGE, DDOS_STOP_IP_RANGE, DDOS_QUIET_TIME_IP_RANGE, EXPORTER_NO_DATA, EXPORTER_BAD_DATA, EXPORTER_GOOD_DATA, MONITORING_CRITICAL_ATTACK, PROTECTED_IP_STATUS_UP, PROTECTED_IP_STATUS_DOWN, PER_IP_DDOS_START_IP_RANGE.",
-          "schema" : {
-            "type" : "string"
-          },
-          "example" : "GRE_TUNNEL_UP"
-        }, {
-          "name" : "ip_prefix",
-          "in" : "query",
-          "description" : "Specific Protected IP or IP range. For example, 1.1.1.0/24.",
-          "schema" : {
-            "type" : "string"
-          },
-          "example" : "1.1.1.0/24"
-        }, {
-          "name" : "page_size",
-          "in" : "query",
-          "description" : "The number of objects to return in the response.<br/>Default: 50<br/>Maximum: 100",
-          "schema" : {
-            "type" : "string"
-          },
-          "example" : 2
-        }, {
-          "name" : "page_num",
-          "in" : "query",
-          "description" : "The page to return starting from 0. Default: 0",
-          "schema" : {
-            "type" : "string"
-          },
-          "example" : 1
-        }, {
-          "name" : "start",
-          "in" : "query",
-          "description" : "The start date in milliseconds, since 1970.<br/>Some operations require the user to specify a time range. This is done via the time_range parameter, which accepts the following values:<br/><ul><li><b>today</b> Retrieve data from midnight today until the current time.</li><li><b>last_7_days</b> Retrieve data from midnight of 7 days ago until the current time.</li><li><b>last_30_days</b> Retrieve data from midnight of 30 days ago until the current time.</li><li><b>last_90_days</b> Retrieve data from midnight of 90 days ago until the current time.</li><li><b>month_to_date</b> Retrieve data from midnight of the first day of the month until the current time.</li><li><b>custom</b> Specify a custom time range using two additional parameters: start and end.<br/>Results are provided for full days only, starting from midnight. A time range of less than 24 hours gives results for the full day.<br/>For example:<ul><li>A time range of 14:00 - 20:00 yesterday gives results for all of yesterday (midnight to midnight) - a full day.</li><li>A time range of 14:00 last Tuesday to 14:00 last Wednesday gives results for all of Tuesday and Wednesday - two full days.</li> <li>A time range of 14:00 yesterday to 14:00 today gives results for all of yesterday starting from midnight until the current time today.</li></ul></li></ul>",
-          "schema" : {
-            "type" : "string"
-          },
-          "example" : 1610356734
-        }, {
-          "name" : "end",
-          "in" : "query",
-          "description" : "The end date in milliseconds, since 1970.<br/>Some operations require the user to specify a time range. This is done via the time_range parameter, which accepts the following values:<br/><ul><li><b>today</b> Retrieve data from midnight today until the current time.</li><li><b>last_7_days</b> Retrieve data from midnight of 7 days ago until the current time.</li><li><b>last_30_days</b> Retrieve data from midnight of 30 days ago until the current time.</li><li><b>last_90_days</b> Retrieve data from midnight of 90 days ago until the current time.</li><li><b>month_to_date</b> Retrieve data from midnight of the first day of the month until the current time.</li><li><b>custom</b> Specify a custom time range using two additional parameters: start and end.<br/>Results are provided for full days only, starting from midnight. A time range of less than 24 hours gives results for the full day.<br/>For example:<ul><li>A time range of 14:00 - 20:00 yesterday gives results for all of yesterday (midnight to midnight) - a full day.</li><li>A time range of 14:00 last Tuesday to 14:00 last Wednesday gives results for all of Tuesday and Wednesday - two full days.</li> <li>A time range of 14:00 yesterday to 14:00 today gives results for all of yesterday starting from midnight until the current time today.</li></ul></li></ul>",
-          "schema" : {
-            "type" : "string"
-          },
-          "example" : 1610356734
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "res - contains the specific error code:<br/>2 - Invalid input",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "oneOf" : [ {
-                    "$ref" : "#/components/schemas/InfraEventsApiResponse"
                   }, {
                     "$ref" : "#/components/schemas/ApiResult"
                   } ]
@@ -1627,21 +1646,28 @@
         }
       }
     },
-    "/api/v1/infra/stats" : {
+    "/api/v1/infra/events" : {
       "post" : {
         "tags" : [ "Traffic Statistics and Logs" ],
-        "summary" : "Get Infrastructure Protection Statistics",
-        "description" : "Use this operation to get Infrastructure Protection event information for an account.",
-        "operationId" : "getInfraStats",
+        "summary" : "Get Infrastructure Protection Events",
+        "description" : "Use this operation to get Infrastructure Protection event information for an account",
+        "operationId" : "getInfraEvents",
         "parameters" : [ {
           "name" : "account_id",
           "in" : "query",
           "description" : "Numeric identifier of the account to operate on.<br/>If not specified, operation will be performed on the account identified by the authentication parameters.",
           "schema" : {
-            "type" : "integer",
-            "format" : "int64"
+            "type" : "string"
           },
           "example" : 10
+        }, {
+          "name" : "event_type",
+          "in" : "query",
+          "description" : "A comma separated list of specific event types. Any of: GRE_TUNNEL_UP, GRE_TUNNEL_DOWN, ORIGIN_CONNECTION_GRE_UP, ORIGIN_CONNECTION_GRE_DOWN, ORIGIN_CONNECTION_ECX_UP, ORIGIN_CONNECTION_ECX_DOWN, ORIGIN_CONNECTION_CROSS_CONNECT_UP, ORIGIN_CONNECTION_CROSS_CONNECT_DOWN, DDOS_START_IP_RANGE, DDOS_STOP_IP_RANGE, DDOS_QUIET_TIME_IP_RANGE, EXPORTER_NO_DATA, EXPORTER_BAD_DATA, EXPORTER_GOOD_DATA, MONITORING_CRITICAL_ATTACK, PROTECTED_IP_STATUS_UP, PROTECTED_IP_STATUS_DOWN, PER_IP_DDOS_START_IP_RANGE.",
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "GRE_TUNNEL_UP"
         }, {
           "name" : "ip_prefix",
           "in" : "query",
@@ -1651,36 +1677,27 @@
           },
           "example" : "1.1.1.0/24"
         }, {
-          "name" : "traffic",
+          "name" : "page_size",
           "in" : "query",
-          "description" : "Specific traffic. One of: Total, Passed, Blocked.",
+          "description" : "The number of objects to return in the response.<br/>Default: 50<br/>Maximum: 100",
           "schema" : {
             "type" : "string"
           },
-          "example" : "Blocked"
+          "example" : 2
         }, {
-          "name" : "traffic_type",
+          "name" : "page_num",
           "in" : "query",
-          "description" : "A comma separated list of specific traffic types. Any of: UDP, TCP, DNS, DNS_RESPONSE, ICMP, SYN, FRAG, LARGE_SYN, NTP, NETFLOW, SSDP, GENERAL. Cannot be used together with the pop parameter.",
+          "description" : "The page to return starting from 0. Default: 0",
           "schema" : {
             "type" : "string"
           },
-          "example" : "TCP"
-        }, {
-          "name" : "pop",
-          "in" : "query",
-          "description" : "A comma separated list of specific PoP names. For example: iad, tko. Cannot be used together with the traffic_type parameter. For the list of PoP codes and locations, see <a href=\"https://docs.imperva.com/csh?context=pops\">Imperva Data Centers (PoPs)</a>.",
-          "schema" : {
-            "type" : "string"
-          },
-          "example" : "tko"
+          "example" : 1
         }, {
           "name" : "start",
           "in" : "query",
           "description" : "The start date in milliseconds, since 1970.<br/>Some operations require the user to specify a time range. This is done via the time_range parameter, which accepts the following values:<br/><ul><li><b>today</b> Retrieve data from midnight today until the current time.</li><li><b>last_7_days</b> Retrieve data from midnight of 7 days ago until the current time.</li><li><b>last_30_days</b> Retrieve data from midnight of 30 days ago until the current time.</li><li><b>last_90_days</b> Retrieve data from midnight of 90 days ago until the current time.</li><li><b>month_to_date</b> Retrieve data from midnight of the first day of the month until the current time.</li><li><b>custom</b> Specify a custom time range using two additional parameters: start and end.<br/>Results are provided for full days only, starting from midnight. A time range of less than 24 hours gives results for the full day.<br/>For example:<ul><li>A time range of 14:00 - 20:00 yesterday gives results for all of yesterday (midnight to midnight) - a full day.</li><li>A time range of 14:00 last Tuesday to 14:00 last Wednesday gives results for all of Tuesday and Wednesday - two full days.</li> <li>A time range of 14:00 yesterday to 14:00 today gives results for all of yesterday starting from midnight until the current time today.</li></ul></li></ul>",
           "schema" : {
-            "type" : "integer",
-            "format" : "int64"
+            "type" : "string"
           },
           "example" : 1610356734
         }, {
@@ -1688,35 +1705,18 @@
           "in" : "query",
           "description" : "The end date in milliseconds, since 1970.<br/>Some operations require the user to specify a time range. This is done via the time_range parameter, which accepts the following values:<br/><ul><li><b>today</b> Retrieve data from midnight today until the current time.</li><li><b>last_7_days</b> Retrieve data from midnight of 7 days ago until the current time.</li><li><b>last_30_days</b> Retrieve data from midnight of 30 days ago until the current time.</li><li><b>last_90_days</b> Retrieve data from midnight of 90 days ago until the current time.</li><li><b>month_to_date</b> Retrieve data from midnight of the first day of the month until the current time.</li><li><b>custom</b> Specify a custom time range using two additional parameters: start and end.<br/>Results are provided for full days only, starting from midnight. A time range of less than 24 hours gives results for the full day.<br/>For example:<ul><li>A time range of 14:00 - 20:00 yesterday gives results for all of yesterday (midnight to midnight) - a full day.</li><li>A time range of 14:00 last Tuesday to 14:00 last Wednesday gives results for all of Tuesday and Wednesday - two full days.</li> <li>A time range of 14:00 yesterday to 14:00 today gives results for all of yesterday starting from midnight until the current time today.</li></ul></li></ul>",
           "schema" : {
-            "type" : "integer",
-            "format" : "int64"
+            "type" : "string"
           },
           "example" : 1610356734
-        }, {
-          "name" : "directionTypes",
-          "in" : "query",
-          "description" : "The type of direction(INGRESS/EGRESS) to filter the data",
-          "schema" : {
-            "type" : "string"
-          },
-          "example" : "INGRESS"
-        }, {
-          "name" : "range_type",
-          "in" : "query",
-          "description" : "Can be one of the following: BGP, PROTECTED_IP",
-          "schema" : {
-            "type" : "string"
-          },
-          "example" : "INCAPSULA_IP"
         } ],
         "responses" : {
           "200" : {
-            "description" : "res - contains the specific error code:<br/>2 - Invalid input<br/>3015 - Internal error",
+            "description" : "res - contains the specific error code:<br/>2 - Invalid input",
             "content" : {
               "application/json" : {
                 "schema" : {
                   "oneOf" : [ {
-                    "$ref" : "#/components/schemas/InfraStatsApiResponse"
+                    "$ref" : "#/components/schemas/InfraEventsApiResponse"
                   }, {
                     "$ref" : "#/components/schemas/ApiResult"
                   } ]
@@ -2707,324 +2707,6 @@
         }
       }
     },
-    "/api/prov/v1/sites/performance/advanced/get" : {
-      "post" : {
-        "tags" : [ "Site Management" ],
-        "summary" : "Get Advanced Caching Settings",
-        "description" : "Use this operation to get advanced caching settings.",
-        "operationId" : "getAdvancedCachingSettings",
-        "parameters" : [ {
-          "name" : "site_id",
-          "in" : "query",
-          "description" : "Numeric identifier of the site to operate on.",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          },
-          "example" : 10
-        }, {
-          "name" : "param",
-          "in" : "query",
-          "description" : "Name of configuration parameter to set.<br/>Possible values for param and value parameters:<br/><ul><li><b>async_validation</b> Sets Async validation. Pass \"true\" or \"false\" in the value parameter.</li><li><b>minify_javascript</b> Sets the Minify JS. Pass \"true\" or \"false\" in the value parameter.</li><li><b>minify_css</b> Sets the Minify CSS. Pass \"true\" or \"false\" in the value parameter</li><li><b>minify_static_html</b> Sets Minify static HTML. Pass \"true\" or \"false\" in the value parameter</li><li><b>compress_jpeg</b> Sets the Compress JPEG. Pass \"true\" or \"false\" in the value parameter.</li><li><b>progressive_image_rendering</b> Sets the Progressive Image rendering flag. Pass \"true\" or \"false\" in the value parameter.</li><li><b>aggressive_compression</b> Sets the Aggressive compression rendering flag. Pass \"true\" or \"false\" in the value parameter.</li><li><b>compress_png</b> Sets the Compress PNG flag. Pass \"true\" or \"false\" in the value parameter.</li><li><b>on_the_fly_compression</b> \"On the fly\" Compression. Pass \"true\" or \"false\" in the value parameter.</li><li><b>tcp_pre_pooling</b> TCP Pre-Pooling. Pass \"true\" or \"false\" in the value parameter.</li><li><b>comply_no_cache</b> Comply with no-cache and max-age directives in client requests. Pass \"true\" or \"false\" in the value parameter.</li><li><b>comply_vary</b> Comply with the <b>Vary</b> header. Pass \"true\" or \"false\" in the value parameter.</li><li><b>use_shortest_caching</b> Use shortest caching duration in case of conflicts. Pass \"true\" or \"false\" in the value parameter.</li><li><b>prefer_last_modified</b> Prefer 'last modified' over eTag. Pass \"true\" or \"false\" in the value parameter.</li><li><b>disable_client_side_caching</b> Disable client side caching. Pass \"true\" or \"false\" in the value parameter.</li><li><b>cache_300x</b> Cache 300X responses. Pass \"true\" or \"false\" in the value parameter.</li><li><b>unite_naked_full_cache</b> Use the same cache for full and naked domains. For example, use the same cached resource for <a href=\"https://www.example.com/a\"></a> and <a href=\"https://example.com/\"></a>a.</li><li><b>cache_empty_responses</b> Cache responses that don’t have a message body.</li><li><b>cache_http_10_responses</b> Cache HTTP 1.0 type responses that don’t include the Content-Length header or chunking. Pass \"true\" or \"false\" in the value parameter.</li><li><b>send_age_header</b> Send <b>Cache-Control: max-age</b> and <b>Age</b> headers. Pass \"true\" or \"false\" in the value parameter.</li><li><b>support_non_sni_clients</b> By default, non-SNI clients are supported. Disable this option to block non-SNI clients. Pass \"true\" or \"false\" in the value parameter.</li><li><b>origin_connection_reuse</b> By default, TCP connections that are opened for a client request remain open for a short time to handle additional requests that may arrive. This option disables that behavior.. Pass \"true\" or \"false\" in the value parameter.</li><li><b>redirect_http_to_https</b> Redirect HTTP requests to HTTPS requests by sending an HTTP 301 response.</li><li><b>redirect_naked_domain_to_full</b> Redirect requests from your website's naked domain to its full domain by sending and HTTP 301 response.</li><li><b>http_2</b> Enables supporting browsers to take advantage of the performance enhancements provided by HTTP/2 for your website. Non-supporting browsers can connect via HTTP/1.0 or HTTP/1.1. HTTP/2 support requires that SSL is configured for your website. Pass \"true\" or \"false\" in the value parameter</li></ul>",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          },
-          "example" : "async_validation"
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "res - contains the specific error code:<br/>9413 - Unknown/unauthorized site_id",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "oneOf" : [ {
-                    "$ref" : "#/components/schemas/GetAdvancedCachingSettingsApiResult"
-                  }, {
-                    "$ref" : "#/components/schemas/ApiResult"
-                  } ]
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/prov/v1/sites/xray/get-link" : {
-      "post" : {
-        "tags" : [ "Site Management" ],
-        "summary" : "Get XRay Access Link",
-        "description" : "Use this operation to get a URL that enables debug headers on the specific site. ",
-        "operationId" : "getXrayLink",
-        "parameters" : [ {
-          "name" : "site_id",
-          "in" : "query",
-          "description" : "Numeric identifier of the site to operate on.",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          },
-          "example" : 10
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "res - contains the specific error code:<br/>1 - Unexpected error",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "oneOf" : [ {
-                    "$ref" : "#/components/schemas/ApiResultGetSiteXrayLink"
-                  }, {
-                    "$ref" : "#/components/schemas/ApiResult"
-                  } ]
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/prov/v1/sites/performance/cache-shield/enable" : {
-      "post" : {
-        "tags" : [ "Site Management" ],
-        "summary" : "Enable Cache Shield",
-        "description" : "Enable Cache Shield for a given site.",
-        "operationId" : "enableCacheShield",
-        "parameters" : [ {
-          "name" : "site_id",
-          "in" : "query",
-          "description" : "Numeric identifier of the site to operate on.",
-          "required" : true,
-          "schema" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "example" : 10
-        }, {
-          "name" : "enable",
-          "in" : "query",
-          "description" : "Use <b>true</b> to enable cache shield on the specified site, and <b>false</b> to disable it.",
-          "required" : true,
-          "schema" : {
-            "type" : "boolean"
-          },
-          "example" : true
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "res - contains the specific error code:<br/>2 - Invalid input<br/>9413 - Unknown/unauthorized site_id<br/>1 - Unexpected error<br/>405 - Api is disabled",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ApiResult"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/prov/v1/sites/performance/cache-shield" : {
-      "post" : {
-        "tags" : [ "Site Management" ],
-        "summary" : "Is Cache Shield Enabled",
-        "description" : "Get the enablement state of the Cache Shield feature for a given site.",
-        "operationId" : "isCacheShieldEnabled",
-        "parameters" : [ {
-          "name" : "site_id",
-          "in" : "query",
-          "description" : "Numeric identifier of the site to operate on.",
-          "required" : true,
-          "schema" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "example" : 10
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "res - contains the specific error code:<br/>9413 - Unknown/unauthorized site_id<br/>9415 - Operation not allowed",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "oneOf" : [ {
-                    "$ref" : "#/components/schemas/IsCacheShieldEnabledApiResult"
-                  }, {
-                    "$ref" : "#/components/schemas/ApiResult"
-                  } ]
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/prov/v1/sites/performance/rewrite-port/modify" : {
-      "post" : {
-        "tags" : [ "Site Management" ],
-        "summary" : "Modify Rewrite Port",
-        "description" : "Use this operation to rewrite the port number used to access the origin server.",
-        "operationId" : "modifyRewritePorts",
-        "parameters" : [ {
-          "name" : "site_id",
-          "in" : "query",
-          "description" : "Numeric identifier of the site to operate on",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          },
-          "example" : 10
-        }, {
-          "name" : "rewrite_port_enabled",
-          "in" : "query",
-          "description" : "Boolean value to indicate whether the default non-SSL port should be rewritten or not",
-          "required" : true,
-          "schema" : {
-            "type" : "boolean"
-          },
-          "example" : true
-        }, {
-          "name" : "port",
-          "in" : "query",
-          "description" : "The port number. If empty, rewrite port will be removed",
-          "schema" : {
-            "type" : "string"
-          },
-          "example" : 80
-        }, {
-          "name" : "rewrite_ssl_port_enabled",
-          "in" : "query",
-          "description" : "Boolean value to indicate whether the default SSL port should be rewritten or not",
-          "required" : true,
-          "schema" : {
-            "type" : "boolean"
-          },
-          "example" : true
-        }, {
-          "name" : "ssl_port",
-          "in" : "query",
-          "description" : "The port number to rewrite default SSL port to",
-          "schema" : {
-            "type" : "string"
-          },
-          "example" : 443
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "res - contains the specific error code:<br/>2 - Invalid input<br/>9413 - Unknown/unauthorized site_id<br/>9415 - Operation not allowed",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ApiResult"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/prov/v1/sites/performance/rewrite-port" : {
-      "post" : {
-        "tags" : [ "Site Management" ],
-        "summary" : "Get Rewrite Port",
-        "description" : "Use this operation to get the rewritten port number used to access the origin server.",
-        "operationId" : "getRewritePorts",
-        "parameters" : [ {
-          "name" : "site_id",
-          "in" : "query",
-          "description" : "Numeric identifier of the site to operate on",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          },
-          "example" : 10
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "res - contains the specific error code:<br/>2 - Invalid input<br/>9413 - Unknown/unauthorized site_id<br/>9415 - Operation not allowed",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "oneOf" : [ {
-                    "$ref" : "#/components/schemas/ApiResultGetRewritePorts"
-                  }, {
-                    "$ref" : "#/components/schemas/ApiResult"
-                  } ]
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/prov/v1/sites/performance/error-page/modify" : {
-      "post" : {
-        "tags" : [ "Site Management" ],
-        "summary" : "Modify Error Page",
-        "description" : "Use this operation to set a custom error page for a given site.",
-        "operationId" : "modifySiteErrorPageTemplate",
-        "parameters" : [ {
-          "name" : "site_id",
-          "in" : "query",
-          "description" : "Numeric identifier of the site to operate on",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          },
-          "example" : 10
-        }, {
-          "name" : "error_page_template",
-          "in" : "query",
-          "description" : "The error page html template. $TITLE$ and $BODY$ placeholders are required.",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "res - contains the specific error code:<br/>2 - Invalid input<br/>9413 - Unknown/unauthorized site_id<br/>9415 - Operation not allowed",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ApiResult"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/prov/v1/sites/performance/error-page" : {
-      "post" : {
-        "tags" : [ "Site Management" ],
-        "summary" : "Get Error Page",
-        "description" : "Use this operation to get the custom error page for a given site.",
-        "operationId" : "getSiteErrorPageTemplate",
-        "parameters" : [ {
-          "name" : "site_id",
-          "in" : "query",
-          "description" : "Numeric identifier of the site to operate on.",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          },
-          "example" : 10
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "res - contains the specific error code:<br/>9413 - Unknown/unauthorized site_id<br/>9415 - Operation not allowed",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ApiResult"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/prov/v1/sites/performance/cache-mode" : {
       "post" : {
         "tags" : [ "Site Management" ],
@@ -3984,6 +3666,324 @@
         }
       }
     },
+    "/api/prov/v1/sites/performance/advanced/get" : {
+      "post" : {
+        "tags" : [ "Site Management" ],
+        "summary" : "Get Advanced Caching Settings",
+        "description" : "Use this operation to get advanced caching settings.",
+        "operationId" : "getAdvancedCachingSettings",
+        "parameters" : [ {
+          "name" : "site_id",
+          "in" : "query",
+          "description" : "Numeric identifier of the site to operate on.",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : 10
+        }, {
+          "name" : "param",
+          "in" : "query",
+          "description" : "Name of configuration parameter to set.<br/>Possible values for param and value parameters:<br/><ul><li><b>async_validation</b> Sets Async validation. Pass \"true\" or \"false\" in the value parameter.</li><li><b>minify_javascript</b> Sets the Minify JS. Pass \"true\" or \"false\" in the value parameter.</li><li><b>minify_css</b> Sets the Minify CSS. Pass \"true\" or \"false\" in the value parameter</li><li><b>minify_static_html</b> Sets Minify static HTML. Pass \"true\" or \"false\" in the value parameter</li><li><b>compress_jpeg</b> Sets the Compress JPEG. Pass \"true\" or \"false\" in the value parameter.</li><li><b>progressive_image_rendering</b> Sets the Progressive Image rendering flag. Pass \"true\" or \"false\" in the value parameter.</li><li><b>aggressive_compression</b> Sets the Aggressive compression rendering flag. Pass \"true\" or \"false\" in the value parameter.</li><li><b>compress_png</b> Sets the Compress PNG flag. Pass \"true\" or \"false\" in the value parameter.</li><li><b>on_the_fly_compression</b> \"On the fly\" Compression. Pass \"true\" or \"false\" in the value parameter.</li><li><b>tcp_pre_pooling</b> TCP Pre-Pooling. Pass \"true\" or \"false\" in the value parameter.</li><li><b>comply_no_cache</b> Comply with no-cache and max-age directives in client requests. Pass \"true\" or \"false\" in the value parameter.</li><li><b>comply_vary</b> Comply with the <b>Vary</b> header. Pass \"true\" or \"false\" in the value parameter.</li><li><b>use_shortest_caching</b> Use shortest caching duration in case of conflicts. Pass \"true\" or \"false\" in the value parameter.</li><li><b>prefer_last_modified</b> Prefer 'last modified' over eTag. Pass \"true\" or \"false\" in the value parameter.</li><li><b>disable_client_side_caching</b> Disable client side caching. Pass \"true\" or \"false\" in the value parameter.</li><li><b>cache_300x</b> Cache 300X responses. Pass \"true\" or \"false\" in the value parameter.</li><li><b>unite_naked_full_cache</b> Use the same cache for full and naked domains. For example, use the same cached resource for <a href=\"https://www.example.com/a\"></a> and <a href=\"https://example.com/\"></a>a.</li><li><b>cache_empty_responses</b> Cache responses that don’t have a message body.</li><li><b>cache_http_10_responses</b> Cache HTTP 1.0 type responses that don’t include the Content-Length header or chunking. Pass \"true\" or \"false\" in the value parameter.</li><li><b>send_age_header</b> Send <b>Cache-Control: max-age</b> and <b>Age</b> headers. Pass \"true\" or \"false\" in the value parameter.</li><li><b>support_non_sni_clients</b> By default, non-SNI clients are supported. Disable this option to block non-SNI clients. Pass \"true\" or \"false\" in the value parameter.</li><li><b>origin_connection_reuse</b> By default, TCP connections that are opened for a client request remain open for a short time to handle additional requests that may arrive. This option disables that behavior.. Pass \"true\" or \"false\" in the value parameter.</li><li><b>redirect_http_to_https</b> Redirect HTTP requests to HTTPS requests by sending an HTTP 301 response.</li><li><b>redirect_naked_domain_to_full</b> Redirect requests from your website's naked domain to its full domain by sending and HTTP 301 response.</li><li><b>http_2</b> Enables supporting browsers to take advantage of the performance enhancements provided by HTTP/2 for your website. Non-supporting browsers can connect via HTTP/1.0 or HTTP/1.1. HTTP/2 support requires that SSL is configured for your website. Pass \"true\" or \"false\" in the value parameter</li></ul>",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "async_validation"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "res - contains the specific error code:<br/>9413 - Unknown/unauthorized site_id",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "oneOf" : [ {
+                    "$ref" : "#/components/schemas/GetAdvancedCachingSettingsApiResult"
+                  }, {
+                    "$ref" : "#/components/schemas/ApiResult"
+                  } ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/prov/v1/sites/xray/get-link" : {
+      "post" : {
+        "tags" : [ "Site Management" ],
+        "summary" : "Get XRay Access Link",
+        "description" : "Use this operation to get a URL that enables debug headers on the specific site. ",
+        "operationId" : "getXrayLink",
+        "parameters" : [ {
+          "name" : "site_id",
+          "in" : "query",
+          "description" : "Numeric identifier of the site to operate on.",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : 10
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "res - contains the specific error code:<br/>1 - Unexpected error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "oneOf" : [ {
+                    "$ref" : "#/components/schemas/ApiResultGetSiteXrayLink"
+                  }, {
+                    "$ref" : "#/components/schemas/ApiResult"
+                  } ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/prov/v1/sites/performance/cache-shield/enable" : {
+      "post" : {
+        "tags" : [ "Site Management" ],
+        "summary" : "Enable Cache Shield",
+        "description" : "Enable Cache Shield for a given site.",
+        "operationId" : "enableCacheShield",
+        "parameters" : [ {
+          "name" : "site_id",
+          "in" : "query",
+          "description" : "Numeric identifier of the site to operate on.",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "example" : 10
+        }, {
+          "name" : "enable",
+          "in" : "query",
+          "description" : "Use <b>true</b> to enable cache shield on the specified site, and <b>false</b> to disable it.",
+          "required" : true,
+          "schema" : {
+            "type" : "boolean"
+          },
+          "example" : true
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "res - contains the specific error code:<br/>2 - Invalid input<br/>9413 - Unknown/unauthorized site_id<br/>1 - Unexpected error<br/>405 - Api is disabled",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ApiResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/prov/v1/sites/performance/cache-shield" : {
+      "post" : {
+        "tags" : [ "Site Management" ],
+        "summary" : "Is Cache Shield Enabled",
+        "description" : "Get the enablement state of the Cache Shield feature for a given site.",
+        "operationId" : "isCacheShieldEnabled",
+        "parameters" : [ {
+          "name" : "site_id",
+          "in" : "query",
+          "description" : "Numeric identifier of the site to operate on.",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "example" : 10
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "res - contains the specific error code:<br/>9413 - Unknown/unauthorized site_id<br/>9415 - Operation not allowed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "oneOf" : [ {
+                    "$ref" : "#/components/schemas/IsCacheShieldEnabledApiResult"
+                  }, {
+                    "$ref" : "#/components/schemas/ApiResult"
+                  } ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/prov/v1/sites/performance/rewrite-port/modify" : {
+      "post" : {
+        "tags" : [ "Site Management" ],
+        "summary" : "Modify Rewrite Port",
+        "description" : "Use this operation to rewrite the port number used to access the origin server.",
+        "operationId" : "modifyRewritePorts",
+        "parameters" : [ {
+          "name" : "site_id",
+          "in" : "query",
+          "description" : "Numeric identifier of the site to operate on",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : 10
+        }, {
+          "name" : "rewrite_port_enabled",
+          "in" : "query",
+          "description" : "Boolean value to indicate whether the default non-SSL port should be rewritten or not",
+          "required" : true,
+          "schema" : {
+            "type" : "boolean"
+          },
+          "example" : true
+        }, {
+          "name" : "port",
+          "in" : "query",
+          "description" : "The port number. If empty, rewrite port will be removed",
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : 80
+        }, {
+          "name" : "rewrite_ssl_port_enabled",
+          "in" : "query",
+          "description" : "Boolean value to indicate whether the default SSL port should be rewritten or not",
+          "required" : true,
+          "schema" : {
+            "type" : "boolean"
+          },
+          "example" : true
+        }, {
+          "name" : "ssl_port",
+          "in" : "query",
+          "description" : "The port number to rewrite default SSL port to",
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : 443
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "res - contains the specific error code:<br/>2 - Invalid input<br/>9413 - Unknown/unauthorized site_id<br/>9415 - Operation not allowed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ApiResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/prov/v1/sites/performance/rewrite-port" : {
+      "post" : {
+        "tags" : [ "Site Management" ],
+        "summary" : "Get Rewrite Port",
+        "description" : "Use this operation to get the rewritten port number used to access the origin server.",
+        "operationId" : "getRewritePorts",
+        "parameters" : [ {
+          "name" : "site_id",
+          "in" : "query",
+          "description" : "Numeric identifier of the site to operate on",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : 10
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "res - contains the specific error code:<br/>2 - Invalid input<br/>9413 - Unknown/unauthorized site_id<br/>9415 - Operation not allowed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "oneOf" : [ {
+                    "$ref" : "#/components/schemas/ApiResultGetRewritePorts"
+                  }, {
+                    "$ref" : "#/components/schemas/ApiResult"
+                  } ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/prov/v1/sites/performance/error-page/modify" : {
+      "post" : {
+        "tags" : [ "Site Management" ],
+        "summary" : "Modify Error Page",
+        "description" : "Use this operation to set a custom error page for a given site.",
+        "operationId" : "modifySiteErrorPageTemplate",
+        "parameters" : [ {
+          "name" : "site_id",
+          "in" : "query",
+          "description" : "Numeric identifier of the site to operate on",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : 10
+        }, {
+          "name" : "error_page_template",
+          "in" : "query",
+          "description" : "The error page html template. $TITLE$ and $BODY$ placeholders are required.",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "res - contains the specific error code:<br/>2 - Invalid input<br/>9413 - Unknown/unauthorized site_id<br/>9415 - Operation not allowed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ApiResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/prov/v1/sites/performance/error-page" : {
+      "post" : {
+        "tags" : [ "Site Management" ],
+        "summary" : "Get Error Page",
+        "description" : "Use this operation to get the custom error page for a given site.",
+        "operationId" : "getSiteErrorPageTemplate",
+        "parameters" : [ {
+          "name" : "site_id",
+          "in" : "query",
+          "description" : "Numeric identifier of the site to operate on.",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : 10
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "res - contains the specific error code:<br/>9413 - Unknown/unauthorized site_id<br/>9415 - Operation not allowed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ApiResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/prov/v1/sites/status" : {
       "post" : {
         "tags" : [ "Site Management" ],
@@ -4019,6 +4019,51 @@
                   }, {
                     "$ref" : "#/components/schemas/ApiResult"
                   } ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/prov/v1/sites/list" : {
+      "post" : {
+        "tags" : [ "Site Management" ],
+        "summary" : "List Sites",
+        "description" : "List sites for an account",
+        "operationId" : "listSites",
+        "parameters" : [ {
+          "name" : "account_id",
+          "in" : "query",
+          "description" : "Numeric identifier of the account to operate on.<br/>If not specified, operation will be performed on the account identified by the authentication parameters.<br/>If the account has sub accounts, the operation returns results for the sites in the account and in all of its sub accounts.",
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : 15
+        }, {
+          "name" : "page_size",
+          "in" : "query",
+          "description" : "The number of objects to return in the response. Default is 50. Maximum: 100",
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : 2
+        }, {
+          "name" : "page_num",
+          "in" : "query",
+          "description" : "he page to return starting from 0. Default is 0",
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : 1
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "res - contains the specific error code:<br/>1 - Unexpected error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ApiResultListSites"
                 }
               }
             }
@@ -4420,6 +4465,41 @@
         }
       }
     },
+    "/api/prov/v1/sites/data-privacy/show" : {
+      "post" : {
+        "tags" : [ "Site Management" ],
+        "summary" : "Get Site Data Storage Region",
+        "description" : "Use this operation to get the site data region.",
+        "operationId" : "getDataRegion",
+        "parameters" : [ {
+          "name" : "site_id",
+          "in" : "query",
+          "description" : "Numeric identifier of the site to operate on.",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "example" : 10
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "res - contains the specific error code:<br/>2 - Invalid input<br/>9415 - Operation not allowed<br/>14002 - No region for account",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "oneOf" : [ {
+                    "$ref" : "#/components/schemas/ApiResultSetDataRegion"
+                  }, {
+                    "$ref" : "#/components/schemas/ApiResult"
+                  } ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/prov/v1/sites/configure/allowlist" : {
       "post" : {
         "tags" : [ "Site Management" ],
@@ -4720,6 +4800,35 @@
         }
       }
     },
+    "/api/prov/v1/sites/hostname/purge" : {
+      "post" : {
+        "tags" : [ "Site Management" ],
+        "summary" : "Purge Hostname from Cache",
+        "description" : "Use this operation to purge the hostname from the cache. This API is for customers who use the same CNAME provided by Imperva for multiple hostnames and would like to change the CNAME for a particular hostname. Purging the hostname is required for the CNAME change to take effect.",
+        "operationId" : "purgeHostname",
+        "parameters" : [ {
+          "name" : "host_name",
+          "in" : "query",
+          "description" : "The hostname to purge from the cache",
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "example.com"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "res - contains the specific error code:<br/>2 - Invalid input<br/>3015 - Internal error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ApiResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/prov/v1/sites/htmlinjections" : {
       "post" : {
         "tags" : [ "Site Management" ],
@@ -4831,12 +4940,95 @@
         }
       }
     },
-    "/api/prov/v1/sites/pop-lists/configurelists" : {
+    "/api/prov/v1/sites/customCertificate/upload" : {
       "post" : {
         "tags" : [ "Site Management" ],
-        "summary" : "Configure PoPs Denylist and Allowlist",
-        "description" : "Use this operation to specify the PoPs to add to a site's denylist or allowlist. Please note that Operations performed by this API are not additive. Any previous configuration will be overriden.",
-        "operationId" : "configurePopsIdsLists",
+        "summary" : "Upload Custom Certificate",
+        "description" : "Use this operation to upload custom certificate for your site. The following SSL certificate file formats are supported: PFX, PEM, CER.",
+        "operationId" : "uploadCustomCertificate",
+        "parameters" : [ {
+          "name" : "site_id",
+          "in" : "query",
+          "description" : "Numeric identifier of the site to operate on",
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "example" : 10
+        }, {
+          "name" : "certificate",
+          "in" : "query",
+          "description" : "The certificate file in base64 format",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "private_key",
+          "in" : "query",
+          "description" : "The private key of the certificate in base64 format. Optional in case of PFX certificate file format",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "passphrase",
+          "in" : "query",
+          "description" : "The passphrase used to protect your SSL certificate\t",
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "res - contains the specific error code:<br/>2 - Invalid input<br/>4205 - Site does not have SSL<br/>9414 - Feature not permitted<br/>9414 - Feature not permitted</br>3015 - Internal error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ApiResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/prov/v1/sites/customCertificate/remove" : {
+      "post" : {
+        "tags" : [ "Site Management" ],
+        "summary" : "Remove Custom Certificate",
+        "description" : "Use this operation to remove custom certificate.",
+        "operationId" : "removeCustomCertificate",
+        "parameters" : [ {
+          "name" : "site_id",
+          "in" : "query",
+          "description" : "Numeric identifier of the site to operate on",
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "example" : 5437773
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "res - contains the specific error code:<br/>2 - Invalid input<br/>4205 - Site does not have SSL<br/>9414 - Feature not permitted<br/>9414 - Feature not permitted</br>3015 - Internal error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ApiResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/prov/v1/sites/customCertificate/csr" : {
+      "post" : {
+        "tags" : [ "Site Management" ],
+        "summary" : "Create New CSR",
+        "description" : "Use this operation to create a certificate signing request (CSR) for your site.",
+        "operationId" : "createNewCSR",
         "parameters" : [ {
           "name" : "site_id",
           "in" : "query",
@@ -4846,31 +5038,158 @@
             "type" : "integer",
             "format" : "int64"
           },
-          "example" : 15
+          "example" : 10
         }, {
-          "name" : "allowlist",
+          "name" : "email",
           "in" : "query",
-          "description" : "List of PoP ids, separated by commas, that will compose the site's allowlisted PoPs",
+          "description" : "Email address. For example: joe@example.com",
           "schema" : {
             "type" : "string"
           },
-          "example" : "iad"
+          "example" : "joe@example.com"
         }, {
-          "name" : "denylist",
+          "name" : "country",
           "in" : "query",
-          "description" : "List of PoP ids, separated by commas, that will compose the site's denylisted PoPs",
+          "description" : "The two-letter ISO code for the country where your organization is located",
           "schema" : {
             "type" : "string"
           },
-          "example" : "lax"
+          "example" : "IL"
         }, {
-          "name" : "remove_config",
+          "name" : "state",
           "in" : "query",
-          "description" : "Boolean value. When true, all denylist and allowlist configurations would be removed",
+          "description" : "The state/region where your organization is located. This should not be abbreviated",
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "IL"
+        }, {
+          "name" : "city",
+          "in" : "query",
+          "description" : "The city where your organization is located",
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "JER"
+        }, {
+          "name" : "organization",
+          "in" : "query",
+          "description" : "The legal name of your organization. This should not be abbreviated or include suffixes such as Inc., Corp., or LLC",
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "imperva"
+        }, {
+          "name" : "organization_unit",
+          "in" : "query",
+          "description" : "The division of your organization handling the certificate. For example, IT Department",
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "IT Department"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "res - contains the specific error code:<br/>2 - Invalid input<br/>4205 - Site does not have SSL<br/>9414 - Feature not permitted<br/>9414 - Feature not permitted</br>3015 - Internal error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ApiResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/prov/v1/sites/data-privacy/region-change" : {
+      "post" : {
+        "tags" : [ "Site Management" ],
+        "summary" : "Set Site Data Storage Region",
+        "description" : "Use this operation to set the site data region.",
+        "operationId" : "setDataRegion",
+        "parameters" : [ {
+          "name" : "site_id",
+          "in" : "query",
+          "description" : "Numeric identifier of the site to operate on.",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "example" : 10
+        }, {
+          "name" : "data_storage_region",
+          "in" : "query",
+          "description" : "The data region to use.",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "US"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "res - contains the specific error code:<br/>2 - Invalid input<br/>9415 - Operation not allowed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "oneOf" : [ {
+                    "$ref" : "#/components/schemas/ApiResultSetDataRegion"
+                  }, {
+                    "$ref" : "#/components/schemas/ApiResult"
+                  } ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/prov/v1/sites/data-privacy/show-override-by-geo" : {
+      "post" : {
+        "tags" : [ "Site Management" ],
+        "summary" : "List Available PoPs for Denylist/Allowlist",
+        "description" : "Use this operation to list all PoPs that are available to add to a site’s blacklist or allowlist.",
+        "operationId" : "getOverrideSiteRegionsByGeo",
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ApiResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/prov/v1/sites/data-privacy/override-by-geo" : {
+      "post" : {
+        "tags" : [ "Site Management" ],
+        "summary" : "Set Site Regions by Origin Geolocation",
+        "description" : "Use this operation to set the data storage region for each new site based on the geolocation of the origin server.",
+        "operationId" : "setOverrideSiteRegionsByGeo",
+        "parameters" : [ {
+          "name" : "account_id",
+          "in" : "query",
+          "description" : "Numeric identifier of the account to operate on.<br/>If not specified, operation will be performed on the account identified by the authentication parameters.",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : 10
+        }, {
+          "name" : "override_site_regions_by_geo",
+          "in" : "query",
+          "description" : "A boolean parameter. If it is set to \"true\", the data storage region for each new site will be based on the geolocation of the origin server.",
+          "required" : true,
           "schema" : {
             "type" : "boolean"
           },
-          "example" : false
+          "example" : 10
         } ],
         "responses" : {
           "200" : {
@@ -4886,16 +5205,57 @@
         }
       }
     },
-    "/api/prov/v1/sites/pop-lists/view-config" : {
-      "get" : {
+    "/api/prov/v1/caa/check-compliance" : {
+      "post" : {
         "tags" : [ "Site Management" ],
-        "summary" : "Show Current PoP Denylist/Allowlist Configuration",
-        "description" : "Use this operation to show a site's current Denylist/Allowlist configuration.",
-        "operationId" : "getPopLists",
+        "summary" : "Check CAA compliance",
+        "description" : "Check site’s associated SANs for CAA compliance. If a given SAN is compliant, its SSL domain validation status is updated accordingly.This operation returns an updated list of the site’s associated SANs that are not compliant. An empty list indicates that all SANs are compliant.",
+        "operationId" : "checkCAACompliance",
         "parameters" : [ {
           "name" : "site_id",
           "in" : "query",
-          "description" : "Numeric identifier of the site to operate on",
+          "description" : "Numeric identifier of the site to operate on.",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "example" : 10
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CaaComplianceCheckResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/prov/v1/sites/moveSite" : {
+      "post" : {
+        "tags" : [ "Site Management" ],
+        "summary" : "Move site",
+        "description" : "Use this operation to move a site from its account to another account.",
+        "operationId" : "moveSite",
+        "parameters" : [ {
+          "name" : "site_id",
+          "in" : "query",
+          "description" : "Numeric identifier of the site to move",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "example" : 10
+        }, {
+          "name" : "destination_account_id",
+          "in" : "query",
+          "description" : "The numeric identifier of the account which the site will be moved to",
           "required" : true,
           "schema" : {
             "type" : "integer",
@@ -4905,12 +5265,12 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "res - contains the specific error code:<br/>1 - Unexpected error<br/> 9415 - Operation not allowed",
+            "description" : "res - contains the specific error code:<br/>9415 - Operation not allowed",
             "content" : {
               "application/json" : {
                 "schema" : {
                   "oneOf" : [ {
-                    "$ref" : "#/components/schemas/ApiResultCurrPopsConfig"
+                    "$ref" : "#/components/schemas/ApiResultMoveSite"
                   }, {
                     "$ref" : "#/components/schemas/ApiResult"
                   } ]
@@ -4921,34 +5281,40 @@
         }
       }
     },
-    "/api/prov/v1/sites/pop-lists/options" : {
-      "get" : {
+    "/api/prov/v1/sites/incapRules/priority/set" : {
+      "post" : {
         "tags" : [ "Site Management" ],
-        "summary" : "List Available PoPs for Denylist/Allowlist",
-        "description" : "Use this operation to list all PoPs that are available to add to a site’s denylist or allowlist.",
-        "operationId" : "listAvailablePopsForWhiteList",
+        "summary" : "Set Rule Priority",
+        "description" : "Use this operation to change delivery rule's priority.",
+        "operationId" : "setPriority",
         "parameters" : [ {
-          "name" : "site_id",
+          "name" : "rule_id",
           "in" : "query",
-          "description" : "Numeric identifier of the site to operate on",
+          "description" : "Rule ID",
           "required" : true,
           "schema" : {
             "type" : "integer",
             "format" : "int64"
           },
-          "example" : 10
+          "example" : 534663
+        }, {
+          "name" : "priority",
+          "in" : "query",
+          "description" : "New priority for the selected rule",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "example" : 1
         } ],
         "responses" : {
           "200" : {
-            "description" : "res - contains the specific error code:<br/>2 - Invalid input<br/>9415 - Operation not allowed",
+            "description" : "res - contains the specific error code:<br/>9413 - Unknown/unauthorized site_id<br/>2 - Invalid input",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "oneOf" : [ {
-                    "$ref" : "#/components/schemas/ApiResultPossiblePops"
-                  }, {
-                    "$ref" : "#/components/schemas/ApiResult"
-                  } ]
+                  "$ref" : "#/components/schemas/SetPriorityResponse"
                 }
               }
             }
@@ -5466,47 +5832,6 @@
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/ListCustomRulesResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/prov/v1/sites/incapRules/priority/set" : {
-      "post" : {
-        "tags" : [ "Site Management" ],
-        "summary" : "Set Rule Priority",
-        "description" : "Use this operation to change delivery rule's priority.",
-        "operationId" : "setPriority",
-        "parameters" : [ {
-          "name" : "rule_id",
-          "in" : "query",
-          "description" : "Rule ID",
-          "required" : true,
-          "schema" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "example" : 534663
-        }, {
-          "name" : "priority",
-          "in" : "query",
-          "description" : "New priority for the selected rule",
-          "required" : true,
-          "schema" : {
-            "type" : "integer",
-            "format" : "int32"
-          },
-          "example" : 1
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "res - contains the specific error code:<br/>9413 - Unknown/unauthorized site_id<br/>2 - Invalid input",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/SetPriorityResponse"
                 }
               }
             }
@@ -6812,7 +7137,7 @@
   },
   "components" : {
     "schemas" : {
-      "ApiResultAccountStatus" : {
+      "ApiResultGetSsoToken" : {
         "type" : "object",
         "properties" : {
           "res" : {
@@ -6836,8 +7161,41 @@
               "example" : { }
             }
           },
-          "account" : {
-            "$ref" : "#/components/schemas/account"
+          "generated_token" : {
+            "type" : "string",
+            "example" : "344ebcaf34dff34"
+          }
+        }
+      },
+      "ApiResultListUsers" : {
+        "type" : "object",
+        "properties" : {
+          "res" : {
+            "type" : "integer",
+            "description" : "res - contains specific error code",
+            "format" : "int32",
+            "example" : 0
+          },
+          "res_message" : {
+            "type" : "string",
+            "example" : "OK"
+          },
+          "debug_info" : {
+            "type" : "array",
+            "items" : {
+              "type" : "object",
+              "additionalProperties" : {
+                "type" : "object",
+                "example" : { }
+              },
+              "example" : { }
+            }
+          },
+          "accounts" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/accounts"
+            }
           }
         }
       },
@@ -6854,7 +7212,7 @@
           }
         }
       },
-      "account" : {
+      "accounts" : {
         "type" : "object",
         "properties" : {
           "email" : {
@@ -6912,32 +7270,6 @@
           "naked_domain_san_for_new_www_sites" : {
             "type" : "boolean",
             "example" : true
-          }
-        }
-      },
-      "ApiResult" : {
-        "type" : "object",
-        "properties" : {
-          "res" : {
-            "type" : "integer",
-            "description" : "res - contains specific error code",
-            "format" : "int32",
-            "example" : 0
-          },
-          "res_message" : {
-            "type" : "string",
-            "example" : "OK"
-          },
-          "debug_info" : {
-            "type" : "array",
-            "items" : {
-              "type" : "object",
-              "additionalProperties" : {
-                "type" : "object",
-                "example" : { }
-              },
-              "example" : { }
-            }
           }
         }
       },
@@ -7002,7 +7334,33 @@
           }
         }
       },
-      "ApiResultListUsers" : {
+      "ApiResult" : {
+        "type" : "object",
+        "properties" : {
+          "res" : {
+            "type" : "integer",
+            "description" : "res - contains specific error code",
+            "format" : "int32",
+            "example" : 0
+          },
+          "res_message" : {
+            "type" : "string",
+            "example" : "OK"
+          },
+          "debug_info" : {
+            "type" : "array",
+            "items" : {
+              "type" : "object",
+              "additionalProperties" : {
+                "type" : "object",
+                "example" : { }
+              },
+              "example" : { }
+            }
+          }
+        }
+      },
+      "ApiResultAccountStatus" : {
         "type" : "object",
         "properties" : {
           "res" : {
@@ -7026,15 +7384,12 @@
               "example" : { }
             }
           },
-          "accounts" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/accounts"
-            }
+          "account" : {
+            "$ref" : "#/components/schemas/account"
           }
         }
       },
-      "accounts" : {
+      "account" : {
         "type" : "object",
         "properties" : {
           "email" : {
@@ -7317,7 +7672,7 @@
           }
         }
       },
-      "ApiResultGetSsoToken" : {
+      "ApiResultAddCacheRule" : {
         "type" : "object",
         "properties" : {
           "res" : {
@@ -7341,9 +7696,10 @@
               "example" : { }
             }
           },
-          "generated_token" : {
-            "type" : "string",
-            "example" : "344ebcaf34dff34"
+          "rule_id" : {
+            "type" : "integer",
+            "format" : "int64",
+            "example" : 10
           }
         }
       },
@@ -7405,7 +7761,7 @@
           } ]
         }
       },
-      "ApiResultAddCacheRule" : {
+      "InfraStatsApiResponse" : {
         "type" : "object",
         "properties" : {
           "res" : {
@@ -7428,12 +7784,34 @@
               },
               "example" : { }
             }
-          },
-          "rule_id" : {
-            "type" : "integer",
-            "format" : "int64",
-            "example" : 10
           }
+        },
+        "example" : {
+          "stats" : [ {
+            "objectId" : 607074,
+            "payload" : [ {
+              "interval" : 15000,
+              "startTime" : 1509936300000,
+              "data" : [ 0, 15 ],
+              "metric" : "pps",
+              "pop" : "tko",
+              "ipPrefix" : "192.168.205.0/24",
+              "ipPrefixType" : "bgp",
+              "traffic" : "passed"
+            }, {
+              "interval" : 15000,
+              "startTime" : 1509936300000,
+              "data" : [ 7968575, 8484564 ],
+              "metric" : "bw",
+              "pop" : "tko",
+              "ipPrefix" : "192.168.205.0/24",
+              "ipPrefixType" : "bgp",
+              "traffic" : "passed"
+            } ]
+          } ],
+          "res" : 0,
+          "res_message" : "OK",
+          "debug_info" : { }
         }
       },
       "ADRule" : {
@@ -7781,91 +8159,6 @@
                 "type" : "object"
               }
             }
-          }
-        }
-      },
-      "InfraEventsApiResponse" : {
-        "type" : "object",
-        "properties" : {
-          "res" : {
-            "type" : "integer",
-            "description" : "res - contains specific error code",
-            "format" : "int32",
-            "example" : 0
-          },
-          "res_message" : {
-            "type" : "string",
-            "example" : "OK"
-          },
-          "debug_info" : {
-            "type" : "array",
-            "items" : {
-              "type" : "object",
-              "additionalProperties" : {
-                "type" : "object",
-                "example" : { }
-              },
-              "example" : { }
-            }
-          },
-          "events" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/InfraProtectEvent"
-            }
-          }
-        }
-      },
-      "InfraProtectEvent" : {
-        "type" : "object",
-        "properties" : {
-          "eventTime" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "eventType" : {
-            "type" : "string",
-            "example" : "DDOS_STOP_IP_RANGE",
-            "enum" : [ "GRE_TUNNEL_UP", "GRE_TUNNEL_DOWN", "ORIGIN_CONNECTION_GRE_UP", "ORIGIN_CONNECTION_GRE_DOWN", "ORIGIN_CONNECTION_ECX_UP", "ORIGIN_CONNECTION_ECX_DOWN", "ORIGIN_CONNECTION_CROSS_CONNECT_UP", "ORIGIN_CONNECTION_CROSS_CONNECT_DOWN", "IP_RANGE_ATTACK_START", "IP_RANGE_ATTACK_STOP", "DDOS_START_IP_RANGE", "DDOS_STOP_IP_RANGE", "DDOS_QUIET_TIME_IP_RANGE", "EXPORTER_NO_DATA", "EXPORTER_BAD_DATA", "EXPORTER_GOOD_DATA", "MONITORING_ATTACK", "MONITORING_CRITICAL_ATTACK", "PROTECTED_IP_STATUS_UP", "PROTECTED_IP_STATUS_DOWN", "PER_IP_DDOS_START_IP_RANGE", "PER_IP_DDOS_STOP_IP_RANGE", "IIP_ACCOUNT_SERVICE_SUSPENDED", "IIP_ACCOUNT_SERVICE_UNSUSPENDED", "INFRAPROTECT_NULL_ROUTE_STARTED", "INFRAPROTECT_NULL_ROUTE_ESCALATED", "INFRAPROTECT_NULL_ROUTE_ENDED" ]
-          },
-          "bwTotal" : {
-            "type" : "integer",
-            "format" : "int64",
-            "example" : 9000
-          },
-          "ppsTotal" : {
-            "type" : "integer",
-            "format" : "int64",
-            "example" : 90
-          },
-          "bwPassed" : {
-            "type" : "integer",
-            "format" : "int64",
-            "example" : 200
-          },
-          "ppsPassed" : {
-            "type" : "integer",
-            "format" : "int64",
-            "example" : 87
-          },
-          "bwBlocked" : {
-            "type" : "integer",
-            "format" : "int64",
-            "example" : 8800
-          },
-          "ppsBlocked" : {
-            "type" : "integer",
-            "format" : "int64",
-            "example" : 3
-          },
-          "eventTarget" : {
-            "type" : "string",
-            "example" : "IP_RANGE",
-            "enum" : [ "GRE_TUNNEL", "IP_RANGE", "EXPORTER", "PROTECTED_IP", "INCAPSULA_IP", "NULL_ROUTE" ]
-          },
-          "reportedByPop" : {
-            "type" : "string",
-            "example" : "zrh"
           }
         }
       },
@@ -8361,7 +8654,7 @@
           }
         }
       },
-      "InfraStatsApiResponse" : {
+      "InfraEventsApiResponse" : {
         "type" : "object",
         "properties" : {
           "res" : {
@@ -8384,34 +8677,66 @@
               },
               "example" : { }
             }
+          },
+          "events" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/InfraProtectEvent"
+            }
           }
-        },
-        "example" : {
-          "stats" : [ {
-            "objectId" : 607074,
-            "payload" : [ {
-              "interval" : 15000,
-              "startTime" : 1509936300000,
-              "data" : [ 0, 15 ],
-              "metric" : "pps",
-              "pop" : "tko",
-              "ipPrefix" : "192.168.205.0/24",
-              "ipPrefixType" : "bgp",
-              "traffic" : "passed"
-            }, {
-              "interval" : 15000,
-              "startTime" : 1509936300000,
-              "data" : [ 7968575, 8484564 ],
-              "metric" : "bw",
-              "pop" : "tko",
-              "ipPrefix" : "192.168.205.0/24",
-              "ipPrefixType" : "bgp",
-              "traffic" : "passed"
-            } ]
-          } ],
-          "res" : 0,
-          "res_message" : "OK",
-          "debug_info" : { }
+        }
+      },
+      "InfraProtectEvent" : {
+        "type" : "object",
+        "properties" : {
+          "eventTime" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "eventType" : {
+            "type" : "string",
+            "example" : "DDOS_STOP_IP_RANGE",
+            "enum" : [ "GRE_TUNNEL_UP", "GRE_TUNNEL_DOWN", "ORIGIN_CONNECTION_GRE_UP", "ORIGIN_CONNECTION_GRE_DOWN", "ORIGIN_CONNECTION_ECX_UP", "ORIGIN_CONNECTION_ECX_DOWN", "ORIGIN_CONNECTION_CROSS_CONNECT_UP", "ORIGIN_CONNECTION_CROSS_CONNECT_DOWN", "IP_RANGE_ATTACK_START", "IP_RANGE_ATTACK_STOP", "DDOS_START_IP_RANGE", "DDOS_STOP_IP_RANGE", "DDOS_QUIET_TIME_IP_RANGE", "EXPORTER_NO_DATA", "EXPORTER_BAD_DATA", "EXPORTER_GOOD_DATA", "MONITORING_ATTACK", "MONITORING_CRITICAL_ATTACK", "PROTECTED_IP_STATUS_UP", "PROTECTED_IP_STATUS_DOWN", "PER_IP_DDOS_START_IP_RANGE", "PER_IP_DDOS_STOP_IP_RANGE", "IIP_ACCOUNT_SERVICE_SUSPENDED", "IIP_ACCOUNT_SERVICE_UNSUSPENDED", "INFRAPROTECT_NULL_ROUTE_STARTED", "INFRAPROTECT_NULL_ROUTE_ESCALATED", "INFRAPROTECT_NULL_ROUTE_ENDED" ]
+          },
+          "bwTotal" : {
+            "type" : "integer",
+            "format" : "int64",
+            "example" : 9000
+          },
+          "ppsTotal" : {
+            "type" : "integer",
+            "format" : "int64",
+            "example" : 90
+          },
+          "bwPassed" : {
+            "type" : "integer",
+            "format" : "int64",
+            "example" : 200
+          },
+          "ppsPassed" : {
+            "type" : "integer",
+            "format" : "int64",
+            "example" : 87
+          },
+          "bwBlocked" : {
+            "type" : "integer",
+            "format" : "int64",
+            "example" : 8800
+          },
+          "ppsBlocked" : {
+            "type" : "integer",
+            "format" : "int64",
+            "example" : 3
+          },
+          "eventTarget" : {
+            "type" : "string",
+            "example" : "IP_RANGE",
+            "enum" : [ "GRE_TUNNEL", "IP_RANGE", "EXPORTER", "PROTECTED_IP", "INCAPSULA_IP", "NULL_ROUTE" ]
+          },
+          "reportedByPop" : {
+            "type" : "string",
+            "example" : "zrh"
+          }
         }
       },
       "ApiResultIncapsulaRanges" : {
@@ -9330,139 +9655,6 @@
           }
         }
       },
-      "GetAdvancedCachingSettingsApiResult" : {
-        "type" : "object",
-        "properties" : {
-          "res" : {
-            "type" : "integer",
-            "description" : "res - contains specific error code",
-            "format" : "int32",
-            "example" : 0
-          },
-          "res_message" : {
-            "type" : "string",
-            "example" : "OK"
-          },
-          "debug_info" : {
-            "type" : "array",
-            "items" : {
-              "type" : "object",
-              "additionalProperties" : {
-                "type" : "object",
-                "example" : { }
-              },
-              "example" : { }
-            }
-          },
-          "value" : {
-            "type" : "boolean",
-            "example" : true
-          }
-        }
-      },
-      "ApiResultGetSiteXrayLink" : {
-        "type" : "object",
-        "properties" : {
-          "res" : {
-            "type" : "integer",
-            "description" : "res - contains specific error code",
-            "format" : "int32",
-            "example" : 0
-          },
-          "res_message" : {
-            "type" : "string",
-            "example" : "OK"
-          },
-          "debug_info" : {
-            "type" : "array",
-            "items" : {
-              "type" : "object",
-              "additionalProperties" : {
-                "type" : "object",
-                "example" : { }
-              },
-              "example" : { }
-            }
-          },
-          "url" : {
-            "type" : "string",
-            "example" : "https://"
-          }
-        }
-      },
-      "IsCacheShieldEnabledApiResult" : {
-        "type" : "object",
-        "properties" : {
-          "res" : {
-            "type" : "integer",
-            "description" : "res - contains specific error code",
-            "format" : "int32",
-            "example" : 0
-          },
-          "res_message" : {
-            "type" : "string",
-            "example" : "OK"
-          },
-          "debug_info" : {
-            "type" : "array",
-            "items" : {
-              "type" : "object",
-              "additionalProperties" : {
-                "type" : "object",
-                "example" : { }
-              },
-              "example" : { }
-            }
-          },
-          "enabled" : {
-            "type" : "boolean",
-            "example" : true
-          }
-        }
-      },
-      "ApiResultGetRewritePorts" : {
-        "type" : "object",
-        "properties" : {
-          "res" : {
-            "type" : "integer",
-            "description" : "res - contains specific error code",
-            "format" : "int32",
-            "example" : 0
-          },
-          "res_message" : {
-            "type" : "string",
-            "example" : "OK"
-          },
-          "debug_info" : {
-            "type" : "array",
-            "items" : {
-              "type" : "object",
-              "additionalProperties" : {
-                "type" : "object",
-                "example" : { }
-              },
-              "example" : { }
-            }
-          },
-          "port" : {
-            "$ref" : "#/components/schemas/RewritePort"
-          },
-          "ssl_port" : {
-            "$ref" : "#/components/schemas/RewritePort"
-          }
-        }
-      },
-      "RewritePort" : {
-        "type" : "object",
-        "properties" : {
-          "from" : {
-            "type" : "string"
-          },
-          "to" : {
-            "type" : "string"
-          }
-        }
-      },
       "ApiResultGetCacheMode" : {
         "type" : "object",
         "properties" : {
@@ -9808,6 +10000,139 @@
           }
         }
       },
+      "GetAdvancedCachingSettingsApiResult" : {
+        "type" : "object",
+        "properties" : {
+          "res" : {
+            "type" : "integer",
+            "description" : "res - contains specific error code",
+            "format" : "int32",
+            "example" : 0
+          },
+          "res_message" : {
+            "type" : "string",
+            "example" : "OK"
+          },
+          "debug_info" : {
+            "type" : "array",
+            "items" : {
+              "type" : "object",
+              "additionalProperties" : {
+                "type" : "object",
+                "example" : { }
+              },
+              "example" : { }
+            }
+          },
+          "value" : {
+            "type" : "boolean",
+            "example" : true
+          }
+        }
+      },
+      "ApiResultGetSiteXrayLink" : {
+        "type" : "object",
+        "properties" : {
+          "res" : {
+            "type" : "integer",
+            "description" : "res - contains specific error code",
+            "format" : "int32",
+            "example" : 0
+          },
+          "res_message" : {
+            "type" : "string",
+            "example" : "OK"
+          },
+          "debug_info" : {
+            "type" : "array",
+            "items" : {
+              "type" : "object",
+              "additionalProperties" : {
+                "type" : "object",
+                "example" : { }
+              },
+              "example" : { }
+            }
+          },
+          "url" : {
+            "type" : "string",
+            "example" : "https://"
+          }
+        }
+      },
+      "IsCacheShieldEnabledApiResult" : {
+        "type" : "object",
+        "properties" : {
+          "res" : {
+            "type" : "integer",
+            "description" : "res - contains specific error code",
+            "format" : "int32",
+            "example" : 0
+          },
+          "res_message" : {
+            "type" : "string",
+            "example" : "OK"
+          },
+          "debug_info" : {
+            "type" : "array",
+            "items" : {
+              "type" : "object",
+              "additionalProperties" : {
+                "type" : "object",
+                "example" : { }
+              },
+              "example" : { }
+            }
+          },
+          "enabled" : {
+            "type" : "boolean",
+            "example" : true
+          }
+        }
+      },
+      "ApiResultGetRewritePorts" : {
+        "type" : "object",
+        "properties" : {
+          "res" : {
+            "type" : "integer",
+            "description" : "res - contains specific error code",
+            "format" : "int32",
+            "example" : 0
+          },
+          "res_message" : {
+            "type" : "string",
+            "example" : "OK"
+          },
+          "debug_info" : {
+            "type" : "array",
+            "items" : {
+              "type" : "object",
+              "additionalProperties" : {
+                "type" : "object",
+                "example" : { }
+              },
+              "example" : { }
+            }
+          },
+          "port" : {
+            "$ref" : "#/components/schemas/RewritePort"
+          },
+          "ssl_port" : {
+            "$ref" : "#/components/schemas/RewritePort"
+          }
+        }
+      },
+      "RewritePort" : {
+        "type" : "object",
+        "properties" : {
+          "from" : {
+            "type" : "string"
+          },
+          "to" : {
+            "type" : "string"
+          }
+        }
+      },
       "ApiResultListSites" : {
         "type" : "object",
         "properties" : {
@@ -9837,21 +10162,6 @@
             "items" : {
               "$ref" : "#/components/schemas/ApiResultSiteStatus"
             }
-          }
-        }
-      },
-      "Pagination" : {
-        "type" : "object",
-        "properties" : {
-          "pageSize" : {
-            "type" : "integer",
-            "format" : "int32",
-            "example" : 50
-          },
-          "pageNum" : {
-            "type" : "integer",
-            "format" : "int32",
-            "example" : 1
           }
         }
       },
@@ -9926,6 +10236,36 @@
           }
         }
       },
+      "ApiResultSetDataRegion" : {
+        "type" : "object",
+        "properties" : {
+          "res" : {
+            "type" : "integer",
+            "description" : "res - contains specific error code",
+            "format" : "int32",
+            "example" : 0
+          },
+          "res_message" : {
+            "type" : "string",
+            "example" : "OK"
+          },
+          "debug_info" : {
+            "type" : "array",
+            "items" : {
+              "type" : "object",
+              "additionalProperties" : {
+                "type" : "object",
+                "example" : { }
+              },
+              "example" : { }
+            }
+          },
+          "region" : {
+            "type" : "string",
+            "example" : "US"
+          }
+        }
+      },
       "ApiResultReport" : {
         "type" : "object",
         "properties" : {
@@ -9958,36 +10298,6 @@
           "report" : {
             "type" : "string",
             "example" : "JVBERi0xLjUNCiXvv73vv73vv73vv70NCjEgMCBvYmoNCjw8L1R5cGUvQ2F0YWxvZy9QYWdlcyAyIDAgUi9MYW5nKGVuLVVT ..."
-          }
-        }
-      },
-      "ApiResultSetDataRegion" : {
-        "type" : "object",
-        "properties" : {
-          "res" : {
-            "type" : "integer",
-            "description" : "res - contains specific error code",
-            "format" : "int32",
-            "example" : 0
-          },
-          "res_message" : {
-            "type" : "string",
-            "example" : "OK"
-          },
-          "debug_info" : {
-            "type" : "array",
-            "items" : {
-              "type" : "object",
-              "additionalProperties" : {
-                "type" : "object",
-                "example" : { }
-              },
-              "example" : { }
-            }
-          },
-          "region" : {
-            "type" : "string",
-            "example" : "US"
           }
         }
       },
@@ -10045,97 +10355,6 @@
           }
         }
       },
-      "ApiResultCurrPopsConfig" : {
-        "type" : "object",
-        "properties" : {
-          "res" : {
-            "type" : "integer",
-            "description" : "res - contains specific error code",
-            "format" : "int32",
-            "example" : 0
-          },
-          "res_message" : {
-            "type" : "string",
-            "example" : "OK"
-          },
-          "debug_info" : {
-            "type" : "array",
-            "items" : {
-              "type" : "object",
-              "additionalProperties" : {
-                "type" : "object",
-                "example" : { }
-              },
-              "example" : { }
-            }
-          },
-          "whitelist" : {
-            "type" : "array",
-            "items" : {
-              "type" : "object",
-              "example" : "lax"
-            }
-          },
-          "blacklist" : {
-            "type" : "array",
-            "items" : {
-              "type" : "object",
-              "example" : "iad"
-            }
-          }
-        }
-      },
-      "ApiResultPossiblePops" : {
-        "type" : "object",
-        "properties" : {
-          "res" : {
-            "type" : "integer",
-            "description" : "res - contains specific error code",
-            "format" : "int32",
-            "example" : 0
-          },
-          "res_message" : {
-            "type" : "string",
-            "example" : "OK"
-          },
-          "debug_info" : {
-            "type" : "array",
-            "items" : {
-              "type" : "object",
-              "additionalProperties" : {
-                "type" : "object",
-                "example" : { }
-              },
-              "example" : { }
-            }
-          },
-          "regions" : {
-            "type" : "array",
-            "example" : {
-              "us-west" : [ {
-                "pop-location" : "San Jose, CA",
-                "pop-id" : "sjc"
-              }, {
-                "pop-location" : "Los Angeles, CA",
-                "pop-id" : "lax"
-              }, {
-                "pop-location" : "Seattle, WA",
-                "pop-id" : "sea"
-              } ],
-              "sa" : [ {
-                "pop-location" : "Sao Paulo, Brazil",
-                "pop-id" : "gru"
-              } ]
-            },
-            "items" : {
-              "type" : "object",
-              "additionalProperties" : {
-                "type" : "object"
-              }
-            }
-          }
-        }
-      },
       "CaaComplianceCheckResult" : {
         "type" : "object",
         "properties" : {
@@ -10183,6 +10402,19 @@
             "type" : "string",
             "writeOnly" : true,
             "enum" : [ "MOVED", "PENDING_CA_APPROVAL", "FAILED" ]
+          }
+        }
+      },
+      "SetPriorityResponse" : {
+        "type" : "object",
+        "properties" : {
+          "status" : {
+            "type" : "string",
+            "example" : "ok"
+          },
+          "res" : {
+            "type" : "string",
+            "example" : "0"
           }
         }
       },
@@ -10290,19 +10522,6 @@
                 "type" : "object"
               }
             }
-          }
-        }
-      },
-      "SetPriorityResponse" : {
-        "type" : "object",
-        "properties" : {
-          "status" : {
-            "type" : "string",
-            "example" : "ok"
-          },
-          "res" : {
-            "type" : "string",
-            "example" : "0"
           }
         }
       },
