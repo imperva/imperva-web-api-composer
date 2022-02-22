@@ -4,12 +4,13 @@ var incap_method_sel = '#IncapsulaAPI #incapMethod';
 var incap_req_url_sel = '#IncapsulaAPI #incapRequestUrl';
 var incap_data_sel = '#IncapsulaAPI #incapData';
 var incap_url_param_sel = '#IncapsulaAPI #incapURLparams';
+var apiDefinitionsAry = [];
 var apiDefinitionIndex = 0;
 var apiDefinitionIndex_processed = 0;
 
 $().ready(function() {
 	$("#mainNav").tabs();
-	apiDefinitionsAry = getAPIDefinitionIndexes();
+	apiDefinitionsAry = getAPIDefinitionIndexes(incapAPIDefinitions);
 	while (apiDefinitionIndex < apiDefinitionsAry.length) {
 		var curApiDefName = apiDefinitionsAry[apiDefinitionIndex];
 		loadcwafswagger(incapAPIDefinitions[curApiDefName]["endpoint"]);
@@ -17,7 +18,7 @@ $().ready(function() {
 	}
 });
 
-function loadcwafswagger(apiDefinitionEndpoint,callback){
+function loadcwafswagger(apiDefinitionEndpoint){
 	// requrl = (apiDefinitionEndpoint.substr(0, 4).toLowerCase()=="http") ? 'ajax/incap_swagger.php?apiDefinitionIndex='+apiDefinitionIndex+'&endpoint='+apiDefinitionEndpoint : apiDefinitionEndpoint+'?apiDefinitionIndex='+apiDefinitionIndex;
 	requrl = 'ajax/incap_swagger.php?apiDefinitionIndex='+apiDefinitionIndex+'&endpoint='+apiDefinitionEndpoint;
 	jQuery.ajax ({
@@ -34,12 +35,6 @@ function loadcwafswagger(apiDefinitionEndpoint,callback){
 			}
 		}
 	});
-}
-
-function getAPIDefinitionIndexes(){
-	var apiDefinitionsAry = [];
-	$.each(incapAPIDefinitions, function(name,obj) { apiDefinitionsAry.push(name); });
-	return apiDefinitionsAry;
 }
 
 function initIncap(){
@@ -629,7 +624,6 @@ function renderParamsHTML(){
 									var level = (currentContainerId.split("___").length);
 									var required = (param.required==true) ? ' required ': '';
 									var paramDataType = ((currentContainerParam.type!=undefined) ? currentContainerParam.type : 'object');
-									debugger
 									var str = '<tr id="'+currentContainerId+'_tbltr" class="fieldwrapper '+currentContainerId+'_tbltr">';
 									str += '<td valign="top" align="right" width><label title="'+currentContainerId+'" for="">';
 									str += ((currentContainerParam.description!=undefined) ? '<span class="info" title="'+currentContainerParam.description+'"> </span> ' : '');
@@ -706,14 +700,14 @@ function renderParamsHTML(){
 	$('.param_link').button();
 	$('.toggle_param_link, .cancel_param_link').button().unbind("click").click(function(){ toggleShowNestedParams(this.id.replace("_toggle","").replace("_cancel","")); })
 	$('#incappathParams .ui-icon-copy').unbind("click").click(function(){ incapCopyPathParam(this); updateRequestData(); })
-	$('#incapqueryParams input, #incapqueryParams textarea').unbind().blur(function(){ incapUpdateReqURL(); });
-	$('#incapqueryParams select').unbind().change(function(){ incapUpdateReqURL(); });
-	$('#incapbodyParams input, #incapbodyParams textarea.parent1').unbind().blur(function(){ if (checkIncapForm()) updateRequestDataFromJsonParams(); });
-	$('#incapbodyParams textarea.parent:not(.parent1)').unbind().blur(function(){ if (checkIncapForm()); });
+	$('#incapqueryParams input:not(.parent), #incapqueryParams textarea:not(.parent)').unbind().blur(function(){ incapUpdateReqURL(); });
+	$('#incapqueryParams select:not(.parent)').unbind().change(function(){ incapUpdateReqURL(); });
+	$('#incapbodyParams input:not(.parent), #incapbodyParams textarea.parent1').unbind().blur(function(){ if (checkIncapForm()) updateRequestDataFromJsonParams(); });
+	$('#incapbodyParams textarea.parent:not(.parent1,.parent)').unbind().blur(function(){ if (checkIncapForm()); });
 	
-	$('#incapbodyParams select').unbind().change(function(){ updateRequestDataFromJsonParams(); });
-	$('#incapformDataParams input, #incapformDataParams textarea').unbind().blur(function(){ updateRequestDataFromFormDataParams(); });
-	$('#incapformDataParams select').unbind().change(function(){ updateRequestDataFromFormDataParams(); });	
+	$('#incapbodyParams select:not(.parent)').unbind().change(function(){ updateRequestDataFromJsonParams(); });
+	$('#incapformDataParams input:not(.parent), #incapformDataParams textarea:not(.parent)').unbind().blur(function(){ updateRequestDataFromFormDataParams(); });
+	$('#incapformDataParams select:not(.parent)').unbind().change(function(){ updateRequestDataFromFormDataParams(); });	
 	$('.add_param_link').unbind().click(function(){ addObjectToParent(this); updateRequestData(); });	
 
 	incapUpdateReqURL();
@@ -724,6 +718,11 @@ function renderParamsHTML(){
 }
 
 function renderParamHTML(param,paramType){
+	var isParent = "";
+	if (incapGetObjectActionMapping[param.name]!=undefined) {
+		var paramActionObj = (incapGetObjectActionMapping[param.name][$('#incapActions').val()] != undefined) ? incapGetObjectActionMapping[param.name][$('#incapActions').val()] : incapGetObjectActionMapping[param.name].default;
+		if (paramActionObj.children != undefined && paramActionObj.children.length > 0) isParent="parent";
+	}
 	var paramLevel = (param.id_str.includes("___") ? 'child' : 'param');
 	var paramValType = (param.type!=undefined ? param.type : (param.schema !=undefined && param.schema.type!=undefined ? param.schema.type : "unknown_type")); 
 	var str = '<tr id="'+param.id_str+'tr" class="fieldwrapper"><td align="right"><label for="'+param.name+'">';
@@ -732,25 +731,29 @@ function renderParamHTML(param,paramType){
 	str += ((param.required==true) ? '<span title="Required field" class="required">*</span> ' : '') + ((param.id_str.includes("___")) ? param.id_str.split("___").pop() : param.name )+': </label></td>';
 	str += '<td id="'+param.id_str+'_field_td" class="'+param.type+((param.items!=undefined && param.items.type!=undefined) ? "_"+param.items.type : '')+'">';
 	if (incapGetObjectActionMapping[param.id_str]!=undefined) {
-		// var multiple = (incapGetObjectActionMapping[param.id_str].default.multiselect) ? ' multiple ': '';
+		// console.log(param.id_str);
+		// console.log(incapGetObjectActionMapping[param.id_str]);
+		curParamObj = (incapGetObjectActionMapping[param.id_str].default == undefined) ? incapGetObjectActionMapping[param.id_str][$("#incapActions").val()] : incapGetObjectActionMapping[param.id_str].default; 
+		// console.log(curParamObj);
+		var multiple = (param.uniqueItems == false || (curParamObj.multiselect==true)) ? 'multiple': '';
 		if (paramType=='pathParams') str += '<a href="javascript:void(0)" class="ui-icon ui-icon-copy" id="'+param.id_str+'_btn" title="Copy to Request URL">copy</a>';
-		str += '<select name="'+param.name+'" class="'+paramType+' '+paramLevel+'" id="'+param.id_str+'"'+required+' '+((param.uniqueItems==false) ? 'multiple': '')+'><option value="">loading...</option></select>';
+		str += '<select name="' + param.name + '" class="' + paramType + ' ' + paramLevel + ' ' + isParent + '" id="' + param.id_str + '"' + required + ' ' + multiple + '><option value="">loading...</option></select>';
 	} else if (param.enum!=undefined) {
-		str += '<select name="'+param.name+'" class="'+paramType+' '+paramLevel+'" id="'+param.id_str+'"'+required+' '+((param.uniqueItems==false) ? 'multiple': '')+'>';
+		str += '<select name="' + param.name + '" class="' + paramType + ' ' + paramLevel + ' ' + isParent + '" id="'+param.id_str+'"'+required+' '+((param.uniqueItems==false) ? 'multiple': '')+'>';
 		if (!param.required && (param.uniqueItems==undefined && param.uniqueItems!=false)) str += '<option value="">-- select --</option>';
 		$.each(param.enum, function(i,value) { str += '<option value="'+value+'">'+value+'</option>'; });
 		str += '</select>';
 	} else if (timestampParam[param.name]) {
-		str += '<input type="text" class="datepicker '+paramType+' '+paramLevel+'" name="'+param.name+'" id="'+param.id_str+'" value="" placeholder="epoch timestamp"'+required+' />';
+		str += '<input type="text" class="datepicker ' + paramType + ' ' + paramLevel + ' ' + isParent + '" name="'+param.name+'" id="'+param.id_str+'" value="" placeholder="epoch timestamp"'+required+' />';
 	} else if (paramValType=="boolean") {
-		str += '<select name="'+param.name+'" class="'+paramType+' '+paramLevel+'" id="'+param.id_str+'"'+required+'>';
+		str += '<select name="' + param.name + '" class="' + paramType + ' ' + paramLevel + ' ' + isParent + '" id="'+param.id_str+'"'+required+'>';
 		str += ((param.required) ? '' : '<option value="">-- select --</option>') +'<option value="true">true</option><option value="false">false</option>';
 		str += '</select>';
 	} else if (paramValType=="object") {
-		str += '<textarea class="'+paramType+' '+paramLevel+'"  name="'+param.name+'" id="'+param.id_str+'" style="width:200px; height: 50px;"'+required+'>'+param.jsonStr+'</textarea>';
+		str += '<textarea class="' + paramType + ' ' + paramLevel + ' ' + isParent + '"  name="'+param.name+'" id="'+param.id_str+'" style="width:200px; height: 50px;"'+required+'>'+param.jsonStr+'</textarea>';
 	} else {
 		if (paramType=='pathParams') str += '<a href="javascript:void(0)" class="ui-icon ui-icon-copy" id="'+param.id_str+'_btn" title="Copy to Request URL">copy</a>';
-		str += '<input type="text" class="'+paramType+' '+paramLevel+'" name="'+param.name+'" id="'+param.id_str+'" value="" placeholder="'+paramValType+((param.items!=undefined && param.items.type!=undefined) ? " ("+param.items.type+")" : '')+'"'+required+' />';
+		str += '<input type="text" class="' + paramType + ' ' + paramLevel + ' ' + isParent + '" name="'+param.name+'" id="'+param.id_str+'" value="" placeholder="'+paramValType+((param.items!=undefined && param.items.type!=undefined) ? " ("+param.items.type+")" : '')+'"'+required+' />';
 	}
 	str += '</td></tr>';
 	return str;
@@ -779,13 +782,16 @@ function loadParamValuesByName(paramName){
 		if (paramActionObj.copy_from_select_id!=undefined) {
 			$("#accountId").html($("#incapAccountIDList").html());
 			$("#"+paramName).html(($("#"+paramName).attr("required")=="required") ? '' : '<option value="">-- select --</option>').append($("#"+paramActionObj.copy_from_select_id).html())
-			$('#'+paramName).unbind().change(function(){ loadParamChildValues(this.id); updateRequestData(); });
+			$("#"+paramName).unbind().change(function () { loadParamChildValues(this.id); updateRequestData(); });
 			updateRequestData();
+			if (paramActionObj.children != undefined && paramActionObj.children.length != 0) {
+				loadParamChildValues(paramName);
+			}
 		} else {
 			var auth = getUserAuthObj($('#incapAccountsList').val())
-			auth.method = "query";
+			auth.method = "headers";
 			$("#"+paramName).addClass('processing').html('<option value="">loading...</option>');
-			var contentType = (incapAPIDefinitions[paramActionObj.definition].definition.consumes!=undefined) ? incapAPIDefinitions[paramActionObj.definition].definition.consumes[0] : "application/json";
+			var contentType = (paramActionObj.definition!=undefined && incapAPIDefinitions[paramActionObj.definition].definition.consumes!=undefined) ? incapAPIDefinitions[paramActionObj.definition].definition.consumes[0] : "application/json";
 			var reqObj = (contentType=="application/json") ? {"jsonData":{}} : {"postData":{}};
 			var postData = (contentType=="application/json") ? reqObj["jsonData"] : reqObj["postData"] ;
 			var queryParams = [];
@@ -819,7 +825,7 @@ function loadParamValuesByName(paramName){
 				});
 			}
 			curApiAction += (queryParams.length!=0) ? '?'+queryParams.join("&") : '';
-			makeIncapCall(getSwHost(paramActionObj.definition)+curApiAction,paramActionObj.method,auth,renderParamListValues,reqObj,paramName,contentType);
+			makeIncapCall((paramActionObj.loadFromLocal ? "" : getSwHost(paramActionObj.definition))+curApiAction,paramActionObj.method,auth,renderParamListValues,reqObj,paramName,contentType);
 		}
 	}
 }
@@ -873,7 +879,7 @@ function renderParamListValues(response,input_id) {
 	} else {
 		if (response[paramActionObj.id]!=undefined) $("#"+input_id).append('<option value="'+response[paramActionObj.id]+'">'+response[paramActionObj.displayText]+' ('+response[paramActionObj.id]+')</option>');
 	}
-	if (paramActionObj.children!=undefined && paramActionObj.children!=length!=0) {
+	if (paramActionObj.children!=undefined && paramActionObj.children.length!=0) {
 		loadParamChildValues(input_id);
 	}
 	if ($("#"+input_id).html()=='') $("#"+input_id).html('<option value="">No Value Available</option>');

@@ -113,3 +113,9 @@ function filterStr(str){
 	str = str.replaceAll('"',"");
 	return str;
 }
+
+function getAPIDefinitionIndexes(curApiDefinitions){
+	var curApiDefinitionsAry = [];
+	$.each(curApiDefinitions, function(name,obj) { curApiDefinitionsAry.push(name); });
+	return curApiDefinitionsAry;
+}

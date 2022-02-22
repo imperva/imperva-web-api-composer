@@ -42,6 +42,15 @@ $post_header = ($_POST["headerData"]) ? $_POST["headerData"] : array();
 
 $logDate = date("F j, Y, g:i a");
 
+$post_data_str = is_array($post_data) ? implode(";",$post_data) : $post_data;
+error_log($logDate." | post_data=".$post_data_str);
+
+if ($method=='POST' || $method=='PUT') $contentLength = strlen($post_data_str);
+$curlstr='curl -ik -X '.$method.' -H "'.implode('" -H "',$post_header).'" '.$post_data_str;
+if ($method=='POST' || $method=='PUT') $curlstr.="-d '".$post_data_str."' ";
+$curlstr.=$server;
+error_log($logDate." - Incapsula API Request | ".$curlstr);
+
 $ch = curl_init($server);
 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
@@ -49,7 +58,10 @@ curl_setopt($ch, CURLOPT_HTTPHEADER, $post_header);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data); 
 $response = curl_exec($ch);
-error_log($logDate." | Incapsula API Response: ".$response);
+$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+error_log($logDate." | Incapsula API Response: (http_code=".$http_code.") ".$response);
+
 if(curl_errno($ch)){
 	error_log("CURL ERROR: ".curl_error($ch));
 }

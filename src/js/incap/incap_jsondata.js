@@ -11,7 +11,7 @@ incapAPIDefinitions = {
 	// 	"definition":{}
 	// },
 	"Cloud WAF API (v1)":{
-		"endpoint":"cwaf-v1-swagger-3.json",
+		"endpoint":"https://docs-be.imperva.com/bundle/cloud-application-security/attach/cloud-v1-api.yaml",
 		"definition":{}
 	},
 	"Cloud WAF API (v2)":{
@@ -22,12 +22,16 @@ incapAPIDefinitions = {
 		"endpoint":"https://docs-be.imperva.com/bundle/account-takeover/attach/cloud-ato-api.yaml",
 		"definition":{}
 	},
+	"Advanced Bot Protection": {
+		"endpoint": "https://docs-be.imperva.com/bundle/advanced-bot-protection/attach/openapi.yaml",
+		"definition": {}
+	},
 	"API Security":{
 		"endpoint":"https://docs-be.imperva.com/bundle/api-security/attach/api-security-swagger.yaml",
 		"definition":{}
 	},
 	"Attack Analytics":{
-		"endpoint":"https://docs-be.imperva.com/bundle/Attack-Analytics/attach/attack-analytics-api.yaml",
+		"endpoint":"https://docs-be.imperva.com/bundle/Attack-Analytics/attach/Content/attack-analytics-api.yaml",
 		"definition":{}
 	},
 	"Audit Trail":{
@@ -100,6 +104,7 @@ var incapGetObjectActionMapping = {
 	// Example Param Structure:
 	// "paramNameHere"
 	//   "default or /api/action":{
+	//   "loadFromLocal": true
 	/********** specify action and responose attributes to parse and populate from api  ************/
 	//    "action":"/api-security/api/{siteId}",
 	// 	  "definition":"Cloud WAF API (v1)", // see incapAPIDefinitions
@@ -111,11 +116,13 @@ var incapGetObjectActionMapping = {
 	//	    {"id":"incapAccountIDList","in":"body","renameLookupParam":"account_id"},
 	//		{"id":"page_size","in":"body","value":"100"},
 	//		{"id":"page_num","in":"body","value":"0"}
-	//	  ]
+	//	  ],
+	// 	  
 	/********** OR copy_from_select_id to copy contents from existing select (like sub accounts) **************/
 	// 	  "copy_from_select_id":"incapAccountIDList", 
 	
 	// 	  "isParent":true, // if top level param
+	
 	//    "parents":[
 	// 	     {"id":"siteId","in":"path"}  // path/body/query
 	//    ],
@@ -177,6 +184,17 @@ var incapGetObjectActionMapping = {
 			"displayText":"siteName",
 			"children":["endpointId"]
 		},
+		"/api-security/api/file/{siteId}/{apiId}": {
+			"definition": "API Security",
+			"action": "/api-security/api/{siteId}",
+			"method": "GET",
+			"listName": "value", // objectName, listName
+			"id": "id",
+			"displayText": "siteName",
+			"parents": [
+				{ "id": "siteId", "in": "path" }
+			]
+		}
 	},
 	"assetId":{
 		"default":{
@@ -205,9 +223,9 @@ var incapGetObjectActionMapping = {
 			"definition":"Cloud WAF API (v1)",
 			"isParent":true,
 			"copy_from_select_id":"incapAccountIDList",
-			"id":"account_id",
+			"id":"caid",
 			"displayText":"account_name",
-			"children":["incidentId"]
+			"children": ["incidentId"]
 		}
 	},
 	"certId":{
@@ -341,6 +359,17 @@ var incapGetObjectActionMapping = {
 			"parents":[
 				{"id":"caid","in":"query"} // in: path, body, query
 			]
+		}
+	},
+	"pop": {
+		"default": {
+			"action": "http://localhost:8080/ajax/pops.json",
+			"isParent": true,
+			"id": "code",
+			"method": "GET",
+			"displayText": "location",
+			// "multiselect": true,
+			"loadFromLocal":true
 		}
 	},
 	"policyId":{

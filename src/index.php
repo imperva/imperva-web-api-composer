@@ -209,6 +209,7 @@ $.extend($.gritter.options, {
 				<!--div id="SecureSpherePolicy">
 					
 				</div-->
+				
 				<div id="IncapsulaAPI">
 					<table>
 						<tr>
@@ -271,8 +272,8 @@ $.extend($.gritter.options, {
 										   </td>
 										   <td>
 												<select id="incapAuth">
-													<option value="headers">headers (x-API-Id, x-API-Key)</option>
-													<option selected="selected" value="query">query params (?api_id, api_key)</option>
+													<option selected="selected" value="headers">headers (x-API-Id, x-API-Key)</option>
+													<!-- <option selected="selected" value="query">query params (?api_id, api_key)</option> -->
 												</select>
 										   </td>
 										</tr>
