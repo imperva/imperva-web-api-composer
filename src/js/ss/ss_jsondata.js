@@ -338,6 +338,12 @@ var SSapiParamMapping = {
 			}
 		}
 	},
+	"policyOrigin": {
+		"name": "policyOrigin",
+		"type": "array",
+		"values": ["som", "adc", "mitigation_policies", "user_defined", "system"],
+		"getAPIurlMapping": {}
+	},	
 	"priority":{
 		"getAPIurlMapping":{
 			"default":{
@@ -489,7 +495,8 @@ var SSapiParamMapping = {
 	"webApplicationName":{
 		"getAPIurlMapping":{
 			"default":{
-				"url":"/v1/conf/webApplications/{siteName}/{serverGroupName}/{webServiceName}"
+				"url":"/v1/conf/webApplications/{siteName}/{serverGroupName}/{webServiceName}",
+				"listName":"webApplications"
 			}
 		}
 	}
