@@ -1,0 +1,278 @@
+[
+	{
+		"location":"Americas-IAD",
+		"code":"ATL",
+		"facility":"Equinix - AT1",
+		"virtual_cross_connect_availability":"ECX"
+	},
+	{
+		"location":"Americas-Buenos Aires, Argentina",
+		"code":"EZE",
+		"facility":"CenturyLink Artigas - DC4",
+		"virtual_cross_connect_availability":""
+	},
+	{
+		"location":"Americas-Chicago, IL, United States",
+		"code":"ORD",
+		"facility":"Equinix - CH2",
+		"virtual_cross_connect_availability":"ECX"
+	},
+	{
+		"location":"Americas-Dallas, TX, United States",
+		"code":"DFW",
+		"facility":"Equinix - DA2",
+		"virtual_cross_connect_availability":"ECX"
+	},
+	{
+		"location":"Americas-Denver, CO, United States",
+		"code":"DEN",
+		"facility":"CoreSite - DE1",
+		"virtual_cross_connect_availability":""
+	},
+	{
+		"location":"Americas-Los Angeles, CA, United States",
+		"code":"LAX",
+		"facility":"CoreSite - LA1",
+		"virtual_cross_connect_availability":""
+	},
+	{
+		"location":"Americas-Miami, FL, United States",
+		"code":"MIA",
+		"facility":"Equinix - MI1",
+		"virtual_cross_connect_availability":"ECX"
+	},
+	{
+		"location":"Americas-Newark, NJ, United States",
+		"code":"NYC",
+		"facility":"Equinix - NY1",
+		"virtual_cross_connect_availability":"ECX"
+	},
+	{
+		"location":"Americas-San Jose, CA, United States",
+		"code":"SJC",
+		"facility":"Equinix - SV5",
+		"virtual_cross_connect_availability":"ECX"
+	},
+	{
+		"location":"Americas-São Paulo, Brazil",
+		"code":"GRU",
+		"facility":"Equinix - SP3",
+		"virtual_cross_connect_availability":"ECX"
+	},
+	{
+		"location":"Americas-Santiago, Chile",
+		"code":"SCL",
+		"facility":"Entel",
+		"virtual_cross_connect_availability":""
+	},
+	{
+		"location":"Americas-Seattle, WA, United States",
+		"code":"SEA",
+		"facility":"Equinix - SE2",
+		"virtual_cross_connect_availability":"ECX"
+	},
+	{
+		"location":"Americas-Toronto, ON, Canada",
+		"code":"TOR",
+		"facility":"Equinix - TR2",
+		"virtual_cross_connect_availability":"ECX"
+	},
+	{
+		"location":"Americas-Tultitlán, Mexico",
+		"code":"MEX",
+		"facility":"KioNetwork - MEX5",
+		"virtual_cross_connect_availability":""
+	},
+	{
+		"location":"Americas-Vancouver, BC, Canada",
+		"code":"VAN",
+		"facility":"Cologix - VAN 2",
+		"virtual_cross_connect_availability":""
+	},
+	{
+		"location":"EMEA-Amsterdam, Netherlands",
+		"code":"AMS",
+		"facility":"Equinix - AMS5",
+		"virtual_cross_connect_availability":"ECX"
+	},
+	{
+		"location":"EMEA-Copenhagen, Denmark",
+		"code":"CPH",
+		"facility":"Interxion - CPH1",
+		"virtual_cross_connect_availability":""
+	},
+	{
+		"location":"EMEA-Dubai, United Arab Emirates",
+		"code":"DXB",
+		"facility":"Equinix - DX1",
+		"virtual_cross_connect_availability":"ECX"
+	},
+	{
+		"location":"EMEA-Dublin, Ireland",
+		"code":"DUB",
+		"facility":"Equinix - DB3",
+		"virtual_cross_connect_availability":""
+	},
+	{
+		"location":"EMEA-Frankfurt, Germany",
+		"code":"FRA",
+		"facility":"Interxion - FRA7",
+		"virtual_cross_connect_availability":""
+	},
+	{
+		"location":"EMEA-Istanbul, Turkey",
+		"code":"IST",
+		"facility":"Verizon - IST1",
+		"virtual_cross_connect_availability":""
+	},
+	{
+		"location":"EMEA-Johannesburg, South Africa",
+		"code":"JNB",
+		"facility":"Teraco",
+		"virtual_cross_connect_availability":""
+	},
+	{
+		"location":"EMEA-London, United Kingdom",
+		"code":"LON",
+		"facility":"Telehouse - Telehouse West",
+		"virtual_cross_connect_availability":"ECX"
+	},
+	{
+		"location":"EMEA-Madrid, Spain",
+		"code":"MAD",
+		"facility":"Interxion - MAD1",
+		"virtual_cross_connect_availability":""
+	},
+	{
+		"location":"EMEA-Milan, Italy",
+		"code":"MXP",
+		"facility":"Equinix - ML2",
+		"virtual_cross_connect_availability":"ECX"
+	},
+	{
+		"location":"EMEA-Moscow, Russia",
+		"code":"MSK",
+		"facility":"Ixcellerate - Moscow 1",
+		"virtual_cross_connect_availability":""
+	},
+	{
+		"location":"EMEA-Paris, France",
+		"code":"CDG",
+		"facility":"Equinix - PA3",
+		"virtual_cross_connect_availability":"ECX"
+	},
+	{
+		"location":"EMEA-Stockholm, Sweden",
+		"code":"STO",
+		"facility":"Equinix - SK1",
+		"virtual_cross_connect_availability":"ECX"
+	},
+	{
+		"location":"EMEA-Tel Aviv, Israel",
+		"code":"MED",
+		"facility":"Med-1",
+		"virtual_cross_connect_availability":""
+	},
+	{
+		"location":"EMEA-Vienna, Austria",
+		"code":"VIE",
+		"facility":"Interxion - VIE2",
+		"virtual_cross_connect_availability":""
+	},
+	{
+		"location":"EMEA-Warsaw, Poland",
+		"code":"WAR",
+		"facility":"Equinix - WA1",
+		"virtual_cross_connect_availability":""
+	},
+	{
+		"location":"EMEA-Zürich, Switzerland",
+		"code":"ZRH",
+		"facility":"Equinix - ZH2",
+		"virtual_cross_connect_availability":"ECX"
+	},
+	{
+		"location":"APAC-Auckland, New Zealand",
+		"code":"AKL",
+		"facility":"Vocus - VDC-AKL01",
+		"virtual_cross_connect_availability":""
+	},
+	{
+		"location":"APAC-Bangkok, Thailand",
+		"code":"BKK",
+		"facility":"TCC Technology - BNDC",
+		"virtual_cross_connect_availability":""
+	},
+	{
+		"location":"APAC-Hong Kong, Hong Kong",
+		"code":"HKG",
+		"facility":"Equinix - HK2",
+		"virtual_cross_connect_availability":"ECX"
+	},
+	{
+		"location":"APAC-Jakarta, Indonesia",
+		"code":"CGK",
+		"facility":"Telin - NeuCentrIX STO Karet Tengsin",
+		"virtual_cross_connect_availability":""
+	},
+	{
+		"location":"APAC-Melbourne, VIC, Australia",
+		"code":"MEL",
+		"facility":"Equinix - ME1",
+		"virtual_cross_connect_availability":"ECX, Megaport"
+	},
+	{
+		"location":"APAC-Mumbai, India",
+		"code":"BOM",
+		"facility":"Nxtra data - Mumbai II",
+		"virtual_cross_connect_availability":""
+	},
+	{
+		"location":"APAC-New Delhi, India",
+		"code":"NDL",
+		"facility":"Nxtra data - Manesar",
+		"virtual_cross_connect_availability":""
+	},
+	{
+		"location":"APAC-Osaka, Japan",
+		"code":"OSK",
+		"facility":"Equinix - OS1",
+		"virtual_cross_connect_availability":"ECX"
+	},
+	{
+		"location":"APAC-Selangor, Malaysia",
+		"code":"KUL",
+		"facility":"NTT MSC - CBJ3",
+		"virtual_cross_connect_availability":""
+	},
+	{
+		"location":"APAC-Seoul, South Korea",
+		"code":"KOR",
+		"facility":"LG CNS Gasan - KINX",
+		"virtual_cross_connect_availability":""
+	},
+	{
+		"location":"APAC-Singapore, Singapore",
+		"code":"SIN",
+		"facility":"Equinix - SG3",
+		"virtual_cross_connect_availability":"ECX"
+	},
+	{
+		"location":"APAC-Sydney, NSW, Australia",
+		"code":"SYD",
+		"facility":"Equinix - SY2",
+		"virtual_cross_connect_availability":"ECX, Megaport"
+	},
+	{
+		"location":"APAC-Taipei, Taiwan",
+		"code":"TPE",
+		"facility":"Chief Telecom - Chief LY Building",
+		"virtual_cross_connect_availability":""
+	},
+	{
+		"location":"APAC-Tokyo, Japan",
+		"code":"TKO",
+		"facility":"Equinix - TY6",
+		"virtual_cross_connect_availability":"ECX"
+	}
+]
