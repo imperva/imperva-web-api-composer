@@ -354,13 +354,17 @@ function parseParamValue(input){
 				val = (IsJsonString(val) ? JSON.parse(val) : null)
 				break;
 			case "array_string":
-				val = val.replaceAll("[","").replaceAll("]","").replaceAll('"',"").replaceAll("'","").split(",");
+				val = (val!=null) ? val.replaceAll("[","").replaceAll("]","").replaceAll('"',"").replaceAll("'","").split(",") : '';
 				break;
 			case "array_integer":
 				valAry = [];
-				$.each(val.replaceAll("[","").replaceAll("]","").replaceAll('"',"").replaceAll("'","").split(","), function(i,paramVal) {
-					valAry.push((!isNaN(parseInt(val,10))) ? parseInt(paramVal,10) : parseInt(paramVal,10));
-				});
+				if (val != null) {
+					// $.each(val.replaceAll("[", "").replaceAll("]", "").replaceAll('"', "").replaceAll("'", "").split(","), function (i, paramVal) {
+					if (!Array.isArray(val)) val = val.replaceAll("[", "").replaceAll("]", "").replaceAll('"', "").replaceAll("'", "").split(",")
+					$.each(val, function (i, paramVal) {
+						valAry.push((!isNaN(parseInt(val, 10))) ? parseInt(paramVal, 10) : parseInt(paramVal, 10));
+					});
+				}
 				val = valAry;
 				break;
 			case "integer":
