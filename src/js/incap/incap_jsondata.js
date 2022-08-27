@@ -10,7 +10,7 @@ incapAPIDefinitions = {
 	// 	"endpoint":"cwaf-v1-swagger.json",
 	// 	"definition":{}
 	// },
-	"Cloud WAF API (v1)":{
+	"Cloud WAF API (v1/v3)":{
 		"endpoint":"https://docs-be.imperva.com/bundle/cloud-application-security/attach/cloud-v1-api.yaml",
 		"definition":{}
 	},
@@ -30,6 +30,10 @@ incapAPIDefinitions = {
 		"endpoint":"https://docs-be.imperva.com/bundle/api-security/attach/api-security-swagger.yaml",
 		"definition":{}
 	},
+	"Asset Migration": {
+		"endpoint": "https://docs-be.imperva.com/bundle/cloud-application-security/attach/network-subaccount-api.yaml",
+		"definition": {}
+	},
 	"Attack Analytics":{
 		"endpoint":"https://docs-be.imperva.com/bundle/Attack-Analytics/attach/Content/attack-analytics-api.yaml",
 		"definition":{}
@@ -46,9 +50,21 @@ incapAPIDefinitions = {
 		"endpoint":"https://docs-be.imperva.com/bundle/cloud-application-security/attach/certificate-api.yaml",
 		"definition":{}
 	},
+	"Client-Side Protection": {
+		"endpoint": "https://docs-be.imperva.com/bundle/client-side-protection/attach/csp-api.yaml",
+		"definition": {}
+	},
 	"Connectivity Settings":{
 		"endpoint":"https://docs-be.imperva.com/bundle/cloud-application-security/attach/network-settings-api.yaml",
 		"definition":{}
+	},
+	"DDoS Protection for Networks: Connections": {
+		"endpoint": "https://docs-be.imperva.com/bundle/cloud-application-security/attach/network-connections-api.yaml",
+		"definition": {}
+	},
+	"DDoS Protection for Networks: Performance Monitoring": {
+		"endpoint": "https://docs-be.imperva.com/bundle/cloud-application-security/attach/performance-monitoring-api.yaml",
+		"definition": {}
 	},
 	"Delivery Settings":{
 		"endpoint":"https://docs-be.imperva.com/bundle/cloud-application-security/attach/delivery-api.yaml",
@@ -58,9 +74,25 @@ incapAPIDefinitions = {
 		"endpoint":"https://docs-be.imperva.com/bundle/cloud-application-security/attach/dns-protection-api.yaml",
 		"definition":{}
 	},
+	"Flow Exporter": {
+		"endpoint": "https://docs-be.imperva.com/bundle/cloud-application-security/attach/flow-exporter-api.yaml",
+		"definition": {}
+	},
+	"Identity Management": {
+		"endpoint": "https://docs-be.imperva.com/bundle/cloud-application-security/attach/id-management-api.yaml",
+		"definition": {}
+	},
 	"Load Balancing Settings":{
 		"endpoint":"https://docs-be.imperva.com/bundle/cloud-application-security/attach/load-balancing-api.yaml",
 		"definition":{}
+	},
+	"Load Balancing Monitoring Settings": {
+		"endpoint": "https://docs-be.imperva.com/bundle/cloud-application-security/attach/website-monitoring-api.yaml",
+		"definition": {}
+	},
+	"Notification Settings": {
+		"endpoint": "https://docs-be.imperva.com/bundle/cloud-application-security/attach/notification-settings-api.yaml",
+		"definition": {}
 	},
 	"Policy Management":{
 		"endpoint":"https://docs-be.imperva.com/bundle/cloud-application-security/attach/policies-api.yaml",
@@ -77,7 +109,16 @@ incapAPIDefinitions = {
 	"Role Management":{
 		"endpoint":"https://docs-be.imperva.com/bundle/cloud-application-security/attach/role-management-api.yaml",
 		"definition":{}
+	},
+	"Usage Report": {
+		"endpoint": "https://docs-be.imperva.com/bundle/cloud-application-security/attach/usage-report-api.yaml",
+		"definition": {}
+	},
+	"Website Domain Management": {
+		"endpoint": "https://docs-be.imperva.com/bundle/cloud-application-security/attach/website-domain-api.yaml",
+		"definition": {}
 	}
+		
 }
 
 	// "Cloud Data Security":{
@@ -466,7 +507,7 @@ var incapGetObjectActionMapping = {
 			"isParent":true,
 			"action":"/user-management/v1/roles",
 			"method":"GET",
-			// "listName":"value", // objectName, listName
+			// "objectName":"value", // objectName, listName
 			"id":"roleId",
 			"displayText":"roleName",
 			"parents":[
