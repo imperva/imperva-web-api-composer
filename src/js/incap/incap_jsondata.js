@@ -629,6 +629,8 @@ var timestampParam = {
 	"to_timestamp":true,
 	"start":true,
 	"end":true,
+	"from": true,
+	"to": true,
 	"startTime":true,
 	"endTime":true
 }
