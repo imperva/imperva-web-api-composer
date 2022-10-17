@@ -10,7 +10,7 @@ incapAPIDefinitions = {
 	// 	"endpoint":"cwaf-v1-swagger.json",
 	// 	"definition":{}
 	// },
-	"Cloud WAF API (v1/v3)":{
+	"Cloud WAF API (v1)":{
 		"endpoint":"https://docs-be.imperva.com/bundle/cloud-application-security/attach/cloud-v1-api.yaml",
 		"definition":{}
 	},
@@ -114,11 +114,14 @@ incapAPIDefinitions = {
 		"endpoint": "https://docs-be.imperva.com/bundle/cloud-application-security/attach/usage-report-api.yaml",
 		"definition": {}
 	},
+	"Waiting Rooms": {
+		"endpoint": "https://docs-be.imperva.com/bundle/cloud-application-security/attach/waiting-room-api.yaml",
+		"definition": {}
+	},
 	"Website Domain Management": {
 		"endpoint": "https://docs-be.imperva.com/bundle/cloud-application-security/attach/website-domain-api.yaml",
 		"definition": {}
 	}
-		
 }
 
 	// "Cloud Data Security":{
