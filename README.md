@@ -9,6 +9,7 @@ This web based application enables developers to quickly unit test individual AP
 
 ## Prerequisites
 
+(For GCP / Kubernetes deployment, see [GCP instructions])
 - Install [Docker Compose](https://github.com/docker/compose) on the system.
 - Review the [Alpine Linux Container README](https://gitlab.com/imperva-community/public/docker/alpine).
 - Choose a location on the system in which to store your settings and logs.
@@ -54,4 +55,5 @@ If you have questions, find bugs or need additional help, please send an email t
 
 - [Alpine Linux Container](https://gitlab.com/imperva-community/public/docker/alpine)
 - [Docker Compose](https://github.com/docker/compose/)
+- [GCP instructions](Imperva Web API Composer GCP kubernetes instructions/Imperva Web API Composer GCP kubernetes deployment instructions.txt)
 
