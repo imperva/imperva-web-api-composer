@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose-windows-amd64.exe convert
+    kompose.version: ""
+  creationTimestamp: null
+  labels:
+    io.kompose.service: imperva-web-api-composer
+  name: imperva-web-api-composer
+spec:
+  ports:
+  - name: "8080"
+    port: 8080
+    targetPort: 8080
+  - name: "8443"
+    port: 8443
+    targetPort: 443
+  type: LoadBalancer    
+  selector:
+    io.kompose.service: imperva-web-api-composer
+status:
+  loadBalancer: {}
