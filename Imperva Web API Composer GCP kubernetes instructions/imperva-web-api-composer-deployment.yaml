@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose-windows-amd64.exe convert
+    kompose.version: ""
+  creationTimestamp: null
+  labels:
+    io.kompose.service: imperva-web-api-composer
+  name: imperva-web-api-composer
+spec:
+  replicas: 1
+  strategy: {}
+  selector:
+    matchLabels:
+       io.kompose.service: imperva-web-api-composer 
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: imperva-web-api-composer
+    spec:
+      containers:
+      - env:
+        - name: CONTAINER_NAME
+          value: imperva-web-api-composer
+        - name: TZ
+          value: UTC
+        image: registry.gitlab.com/imperva-community/public/tools/imperva-web-api-composer:latest
+        name: imperva-web-api-composer
+        ports:
+        - containerPort: 80
+        - containerPort: 443
+        resources: {}
+      restartPolicy: Always
+status: {}
