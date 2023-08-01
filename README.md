@@ -1,5 +1,5 @@
 # Imperva Web API Composer
-
+ 
 [![license](https://img.shields.io/badge/license-imperva--community-blue.svg)](https://gitlab.com/imperva-community/public/tools/imperva-web-api-composer/blob/master/LICENSE.md)
 [![support](https://img.shields.io/badge/support-community-blue.svg)](https://gitlab.com/imperva-community)
 
