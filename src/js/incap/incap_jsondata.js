@@ -55,7 +55,7 @@ incapAPIDefinitions = {
 		"definition": {}
 	},
 	"Connectivity Settings":{
-		"endpoint":"https://docs-be.imperva.com/bundle/cloud-application-security/attach/network-settings-api.yaml",
+		"endpoint":"https://docs-be.imperva.com/bundle/cloud-application-security/page/network-connections-api.yaml",
 		"definition":{}
 	},
 	"DDoS Protection for Networks: Connections": {
@@ -113,7 +113,7 @@ incapAPIDefinitions = {
 	"SSL Certificates": {
 		"endpoint": "https://docs-be.imperva.com/bundle/cloud-application-security/attach/certificatesUI-api.yaml",
 		"definition": {}
-	},	
+	},
 	"Usage Report": {
 		"endpoint": "https://docs-be.imperva.com/bundle/cloud-application-security/attach/usage-report-api.yaml",
 		"definition": {}

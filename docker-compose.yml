@@ -5,11 +5,10 @@ services:
     image: registry.gitlab.com/imperva-community/public/tools/imperva-web-api-composer:latest
     # build: .
     # volumes:
-    #  - ./target/:/usr/local/tomcat/webapps/
+    # - ./src/:/var/www/html
     ports:
     - 8080:8080
-    - 8443:443
+    # - 8443:443
     environment:
       TZ: ${TZ:-UTC}
       CONTAINER_NAME: imperva-web-api-composer
-

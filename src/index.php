@@ -35,6 +35,8 @@
 <script src="js/ss/ss_jsondata.js"></script>
 <script src="js/ss/ss_common.js"></script>
 <script src="js/ss/ss_policyMigration.js"></script>
+<script src="js/dsf/dsf_jsondata.js"></script>
+<script src="js/dsf/dsf_common.js"></script>
 <script>
 $.extend($.gritter.options, {
 	//class_name: 'gritter-light', // for light notifications (can be added directly to $.gritter.add too)
@@ -59,6 +61,7 @@ $.extend($.gritter.options, {
 			<div id="mainNav" class="ui-widget-content content">
 				<ul>
 					<li><a id="SecureSphereAPIBtn" href="#SecureSphereAPI">SecureSphere API Client</a></li>
+					<li><a id="DSFAPIBtn" href="#DSFAPI">DSF API Client</a></li>
 					<li><a id="IncapsulaAPIBtn" href="#IncapsulaAPI">Cloud API Client</a></li>
 					<li><a id="incapsitesBtn" href="#incapsites">Cloud Sites</a></li>
 					<li><a id="migrationToolsBtn" href="#migrationTools">Migration Tools</a></li>
@@ -209,6 +212,134 @@ $.extend($.gritter.options, {
 				<!--div id="SecureSpherePolicy">
 					
 				</div-->
+				<div id="DSFAPI">
+					<table>
+						<tr>
+							<td></td>
+							<td valign="top">
+								<input id="dsfexecute" value="execute call" type="submit" /> 
+							</td>
+						<tr>
+							<td valign="top" style="padding: 0px 10px 0px 0px;">
+								<fieldset>
+									<legend>Request Configs</legend>
+									<table class="tableColL">
+										<tr id="dsfServersListtr">
+											<td align="right"><label for="dsfServersList">DSF Servers: </label></td>
+											<td><select id="dsfServersList"></select></td>
+										</tr>
+										<tr class="dsf_auth"><td align="right"><label for="dsfDisplayName">DSF Display Name: </label></td>
+										  <td><input id="dsfDisplayName" style="width: 200px;" placeholder="Your DSF Server Name" value="" type="text" /></td></tr>
+										<tr>
+										<tr class="dsf_auth"><td align="right"><label for="dsfServer">DSF Server: </label></td>
+										  <td><input id="dsfServer" style="width: 200px;" placeholder="https://192.168.1.2:a443" value="" type="text" /></td></tr>
+										<tr>
+										<tr class="dsf_auth"><td align="right"><label for="dsftoken">DSF API Token: </label></td>
+										  <td><input id="dsfToken" style="width: 200px;" value="" type="text" /></td></tr>
+										<tr>
+										<tr class="dsf_auth"><td align="right"></td><td>
+											<input id="dsfSaveToken" value="Save this DSF Token" type="submit" title="Add these credentials to the list for reuse" /><br /><br />
+											<table id="dsfTokenTable"></table>
+											<!-- <input id="dsfDeleteToken" value="Delete this DSF Token" type="submit" title="Remove these credentials from the list" /><br /> -->
+										</td></tr>
+										<tr class="dsf_client">
+											<td align="right" style="border: 1px solid red;">
+												<label for="dsfActions">Action: </label>
+											</td>
+											<td>
+												<select name="dsfActions" id="dsfActions"></select>
+											</td>
+										</tr>
+										<tr class="dsf_client">
+										  <td align="right" style="border: 1px solid red;"><label for="dsfMethod">Method: </label></td>
+										  <td>
+											<select id="dsfMethod">
+												<option value="get">GET</option>
+												<option value="post">POST</option>
+												<option value="put">PUT</option>
+												<option value="delete">DELETE</option>
+												<option value="patch">PATCH</option>
+												<option value="head">HEAD</option>
+												<option value="options">OPTIONS</option>
+											</select>
+										  </td>
+										</tr>
+										<!-- <tr>
+										   <td align="right">
+											 <label for="incapAuth">Auth</label>
+										   </td>
+										   <td>
+												<select id="incapAuth">
+													<option value="headers">headers (x-API-Id, x-API-Key)</option>
+													<option selected="selected" value="query">query params (?api_id, api_key)</option>
+												</select>
+										   </td>
+										</tr> -->
+										<tr class="dsf_client">
+										   <td align="right">
+											 <label for="contentType">Content-Type</label>
+										   </td>
+										   <td>
+												<select id="dsfContentType" disabled="true">
+													<option selected="selected" value="application/json">application/json</option>
+													<!--option value="application/x-www-form-urlencoded">application/x-www-form-urlencoded</option-->
+													<!--option>application/csv</option-->
+												</select>
+										   </td>
+										</tr>
+									</table>
+								</fieldset>
+								<fieldset id="dsfqueryParams">
+									<legend>Query Parameters</legend>
+									<table class="tableColL" id="dsfqueryParams_tbl"></table>
+								</fieldset>
+								<fieldset id="dsfpathParams">
+									<legend>URL Path Parameters</legend>
+									<table class="tableColL" id="dsfpathParams_tbl"></table>
+								</fieldset>
+								<fieldset id="dsfbodyParams">
+									<legend>JSON Body Parameters</legend>
+									<table class="tableColL" id="dsfbodyParams_tbl"></table>
+								</fieldset>
+								<!-- <fieldset id="dsfformDataParams">
+									<legend>Form Data Parameters</legend>
+									<table class="tableColL" id="dsfformDataParams_tbl"></table>
+								</fieldset> -->
+							</td>
+							<td valign="top">
+								<label for="dsfrequestUrl">Request URL: </label><br clear="all" />
+								<textarea id="dsfRequestUrl" style="height: 40px;" name="dsfRequestUrl"></textarea><br clear="all" /><br />
+								<label for="dsfData">Request Data: </label><span id="dsfrequestdataspan"></span><br clear="all" />
+								<textarea id="dsfData" style="height: 60px;" ></textarea><br clear="all" /><br clear="all" />
+								<label for="dsfResult">Response:</label><br clear="all" />
+								<textarea id="dsfResult"></textarea><br clear="all" /><br />
+								<label for="dsfExamplesNav">Code Examples: 
+									<span style="float: right;">
+										<label for="dsf_configMaskSecretKey">Mask secret key: </label>
+										<input id="dsf_configMaskSecretKey" type="checkbox" checked="checked" value="maskSecretKey" />
+									</span><br clear="all" />
+								</label>
+								<div id="dsfExamplesNav" class="ui-widget-content content">
+									<ul>
+										<li><a id="dsfCurlExampleBtn" class="codeExampleBtn" href="#dsfCurlExampleDiv">[CURL]</a></li>
+										<li><a id="dsfPythonExampleBtn" class="codeExampleBtn" href="#dsfPythonExampleDiv">[Python]</a></li>
+										<!-- <li><a id="dsfRubyExampleBtn" class="codeExampleBtn" href="#dsfRubyExampleDiv">[Ruby]</a></li>
+										<li><a id="dsfJavaScriptExampleBtn" class="codeExampleBtn" href="#dsfJavaScriptExampleDiv">[JavaScript]</a></li>
+										<li><a id="dsfPerlExampleBtn" class="codeExampleBtn" href="#dsfPerlExampleDiv">[Perl]</a></li>
+										<li><a id="dsfPowershellExampleBtn" class="codeExampleBtn" href="#dsfPowershellExampleDiv">[Powershell]</a></li> -->
+									</ul>
+									<div id="dsfCurlExampleDiv" class="codeExample">
+										<textarea readonly id="dsfCurlExample" style="height: 60px;"></textarea><br clear="all" />
+									</div>
+									<div id="dsfPythonExampleDiv" class="codeExample"><textarea readonly id="dsfPythonExample" style="height: 60px;"></textarea></div>									
+								</div><br clear="all" />
+								<a href="https://docs.imperva.com/bundle/v4.12-sonar-user-guide/page/84552.htm" target="_blank">Sonar API Documentation</a><br />
+								<a href="http://jsonformatter.curiousconcept.com/" target="_blank">JSON Formatter</a>
+								
+							</td>
+						</tr>
+					</table><br clear="all" />
+				</div>
 				
 				<div id="IncapsulaAPI">
 					<table>

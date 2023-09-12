@@ -2,6 +2,7 @@ var starStr = '*****************************************************************
 var responseObj = {};
 var INCAP_AUTH;
 var SS_AUTH;
+var DSF_AUTH;
 
 $().ready(function() {
 	$("#mainNav").tabs();
@@ -118,4 +119,27 @@ function getAPIDefinitionIndexes(curApiDefinitions){
 	var curApiDefinitionsAry = [];
 	$.each(curApiDefinitions, function(name,obj) { curApiDefinitionsAry.push(name); });
 	return curApiDefinitionsAry;
+}
+
+function setNestedBodyParams(curObject, curPathAry, param) {
+	if (curPathAry.length > 1) {
+		var parentName = curPathAry.shift();
+		if (curObject[parentName] == undefined) curObject[parentName] = {};
+		curObject[parentName] = setNestedBodyParams(curObject[parentName], curPathAry, param);
+	} else {
+		var paramName = ((param.id.includes("___")) ? param.id.split("___").pop() : param.id);
+		var val = parseParamValue($('#' + param.id));
+		if (val != null) curObject[paramName] = val;
+	}
+	return curObject;
+}
+
+function toggleShowNestedParams(id) {
+	if ($('#' + id + '_fieldset').css('display') == 'none') {
+		$('#' + id + '_fieldset').show();
+		$('#' + id + '_toggle').hide();
+	} else {
+		$('#' + id + '_fieldset').hide();
+		$('#' + id + '_toggle').show();
+	}
 }

@@ -301,18 +301,6 @@ function updateRequestData() {
 	updateRequestDataFromFormDataParams();
 }
 
-function setNestedBodyParams(curObject,curPathAry,param){
-	if (curPathAry.length>1) {
-		var parentName = curPathAry.shift();
-		if (curObject[parentName]==undefined) curObject[parentName] = {};
-		curObject[parentName] = setNestedBodyParams(curObject[parentName],curPathAry,param);
-	} else {
-		var paramName = ((param.id.includes("___")) ? param.id.split("___").pop() : param.id);
-		var val = parseParamValue($('#'+param.id));
-		if (val!=null) curObject[paramName] = val;
-	}
-	return curObject;
-}
 
 function addObjectToParent(input){
 	var parentId = input.id.replace("_add","");
@@ -469,7 +457,7 @@ function loadCredentials(){
 	renderAuth();
 	renderSiteGroupSites();
 	renderMigrationToolbar();
-	loadSites();
+	// loadSites();
 }
 
 /* Series of call back functions to load sub account IDs in the right location when changing API_KEYs on the UI */
@@ -763,15 +751,6 @@ function renderParamHTML(param,paramType){
 	return str;
 }
 
-function toggleShowNestedParams(id){
-	if ($('#'+id+'_fieldset').css('display')=='none') {
-		$('#'+id+'_fieldset').show();
-		$('#'+id+'_toggle').hide();
-	} else {
-		$('#'+id+'_fieldset').hide();
-		$('#'+id+'_toggle').show();
-	}
-}
 
 function incapCopyPathParam(input){
 	var curId = input.id.replace("_btn","");

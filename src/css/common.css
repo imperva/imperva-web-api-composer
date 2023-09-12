@@ -98,6 +98,10 @@ ul#icons span.ui-icon {float: left; margin: 0 4px;}
 #manageSSCredentialsBtn, #manageCredentialsBtn { text-decoration: none; }
 #manageSSCredentialsBtn span, #manageCredentialsBtn span { text-decoration: underline; }
 
+#DSFAPI .dsf_auth { 
+	display: none;
+}
+
 .section { display:block; float:left; padding: 0 0 5px; }
 span.required {
 	color: red;

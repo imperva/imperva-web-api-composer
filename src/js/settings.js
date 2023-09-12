@@ -10,3 +10,8 @@ var ssDefConfig = {
 	"proto":"https",
 	"port":"8083"
 }
+
+var dsfDefConfig = {
+	"actionPrefix": "/dsf",
+	"testAuthUrl": "/api/v1/gateways"
+}
